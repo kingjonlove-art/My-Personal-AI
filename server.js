@@ -1,4 +1,4 @@
-```javascript
+
 require("dotenv").config();
 const express = require("express");
 const path = require("path");
@@ -52,4 +52,3 @@ error: "সার্ভারে সমস্যা হয়েছে। আবা
 app.listen(PORT, "0.0.0.0", () => {
 console.log(My Personal AI server running on port ${PORT});
 });
-

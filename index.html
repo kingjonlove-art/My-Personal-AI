@@ -38,6 +38,13 @@ userMessage.textContent = message;
 chatBox.appendChild(userMessage);
 input.value = '';
 chatBox.scrollTop = chatBox.scrollHeight;
+​setTimeout(() => {
+const aiMessage = document.createElement('div');
+aiMessage.classList.add('message', 'ai-message');
+aiMessage.textContent = "এটি একটি স্বয়ংক্রিয় উত্তর।";
+chatBox.appendChild(aiMessage);
+chatBox.scrollTop = chatBox.scrollHeight;
+}, 1000);
 }
 }
 </script>

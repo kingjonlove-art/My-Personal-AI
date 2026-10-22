@@ -3,91 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI চ্যাট ইন্টারফেস</title>
+    <title>My Personal AI</title>
+
     <style>
-        body { font-family: sans-serif; margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%); }
-        #landing-screen { text-align: center; color: white; }
-        .btn { padding: 15px 30px; font-size: 18px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-        .btn:hover { background-color: #0056b3; }
-        #chat-container { display: none; width: 400px; background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; flex-direction: column; height: 500px; }
-        .chat-box { flex: 1; overflow-y: scroll; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
-        .message { padding: 10px; border-radius: 4px; max-width: 80%; }
-        .user-message { background-color: #007bff; color: white; align-self: flex-end; }
-        .ai-message { background-color: #e9ecef; color: #333; align-self: flex-start; }
-        .input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid #ddd; }
-        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #74ebd5, #9face6);
+            padding: 15px;
+        }
+
+        #landing-screen {
+            text-align: center;
+            color: white;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            font-size: 16px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        #chat-container {
+            display: none;
+            width: 100%;
+            max-width: 420px;
+            height: 80vh;
+            max-height: 600px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-direction: column;
+            box-shadow: 0 5px 20px #0002;
+        }
+
+        .chat-header {
+            background: #007bff;
+            color: white;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 10px;
+            max-width: 85%;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .user-message {
+            background: #007bff;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .ai-message {
+            background: #e9ecef;
+            color: #222;
+            align-self: flex-start;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            border-top: 1px solid #ddd;
+        }
+
+        input {
+            flex: 1;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .send-btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            background: #007bff;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+        }
     </style>
 </head>
+
 <body>
+
     <div id="landing-screen">
         <h1>Welcome to My AI</h1>
-        <p>একটি সুন্দর এবং আধুনিক চ্যাট ইন্টারফেস।</p>
-        <button class="btn" onclick="startChat()">চ্যাট শুরু করুন</button>
+        <p>আপনার ব্যক্তিগত AI সহকারী</p>
+        <button class="btn" onclick="startChat()">
+            চ্যাট শুরু করুন
+        </button>
     </div>
 
     <div id="chat-container">
+
+        <div class="chat-header">
+            <h2>My Personal AI</h2>
+            <div>আপনার AI সহকারী</div>
+        </div>
+
         <div class="chat-box" id="chat-box">
-            <div class="message ai-message">হ্যালো! আমি আপনাকে কীভাবে সাহায্য করতে পারি?</div>
+            <div class="message ai-message">
+                হ্যালো! আমি আপনার AI সহকারী।
+                কীভাবে সাহায্য করতে পারি?
+            </div>
         </div>
-        <div class="input-area">
-            <input type="text" id="message-input" placeholder="আপনার বার্তা লিখুন...">
-            <button onclick="sendMessage()">পাঠান</button>
-        </div>
+
+        <form class="input-area" id="chat-form">
+            <input
+                type="text"
+                id="message-input"
+                placeholder="আপনার বার্তা লিখুন..."
+                autocomplete="off"
+                required
+            >
+
+            <button class="send-btn" id="send-btn" type="submit">
+                পাঠান
+            </button>
+        </form>
+
     </div>
 
     <script>
         function startChat() {
-            document.getElementById('landing-screen').style.display = 'none';
-            document.getElementById('chat-container').style.display = 'flex';
+            document.getElementById("landing-screen").style.display = "none";
+            document.getElementById("chat-container").style.display = "flex";
+            document.getElementById("message-input").focus();
         }
 
-        async function sendMessage() {
-            const input = document.getElementById('message-input');
-            const chatBox = document.getElementById('chat-box');
+        const form = document.getElementById("chat-form");
+        const input = document.getElementById("message-input");
+        const chatBox = document.getElementById("chat-box");
+        const sendBtn = document.getElementById("send-btn");
+
+        const conversation = [];
+
+        function addMessage(text, type) {
+            const message = document.createElement("div");
+            message.className = "message " + type;
+            message.textContent = text;
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return message;
+        }
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
             const message = input.value.trim();
 
-            if (message) {
-                const userMessage = document.createElement('div');
-                userMessage.classList.add('message', 'user-message');
-                userMessage.textContent = message;
-                chatBox.appendChild(userMessage);
-                input.value = '';
-                chatBox.scrollTop = chatBox.scrollHeight;
-
-                const apiKey = ''XWWBVULNMGAIS2E6';'                const apiUrl = 'https://api.openai.com/v1/chat/completions';
-
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${apiKey}`
-                        },
-                        body: JSON.stringify({
-                            model: 'gpt-3.5-turbo',
-                            messages: [{ role: 'user', content: message }]
-                        })
-                    });
-
-                    const data = await response.json();
-                    const aiReply = data.choices[0].message.content;
-
-                    const aiMessage = document.createElement('div');
-                    aiMessage.classList.add('message', 'ai-message');
-                    aiMessage.textContent = aiReply;
-                    chatBox.appendChild(aiMessage);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                } catch (error) {
-                    console.error('Error:', error);
-                    const errorMessage = document.createElement('div');
-                    errorMessage.classList.add('message', 'ai-message');
-                    errorMessage.textContent = 'দুঃখিত, কোনো সমস্যা হয়েছে।';
-                    chatBox.appendChild(errorMessage);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
+            if (!message || sendBtn.disabled) {
+                return;
             }
-        }
+
+            addMessage(message, "user-message");
+
+            conversation.push({
+                role: "user",
+                content: message
+            });
+
+            input.value = "";
+            sendBtn.disabled = true;
+
+            const loading = addMessage("AI উত্তর তৈরি করছে...", "ai-message");
+
+            try {
+                const response = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        messages: conversation
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        data.error || "AI সার্ভারে সমস্যা হয়েছে।"
+                    );
+                }
+
+                loading.textContent = data.reply;
+
+                conversation.push({
+                    role: "assistant",
+                    content: data.reply
+                });
+
+            } catch (error) {
+                loading.textContent =
+                    "দুঃখিত! " + error.message +
+                    " সার্ভার চালু আছে কি না পরীক্ষা করুন।";
+
+                conversation.pop();
+            } finally {
+                sendBtn.disabled = false;
+                input.focus();
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        });
     </script>
+
 </body>
 </html>

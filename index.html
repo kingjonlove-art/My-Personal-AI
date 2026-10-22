@@ -1,76 +1,312 @@
-<script>
-function startChat() {
-    document.getElementById("landing-screen").style.display = "none";
-    document.getElementById("chat-container").style.display = "flex";
-    document.getElementById("message-input").focus();
-}
-
-const form = document.getElementById("chat-form");
-const input = document.getElementById("message-input");
-const chatBox = document.getElementById("chat-box");
-const sendBtn = document.getElementById("send-btn");
-
-const conversation = [];
-
-function addMessage(text, type) {
-    const message = document.createElement("div");
-    message.className = "message " + type;
-    message.textContent = text;
-    chatBox.appendChild(message);
-    chatBox.scrollTop = chatBox.scrollHeight;
-    return message;
-}
-
-form.addEventListener("submit", async function(event) {
-    event.preventDefault();
-
-    const message = input.value.trim();
-
-    if (!message || sendBtn.disabled) {
-        return;
-    }
-
-    addMessage(message, "user-message");
-
-    conversation.push({
-        role: "user",
-        content: message
-    });
-
-    input.value = "";
-    sendBtn.disabled = true;
-
-    const loading = addMessage("AI উত্তর তৈরি করছে...", "ai-message");
-
-    try {
-        const response = await fetch("https://my-personal-ai-ubh0.onrender.com/api/chat", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ messages: conversation })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || "AI সার্ভারে সমস্যা হয়েছে।");
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Personal AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Hind Siliguri', sans-serif;
         }
 
-        loading.textContent = data.reply;
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
 
-        conversation.push({
-            role: "assistant",
-            content: data.reply
+        .container {
+            width: 100%;
+            max-width: 900px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: #1e293b;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                height: 90vh;
+                border-radius: 16px;
+                overflow: hidden;
+                border: 1px solid #334155;
+            }
+        }
+
+        /* Header / Landing Visual */
+        header {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .ai-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #8b5cf6;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(139, 92, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); }
+        }
+
+        .header-info h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .header-info p {
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Chat Container */
+        #chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #chat-box {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            scroll-behavior: smooth;
+        }
+
+        /* Message Bubbles */
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #ffffff;
+            border-bottom-right-radius: 2px;
+        }
+
+        .ai-message {
+            align-self: flex-start;
+            background-color: #334155;
+            color: #f1f5f9;
+            border-bottom-left-radius: 2px;
+            border: 1px solid #475569;
+        }
+
+        /* Input Form */
+        #chat-form {
+            display: flex;
+            padding: 16px;
+            background-color: #0f172a;
+            gap: 10px;
+            border-top: 1px solid #334155;
+        }
+
+        #message-input {
+            flex: 1;
+            background-color: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 24px;
+            padding: 12px 20px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        #message-input:focus {
+            border-color: #3b82f6;
+        }
+
+        #send-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 46px;
+            height: 46px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        #send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        #send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Scrollbar Styling */
+        #chat-box::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chat-box::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #chat-box::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="ai-avatar">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="header-info">
+                <h1>My Personal AI</h1>
+                <p><span class="status-dot"></span> অনলাইন আছেন</p>
+            </div>
+        </header>
+
+        <div id="chat-container">
+            <div id="chat-box">
+                <div class="message ai-message">
+                    হ্যালো! আমি আপনার পার্সোনাল এআই। আমি আপনাকে কীভাবে সাহায্য করতে পারি?
+                </div>
+            </div>
+
+            <form id="chat-form">
+                <input type="text" id="message-input" placeholder="আপনার বার্তা লিখুন..." autocomplete="off" required />
+                <button type="submit" id="send-btn">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("chat-form");
+        const input = document.getElementById("message-input");
+        const chatBox = document.getElementById("chat-box");
+        const sendBtn = document.getElementById("send-btn");
+
+        let conversation = [];
+
+        function addMessage(text, type) {
+            const message = document.createElement("div");
+            message.className = "message " + type;
+            message.textContent = text;
+            chatBox.appendChild(message);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return message;
+        }
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const message = input.value.trim();
+
+            if (!message || sendBtn.disabled) {
+                return;
+            }
+
+            addMessage(message, "user-message");
+
+            conversation.push({
+                role: "user",
+                content: message
+            });
+
+            input.value = "";
+            sendBtn.disabled = true;
+
+            const loading = addMessage("AI উত্তর তৈরি করছে...", "ai-message");
+
+            try {
+                const response = await fetch("/my-personal-ai-1-lz9o.onrender.com", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ messages: conversation })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "AI সাড়া দিতে ব্যর্থ হয়েছে");
+                }
+
+                loading.textContent = data.reply;
+
+                conversation.push({
+                    role: "assistant",
+                    content: data.reply
+                });
+
+            } catch (error) {
+                loading.textContent = "ত্রুটি: " + error.message;
+                conversation.pop();
+            } finally {
+                sendBtn.disabled = false;
+                input.focus();
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
         });
-
-    } catch (error) {
-        loading.textContent = "দুঃখিত! " + error.message + " সার্ভার চালু আছে কি না পরীক্ষা করুন।";
-        conversation.pop(); // Remove the last user message to try again
-    } finally {
-        sendBtn.disabled = false;
-        input.focus();
-        chatBox.scrollTop = chatBox.scrollHeight;
-    }
-});
-</script>
+    </script>
+</body>
+</html>

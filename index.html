@@ -1,52 +1,67 @@
-​<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="bn">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Chat Interface</title>
-<style>
-body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f2f5; margin: 0; }
-.chat-container { width: 400px; background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; display: flex; flex-direction: column; }
-.chat-box { height: 400px; overflow-y: scroll; padding: 16px; border-bottom: 1px solid #ddd; display: flex; flex-direction: column; gap: 10px; }
-.message { padding: 10px; border-radius: 4px; max-width: 80%; }
-.user-message { background-color: #007bff; color: white; align-self: flex-end; }
-.ai-message { background-color: #e9ecef; color: #333; align-self: flex-start; }
-.input-area { display: flex; padding: 10px; gap: 10px; }
-input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
-button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI চ্যাট ইন্টারফেস</title>
+    <style>
+        body { font-family: sans-serif; margin: 0; height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%); }
+        #landing-screen { text-align: center; color: white; }
+        .btn { padding: 15px 30px; font-size: 18px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background-color: #0056b3; }
+        #chat-container { display: none; width: 400px; background-color: white; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); overflow: hidden; flex-direction: column; height: 500px; }
+        .chat-box { flex: 1; overflow-y: scroll; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .message { padding: 10px; border-radius: 4px; max-width: 80%; }
+        .user-message { background-color: #007bff; color: white; align-self: flex-end; }
+        .ai-message { background-color: #e9ecef; color: #333; align-self: flex-start; }
+        .input-area { display: flex; padding: 10px; gap: 10px; border-top: 1px solid #ddd; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        button { padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    </style>
 </head>
 <body>
-<div class="chat-container">
-<div class="chat-box" id="chat-box">
-<div class="message ai-message">হ্যালো! আমি আপনাকে কীভাবে সাহায্য করতে পারি?</div>
-</div>
-<div class="input-area">
-<input type="text" id="message-input" placeholder="আপনার বার্তা লিখুন...">
-<button onclick="sendMessage()">পাঠান</button>
-</div>
-</div>
-<script>
-function sendMessage() {
-const input = document.getElementById('message-input');
-const chatBox = document.getElementById('chat-box');
-const message = input.value.trim();
-if (message) {
-const userMessage = document.createElement('div');
-userMessage.classList.add('message', 'user-message');
-userMessage.textContent = message;
-chatBox.appendChild(userMessage);
-input.value = '';
-chatBox.scrollTop = chatBox.scrollHeight;
-​setTimeout(() => {
-const aiMessage = document.createElement('div');
-aiMessage.classList.add('message', 'ai-message');
-aiMessage.textContent = "এটি একটি স্বয়ংক্রিয় উত্তর।";
-chatBox.appendChild(aiMessage);
-chatBox.scrollTop = chatBox.scrollHeight;
-}, 1000);
-}
-}
-</script>
+    <div id="landing-screen">
+        <h1>Welcome to My AI</h1>
+        <p>একটি সুন্দর এবং আধুনিক চ্যাট ইন্টারফেস।</p>
+        <button class="btn" onclick="startChat()">চ্যাট শুরু করুন</button>
+    </div>
+
+    <div id="chat-container">
+        <div class="chat-box" id="chat-box">
+            <div class="message ai-message">হ্যালো! আমি আপনাকে কীভাবে সাহায্য করতে পারি?</div>
+        </div>
+        <div class="input-area">
+            <input type="text" id="message-input" placeholder="আপনার বার্তা লিখুন...">
+            <button onclick="sendMessage()">পাঠান</button>
+        </div>
+    </div>
+
+    <script>
+        function startChat() {
+            document.getElementById('landing-screen').style.display = 'none';
+            document.getElementById('chat-container').style.display = 'flex';
+        }
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const chatBox = document.getElementById('chat-box');
+            const message = input.value.trim();
+            if (message) {
+                const userMessage = document.createElement('div');
+                userMessage.classList.add('message', 'user-message');
+                userMessage.textContent = message;
+                chatBox.appendChild(userMessage);
+                input.value = '';
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                setTimeout(() => {
+                    const aiMessage = document.createElement('div');
+                    aiMessage.classList.add('message', 'ai-message');
+                    aiMessage.textContent = "এটি একটি স্বয়ংক্রিয় উত্তর।";
+                    chatBox.appendChild(aiMessage);
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 1000);
+            }
+        }
+    </script>
 </body>
 </html>

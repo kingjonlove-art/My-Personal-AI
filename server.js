@@ -1,0 +1,1 @@
+require('dotenv').config(); তারপর const express = require('express'); const app = express(); app.use(express.json()); app.get('/', (req, res) => { res.json({ name: 'My Personal AI', status: 'online', message: 'Your AI server is ready!' }); }); const PORT = process.env.PORT || 3000; app.listen(PORT, '0.0.0.0', () => { console.log(My Personal AI is running on port ${PORT}); });

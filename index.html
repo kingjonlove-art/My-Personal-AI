@@ -591,9 +591,9 @@
     });
 
     // -----------------------------------------------------------------
-    // 2. GOOGLE GEMINI API CONFIGURATION (আপনার এপিআই কি এখানে বসান)
+    // 2. BACKEND API CONFIGURATION (Render Server Connection)
     // -----------------------------------------------------------------
-    const GEMINI_API_KEY = "এখানে_আপনার_জেমিনি_এপিআই_কি_বসাবেন"; 
+    const BACKEND_URL = "https://my-personal-ai-ubh0.onrender.com"; 
 
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
@@ -608,39 +608,25 @@
             recognition.stop();
         }
 
-        if (GEMINI_API_KEY && GEMINI_API_KEY !== "এখানে_আপনার_জেমিনি_এপিআই_কি_বসাবেন") {
-            try {
-                addMessage('SYSTEM', 'Consulting Gemini AI...', 'system');
-                
-                // Gemini 2.5 Flash API Endpoint
-                const url = `https://https://my-personal-ai-ubh0.onrender.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-                
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: val }]
-                        }]
-                    })
-                });
+        try {
+            addMessage('SYSTEM', 'Connecting to Personal AI Server...', 'system');
+            
+            const response = await fetch(`${BACKEND_URL}/api/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: val })
+            });
 
-                if (!response.ok) throw new Error(`API Error: ${response.status}`);
-                
-                const data = await response.json();
-                const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
-                
-                addMessage('GEMINI', reply, 'agent');
-                speakText(reply);
-            } catch (err) {
-                addMessage('ERROR', `Gemini Failed: ${err.message}`, 'error');
-                resumeListening();
-            }
-        } else {
-            // যদি এপিআই কি না দেওয়া থাকে তবে সর্তকতা দেখাবে
-            const fallbackMsg = "Please insert your valid Gemini API Key in the code to get intelligent responses.";
-            addMessage('ERROR', fallbackMsg, 'error');
-            speakText(fallbackMsg);
+            if (!response.ok) throw new Error(`Server Error: ${response.status}`);
+            
+            const data = await response.json();
+            const reply = data.reply || data.response || data.message || "No response received from server.";
+            
+            addMessage('GEMINI', reply, 'agent');
+            speakText(reply);
+        } catch (err) {
+            addMessage('ERROR', `Connection Failed: ${err.message}`, 'error');
+            resumeListening();
         }
     }
 
@@ -663,11 +649,10 @@
         }
         speechSynthesis.cancel();
         
-        // ক্লিন টেক্সট তৈরি করা (অপ্রয়োজনীয় মার্কডাউন বা কোড সরিয়ে মুখে বলার উপযোগী করা)
         const cleanText = text.replace(/[*#_`]/g, '');
         const utterance = new SpeechSynthesisUtterance(cleanText);
         
-        utterance.lang = 'en-US'; // বাংলা কথা বলালে 'bn-BD' দিতে পারেন
+        utterance.lang = 'en-US';
 
         if (viz) {
             viz.classList.add('playing');
@@ -690,7 +675,7 @@
         recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = false;
-        recognition.lang = 'en-US'; // বাংলা ভয়েস ইনপুট চাইলে 'bn-BD' করুন
+        recognition.lang = 'en-US';
 
         recognition.onstart = () => {
             isListening = true;

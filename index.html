@@ -624,7 +624,25 @@
         ctx.arc(canvas.width/2 + 30, canvas.height/2 + 10, 8, 0, Math.PI*2);
         ctx.fill();
     }
-    draw();
+    draw();// Text-to-Speech: Convert text to voice
+function speakText(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    speechSynthesis.speak(utterance);
+}
+
+// Voice Recognition: Convert voice to text
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+
+recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    console.log("You said: " + transcript);
+    // You can process the transcript and call speakText() here
+};
+
+// Start listening
+// recognition.start();
+
 
 </script>
 </body>

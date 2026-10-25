@@ -1,53 +1,15 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-
-// এনভায়রনমেন্ট ভেরিয়েবল লোড করার জন্য এটি সবার উপরে থাকতে হবে
-dotenv.config();
-
-const app = express();
-const port = process.env.PORT || 3000;
-
-// মিডলওয়্যার
-app.use(express.json());
-app.use(express.static('public'));
-
-// জেমিনি এপিআই চেক এবং ইনিশিয়ালাইজেশন
-if (!process.env.GEMINI_API_KEY) {
-  console.error("ERROR: GEMINI_API_KEY is missing in environment variables!");
-}
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
-
-// চ্যাট এপিআই এন্ডপয়েন্ট
-app.post('/api/chat', async (req, res) => {
-  try {
-    const { message } = req.body;
-
-    if (!message) {
-      return res.status(400).json({ error: 'Message is required' });
-    }
-
-    // সিস্টেম প্রম্পট বা ক্রিয়েটরের পরিচয় সেট করা
-    const systemInstruction = "তোমার নাম একটি এআই সহকারী এবং তোমার ক্রিয়েটর বা নির্মাতা হলেন ইরফান হাসনাত (Irfan Hasnat)। কেউ যদি তোমার ক্রিয়েটর সম্পর্কে জানতে চায়, তবে তুমি স্পষ্টভাবে বলবে যে তোমার ক্রিয়েটর ইরফান হাসনাত।";
-
-    const model = genAI.getGenerativeModel({ 
-      model: modelName,
-      systemInstruction: systemInstruction
-    });
-
-    const result = await model.generateContent(message);
-    const responseText = result.response.text();
-
-    res.json({ reply: responseText });
-  } catch (error) {
-    console.error('Error generating content:', error);
-    res.status(500).json({ error: 'Internal Server Error', details: error.message });
+{
+  "name": "my-personal-ai",
+  "version": "1.0.0",
+  "description": "Personal AI Assistant with Express and Gemini API",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "@google/genai": "^0.1.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
   }
-});
-
-// সার্ভার স্টার্ট
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+}

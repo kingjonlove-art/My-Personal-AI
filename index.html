@@ -653,8 +653,8 @@
 // Start the animation loop
 draw();// Text-to-Speech: Convert text to voice
 function speakText(text) {
-    const utterance = new SpeechSynthesisUtterance(text);
-    speechSynthesis.speak(utterance);
+    const utterance = new SpeechSynthesisUtterance(text);document.querySelector('.viz').classList.add('playing');
+    speechSynthesis.speak(utterance);utterance.onend = () => document.querySelector('.viz').classList.remove('playing');
 }
 
 // Voice Recognition: Convert voice to text

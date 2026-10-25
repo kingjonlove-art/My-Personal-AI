@@ -505,7 +505,7 @@
                     <div class="eyebrow">03 / SIGNAL INTERFACE</div>
                     <div class="ptitle">Live Stream & Terminal</div>
                 </div>
-                <span class="pill">GEMINI AI ACTIVE</span>
+                <span class="pill" id="server-status">CONNECTING...</span>
             </div>
             <div class="stream">
                 <div class="eyebrow" style="margin: 0 0 8px 0;">ACTIVITY</div>
@@ -526,11 +526,11 @@
                     <div class="msg system">
                         <span class="time">14:31:02</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Gemini Voice Interface ready. Speak freely...</span>
+                        <span>Gemini Neural System Initialized. Speak or type to interact.</span>
                     </div>
                 </div>
                 <div class="composer">
-                    <button class="btn mic-btn active" id="micBtn" title="Toggle Continuous Listening">MIC ON</button>
+                    <button class="btn mic-btn" id="micBtn" title="Toggle Continuous Listening">MIC OFF</button>
                     <input type="text" id="userInput" placeholder="Speak or type a command...">
                     <button class="btn" id="sendBtn">SEND</button>
                 </div>
@@ -571,6 +571,7 @@
     const sendBtn = document.getElementById('sendBtn');
     const clearBtn = document.getElementById('clear');
     const micBtn = document.getElementById('micBtn');
+    const serverStatusPill = document.getElementById('server-status');
 
     function addMessage(who, text, type) {
         const now = new Date();
@@ -591,9 +592,37 @@
     });
 
     // -----------------------------------------------------------------
-    // 2. BACKEND API CONFIGURATION (Render Server Connection)
+    // 2. BACKEND API CONFIGURATION & AUTO WAKE-UP
     // -----------------------------------------------------------------
     const BACKEND_URL = "https://my-personal-ai-ubh0.onrender.com"; 
+
+    // রেন্ডার ফ্রি সার্ভার জাগিয়ে তোলার ব্যাকগ্রাউন্ড পিং
+    async function wakeUpServer() {
+        try {
+            serverStatusPill.textContent = "WAKING SERVER...";
+            serverStatusPill.style.color = "var(--gold)";
+            
+            const response = await fetch(`${BACKEND_URL}/api/chat`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: "ping" })
+            });
+
+            if (response.ok) {
+                serverStatusPill.textContent = "SERVER ONLINE";
+                serverStatusPill.style.color = "var(--lime)";
+            } else {
+                serverStatusPill.textContent = "SERVER STANDBY";
+            }
+        } catch (err) {
+            serverStatusPill.textContent = "COLD STARTING...";
+            serverStatusPill.style.color = "var(--red)";
+            // ৩০ সেকেন্ড পরে আবার ট্রাই করবে
+            setTimeout(wakeUpServer, 15000);
+        }
+    }
+    // পেজ লোড হতেই সার্ভারকে ব্যাকগ্রাউন্ডে পিং পাঠানো
+    wakeUpServer();
 
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
@@ -604,7 +633,7 @@
 
         if (isListening && recognition) {
             isAutoRestart = false;
-            recognition.stop();
+            try { recognition.stop(); } catch(e) {}
         }
 
         try {
@@ -617,16 +646,18 @@
             });
 
             if (!response.ok) {
-                throw new Error(`Server status: ${response.status}`);
+                throw new Error(`Server Status ${response.status}`);
             }
             
             const data = await response.json();
             const reply = data.reply || data.response || data.message || "No response received from server.";
             
             addMessage('GEMINI', reply, 'agent');
+            serverStatusPill.textContent = "SERVER ONLINE";
+            serverStatusPill.style.color = "var(--lime)";
             speakText(reply);
         } catch (err) {
-            addMessage('ERROR', `Connection Failed: ${err.message}. (Server might be waking up, please try again)`, 'error');
+            addMessage('ERROR', `Connection Failed: ${err.message}. (Render Free Server is waking up, please wait 30 seconds and try again)`, 'error');
             resumeListening();
         }
     }
@@ -637,11 +668,11 @@
     });
 
     // -----------------------------------------------------------------
-    // 3. CONTINUOUS VOICE RECOGNITION & SPEECH SYNTHESIS
+    // 3. ENHANCED VOICE RECOGNITION & SPEECH SYNTHESIS
     // -----------------------------------------------------------------
     let recognition = null;
     let isListening = false;
-    let isAutoRestart = true;
+    let isAutoRestart = false;
 
     function speakText(text) {
         if (!soundEnabled || !('speechSynthesis' in window)) {
@@ -653,11 +684,11 @@
         const cleanText = text.replace(/[*#_`]/g, '');
         const utterance = new SpeechSynthesisUtterance(cleanText);
         
-        utterance.lang = 'en-US';
+        // বাংলা কি ইংরেজি টেক্সট তা ডিটেক্ট করে ভয়েস সেট করা
+        const hasBangla = /[\u0980-\u09FF]/.test(cleanText);
+        utterance.lang = hasBangla ? 'bn-BD' : 'en-US';
 
-        if (viz) {
-            viz.classList.add('playing');
-        }
+        if (viz) viz.classList.add('playing');
 
         utterance.onend = () => {
             if (viz) viz.classList.remove('playing');
@@ -674,9 +705,9 @@
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.continuous = true;
+        recognition.continuous = false; // মোবাইলের স্থায়িত্বের জন্য false রাখা নিরাপদ
         recognition.interimResults = false;
-        recognition.lang = 'en-US';
+        recognition.lang = 'bn-BD'; // বাংলা ইনপুট ভালো রিড করার জন্য
 
         recognition.onstart = () => {
             isListening = true;
@@ -685,7 +716,7 @@
         };
 
         recognition.onresult = (event) => {
-            const transcript = event.results[event.results.length - 1][0].transcript.trim();
+            const transcript = event.results[0][0].transcript.trim();
             if (transcript) {
                 userInput.value = transcript;
                 handleSendMessage(transcript);
@@ -694,6 +725,9 @@
 
         recognition.onerror = (event) => {
             console.log("Mic error: ", event.error);
+            isListening = false;
+            micBtn.classList.remove('active');
+            micBtn.textContent = "MIC OFF";
         };
 
         recognition.onend = () => {
@@ -703,26 +737,20 @@
             
             if (isAutoRestart) {
                 setTimeout(() => {
-                    try { recognition.start(); } catch(e) {}
-                }, 500);
+                    try { 
+                        if(isAutoRestart) recognition.start(); 
+                    } catch(e) {}
+                }, 400);
             }
         };
 
-        setTimeout(() => {
-            try {
-                isAutoRestart = true;
-                recognition.start();
-            } catch(e) {}
-        }, 1000);
-
     } else {
         micBtn.disabled = true;
-        micBtn.title = "Speech recognition not supported.";
+        micBtn.title = "Speech recognition not supported in this browser.";
     }
 
     function resumeListening() {
-        if (recognition && !isListening) {
-            isAutoRestart = true;
+        if (recognition && !isListening && isAutoRestart) {
             try { recognition.start(); } catch(e) {}
         }
     }
@@ -731,7 +759,7 @@
         if (!recognition) return;
         if (isListening) {
             isAutoRestart = false;
-            recognition.stop();
+            try { recognition.stop(); } catch(e) {}
         } else {
             isAutoRestart = true;
             try { recognition.start(); } catch (e) {}

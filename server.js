@@ -64,3 +64,38 @@ ${task}`
 app.listen(PORT, () => {
   console.log(`My Personal AI is running on port ${PORT}`);
 });
+import express from 'express';
+import { GoogleGenAI } from '@google/genai';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+app.post('/api/chat', async (req, res) => {
+    try {
+        const { prompt } = req.body;
+        if (!prompt) {
+             return res.status(400).json({ error: "Prompt is required" });
+        }
+
+        const response = await ai.models.generateContent({
+            model: "gemini-3.7-flash",
+            contents: prompt,
+        });
+
+        res.json({ response: response.text });
+    } catch (error) {
+        console.error("Error generating content:", error);
+        res.status(500).json({ error: "Failed to generate response" });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

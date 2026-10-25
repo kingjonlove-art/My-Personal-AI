@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MY PERSONAL AI - Neural Command Center</title>
+    <title>MY PERSONAL AI - Continuous Voice Command</title>
     <!-- Three.js Library for 3D Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -138,7 +138,6 @@
             color: var(--cyan);
         }
 
-        /* Mobile Responsive Grid */
         .layout {
             display: grid;
             grid-template-columns: 1fr 1.28fr 1fr;
@@ -394,9 +393,9 @@
         }
 
         .mic-btn.active {
-            border-color: var(--red) !important;
-            color: var(--red) !important;
-            box-shadow: 0 0 10px rgba(255, 102, 137, 0.4);
+            border-color: var(--lime) !important;
+            color: var(--lime) !important;
+            box-shadow: 0 0 12px rgba(183, 255, 129, 0.4);
         }
 
         .foot {
@@ -422,11 +421,11 @@
             </div>
         </div>
         <div class="statusbar">
-            <span class="live" id="sys-status">SYSTEM ONLINE</span>
+            <span class="live" id="sys-status">VOICE READY</span>
             <span>LATENCY <b id="lat">28</b>ms</span>
             <span>MEMORY <b id="mem">64</b>%</span>
             <span id="clock">--:--:--</span>
-            <button class="btn" id="sound">SOUND OFF</button>
+            <button class="btn" id="sound">SOUND ON</button>
         </div>
     </header>
 
@@ -506,7 +505,7 @@
                     <div class="eyebrow">03 / SIGNAL INTERFACE</div>
                     <div class="ptitle">Live Stream & Terminal</div>
                 </div>
-                <span class="pill">ONLINE</span>
+                <span class="pill">AUTO-LISTEN ON</span>
             </div>
             <div class="stream">
                 <div class="eyebrow" style="margin: 0 0 8px 0;">ACTIVITY</div>
@@ -527,12 +526,12 @@
                     <div class="msg system">
                         <span class="time">14:31:02</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Core initialized. Awaiting user input.</span>
+                        <span>Continuous Voice Mode active. Start speaking...</span>
                     </div>
                 </div>
                 <div class="composer">
-                    <button class="btn mic-btn" id="micBtn" title="Toggle Voice Recognition">MIC</button>
-                    <input type="text" id="userInput" placeholder="Send a command...">
+                    <button class="btn mic-btn active" id="micBtn" title="Toggle Continuous Listening">MIC ON</button>
+                    <input type="text" id="userInput" placeholder="Listening automatically...">
                     <button class="btn" id="sendBtn">SEND</button>
                 </div>
             </div>
@@ -541,7 +540,7 @@
 
     <footer class="foot">
         <span>STONIC AI / INTERFACE CONCEPT</span>
-        <span>PRODUCTION READY</span>
+        <span>CONTINUOUS CONVERSATION READY</span>
         <span>DESIGNED FOR CLARITY & CONTROL</span>
     </footer>
 </div>
@@ -557,7 +556,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    let soundEnabled = false;
+    let soundEnabled = true; // ডিফল্টভাবে ভয়েস আউটপুট অন রাখা হয়েছে
     const soundBtn = document.getElementById('sound');
     soundBtn.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
@@ -597,12 +596,18 @@
     const API_ENDPOINT = ""; 
     const API_KEY = "";
 
-    async function handleSendMessage() {
-        const val = userInput.value.trim();
+    async function handleSendMessage(customText = null) {
+        const val = customText || userInput.value.trim();
         if (!val) return;
 
         addMessage('USER', val, 'system');
         userInput.value = '';
+
+        // এআই উত্তর বলার সময় যাতে লিসেনিং সাময়িকভাবে বন্ধ থাকে (যাতে নিজের কথা নিজে না শুনে)
+        if (isListening && recognition) {
+            isAutoRestart = false;
+            recognition.stop();
+        }
 
         if (API_ENDPOINT !== "") {
             try {
@@ -624,84 +629,130 @@
                 speakText(reply);
             } catch (err) {
                 addMessage('ERROR', `Backend Failed: ${err.message}`, 'error');
+                resumeListening();
             }
         } else {
+            // সিমুলেটেড রেসপন্স (আপনার প্রম্পট অনুযায়ী উত্তর দিয়ে আবার লিসেনিং শুরু করবে)
             setTimeout(() => {
-                const textReply = 'Acknowledged. Request processed successfully.';
+                const textReply = `I heard you say: "${val}". How else can I help you?`;
                 addMessage('CODER', textReply, 'agent');
                 speakText(textReply);
             }, 100);
         }
     }
 
-    sendBtn.addEventListener('click', handleSendMessage);
+    sendBtn.addEventListener('click', () => handleSendMessage());
     userInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') handleSendMessage();
     });
 
     // -----------------------------------------------------------------
-    // 3. VOICE SPEECH RECOGNITION & SPEECH SYNTHESIS
+    // 3. CONTINUOUS VOICE RECOGNITION & SPEECH SYNTHESIS
     // -----------------------------------------------------------------
     let recognition = null;
     let isListening = false;
+    let isAutoRestart = true;
 
     function speakText(text) {
-        if (!soundEnabled || !('speechSynthesis' in window)) return;
+        if (!soundEnabled || !('speechSynthesis' in window)) {
+            resumeListening();
+            return;
+        }
         speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
+        
+        // ভাষা সেট করতে পারেন (যেমন বাংলা চাইলে 'bn-BD' বা ইংরেজি চাইলে 'en-US')
+        utterance.lang = 'en-US'; 
+
         if (viz) {
             viz.classList.add('playing');
-            utterance.onend = () => viz.classList.remove('playing');
-            utterance.onerror = () => viz.classList.remove('playing');
         }
+
+        // কথা বলা শেষ হলে আবার স্বয়ংক্রিয়ভাবে লিসেনিং চালু হবে
+        utterance.onend = () => {
+            if (viz) viz.classList.remove('playing');
+            resumeListening();
+        };
+        utterance.onerror = () => {
+            if (viz) viz.classList.remove('playing');
+            resumeListening();
+        };
+
         speechSynthesis.speak(utterance);
     }
 
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.continuous = false;
+        recognition.continuous = true; // কন্টিনিউয়াস মোড অন রাখা হয়েছে যাতে বারবার বন্ধ না হয়
         recognition.interimResults = false;
-        recognition.lang = 'en-US';
+        recognition.lang = 'en-US'; // বাংলা বলার জন্য 'bn-BD' দিতে পারেন
 
         recognition.onstart = () => {
             isListening = true;
             micBtn.classList.add('active');
-            addMessage('SYSTEM', 'Listening for voice command...', 'system');
+            micBtn.textContent = "MIC ON";
         };
 
         recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript;
-            userInput.value = transcript;
-            handleSendMessage();
+            const transcript = event.results[event.results.length - 1][0].transcript.trim();
+            if (transcript) {
+                userInput.value = transcript;
+                handleSendMessage(transcript);
+            }
         };
 
         recognition.onerror = (event) => {
-            addMessage('ERROR', `Mic error: ${event.error}`, 'error');
-            stopListening();
+            console.log("Mic error or no speech detected: ", event.error);
         };
 
-        recognition.onend = () => stopListening();
+        recognition.onend = () => {
+            isListening = false;
+            micBtn.classList.remove('active');
+            micBtn.textContent = "MIC OFF";
+            
+            // যদি ইউজার নিজে বন্ধ না করে থাকেন, তবে স্বয়ংক্রিয়ভাবে আবার লিসেনিং শুরু হবে
+            if (isAutoRestart) {
+                setTimeout(() => {
+                    try { recognition.start(); } catch(e) {}
+                }, 500);
+            }
+        };
+
+        // পেজ লোড হওয়ার সাথে সাথেই অটো-লিসেনিং শুরু করে দেওয়া
+        setTimeout(() => {
+            try {
+                isAutoRestart = true;
+                recognition.start();
+            } catch(e) {
+                console.log("Auto start blocked by browser policy. Click MIC to start.");
+            }
+        }, 1000);
+
     } else {
         micBtn.disabled = true;
         micBtn.title = "Speech recognition not supported in browser.";
     }
 
-    function stopListening() {
-        isListening = false;
-        micBtn.classList.remove('active');
+    function resumeListening() {
+        if (recognition && !isListening) {
+            isAutoRestart = true;
+            try {
+                recognition.start();
+            } catch(e) {}
+        }
     }
 
     micBtn.addEventListener('click', () => {
         if (!recognition) return;
         if (isListening) {
+            isAutoRestart = false;
             recognition.stop();
         } else {
+            isAutoRestart = true;
             try {
                 recognition.start();
-            } catch (e) {
-                stopListening();
-            }
+            } catch (e) {}
         }
     });
 

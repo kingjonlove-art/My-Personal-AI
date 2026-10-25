@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-// এনভায়রনমেন্ট ভেরিয়েবল কনফিগারেশন
+// এনভায়রনমেন্ট ভেরিয়েবল লোড করার জন্য এটি সবার উপরে থাকতে হবে
 dotenv.config();
 
 const app = express();
@@ -10,9 +10,13 @@ const port = process.env.PORT || 3000;
 
 // মিডলওয়্যার
 app.use(express.json());
-app.use(express.static('public')); // ফ্রন্টএন্ড ফাইল রাখার জন্য (যদি public ফোল্ডার থাকে)
+app.use(express.static('public'));
 
-// জেমিনি এপিআই ইনিশিয়ালাইজেশন
+// জেমিনি এপিআই চেক এবং ইনিশিয়ালাইজেশন
+if (!process.env.GEMINI_API_KEY) {
+  console.error("ERROR: GEMINI_API_KEY is missing in environment variables!");
+}
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
 

@@ -526,7 +526,7 @@
                     <div class="msg system">
                         <span class="time">14:31:02</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Gemini Neural System Initialized. Speak or type to interact.</span>
+                        <span>Gemini Neural System Initialized. Click MIC ON to speak.</span>
                     </div>
                 </div>
                 <div class="composer">
@@ -596,7 +596,6 @@
     // -----------------------------------------------------------------
     const BACKEND_URL = "https://my-personal-ai-ubh0.onrender.com"; 
 
-    // রেন্ডার ফ্রি সার্ভার জাগিয়ে তোলার ব্যাকগ্রাউন্ড পিং
     async function wakeUpServer() {
         try {
             serverStatusPill.textContent = "WAKING SERVER...";
@@ -617,11 +616,9 @@
         } catch (err) {
             serverStatusPill.textContent = "COLD STARTING...";
             serverStatusPill.style.color = "var(--red)";
-            // ৩০ সেকেন্ড পরে আবার ট্রাই করবে
             setTimeout(wakeUpServer, 15000);
         }
     }
-    // পেজ লোড হতেই সার্ভারকে ব্যাকগ্রাউন্ডে পিং পাঠানো
     wakeUpServer();
 
     async function handleSendMessage(customText = null) {
@@ -630,11 +627,6 @@
 
         addMessage('USER', val, 'system');
         userInput.value = '';
-
-        if (isListening && recognition) {
-            isAutoRestart = false;
-            try { recognition.stop(); } catch(e) {}
-        }
 
         try {
             addMessage('SYSTEM', 'Connecting to Personal AI Server...', 'system');
@@ -658,7 +650,6 @@
             speakText(reply);
         } catch (err) {
             addMessage('ERROR', `Connection Failed: ${err.message}. (Render Free Server is waking up, please wait 30 seconds and try again)`, 'error');
-            resumeListening();
         }
     }
 
@@ -668,23 +659,19 @@
     });
 
     // -----------------------------------------------------------------
-    // 3. ENHANCED VOICE RECOGNITION & SPEECH SYNTHESIS
+    // 3. CONTROLLED VOICE RECOGNITION (Manual Toggle Only)
     // -----------------------------------------------------------------
     let recognition = null;
     let isListening = false;
-    let isAutoRestart = false;
+    let manualStop = false;
 
     function speakText(text) {
-        if (!soundEnabled || !('speechSynthesis' in window)) {
-            resumeListening();
-            return;
-        }
+        if (!soundEnabled || !('speechSynthesis' in window)) return;
         speechSynthesis.cancel();
         
         const cleanText = text.replace(/[*#_`]/g, '');
         const utterance = new SpeechSynthesisUtterance(cleanText);
         
-        // বাংলা কি ইংরেজি টেক্সট তা ডিটেক্ট করে ভয়েস সেট করা
         const hasBangla = /[\u0980-\u09FF]/.test(cleanText);
         utterance.lang = hasBangla ? 'bn-BD' : 'en-US';
 
@@ -692,11 +679,9 @@
 
         utterance.onend = () => {
             if (viz) viz.classList.remove('playing');
-            resumeListening();
         };
         utterance.onerror = () => {
             if (viz) viz.classList.remove('playing');
-            resumeListening();
         };
 
         speechSynthesis.speak(utterance);
@@ -705,18 +690,19 @@
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.continuous = false; // মোবাইলের স্থায়িত্বের জন্য false রাখা নিরাপদ
+        recognition.continuous = true; // একটানা শোনার জন্য true করা হলো
         recognition.interimResults = false;
-        recognition.lang = 'bn-BD'; // বাংলা ইনপুট ভালো রিড করার জন্য
+        recognition.lang = 'bn-BD'; // বাংলা ইনপুটের জন্য
 
         recognition.onstart = () => {
             isListening = true;
+            manualStop = false;
             micBtn.classList.add('active');
             micBtn.textContent = "MIC ON";
         };
 
         recognition.onresult = (event) => {
-            const transcript = event.results[0][0].transcript.trim();
+            const transcript = event.results[event.results.length - 1][0].transcript.trim();
             if (transcript) {
                 userInput.value = transcript;
                 handleSendMessage(transcript);
@@ -725,22 +711,16 @@
 
         recognition.onerror = (event) => {
             console.log("Mic error: ", event.error);
-            isListening = false;
-            micBtn.classList.remove('active');
-            micBtn.textContent = "MIC OFF";
         };
 
         recognition.onend = () => {
-            isListening = false;
-            micBtn.classList.remove('active');
-            micBtn.textContent = "MIC OFF";
-            
-            if (isAutoRestart) {
-                setTimeout(() => {
-                    try { 
-                        if(isAutoRestart) recognition.start(); 
-                    } catch(e) {}
-                }, 400);
+            // যদি ব্যবহারকারী নিজে থেকে বন্ধ না করে থাকেন, তবে এটি নিজে নিজেই রিস্টার্ট হয়ে সচল থাকবে
+            if (isListening && !manualStop) {
+                try { recognition.start(); } catch(e) {}
+            } else {
+                isListening = false;
+                micBtn.classList.remove('active');
+                micBtn.textContent = "MIC OFF";
             }
         };
 
@@ -749,20 +729,21 @@
         micBtn.title = "Speech recognition not supported in this browser.";
     }
 
-    function resumeListening() {
-        if (recognition && !isListening && isAutoRestart) {
-            try { recognition.start(); } catch(e) {}
-        }
-    }
-
+    // শুধুমাত্র যখন মিক বাটনে ক্লিক করবেন, তখনই অন বা অফ হবে
     micBtn.addEventListener('click', () => {
         if (!recognition) return;
         if (isListening) {
-            isAutoRestart = false;
+            manualStop = true;
+            isListening = false;
             try { recognition.stop(); } catch(e) {}
+            micBtn.classList.remove('active');
+            micBtn.textContent = "MIC OFF";
         } else {
-            isAutoRestart = true;
+            manualStop = false;
+            isListening = true;
             try { recognition.start(); } catch (e) {}
+            micBtn.classList.add('active');
+            micBtn.textContent = "MIC ON";
         }
     });
 

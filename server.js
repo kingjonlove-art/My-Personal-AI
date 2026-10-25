@@ -60,10 +60,6 @@ ${task}`
     });
   }
 });
-
-app.listen(PORT, () => {
-  console.log(`My Personal AI is running on port ${PORT}`);
-});
 import express from 'express';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';

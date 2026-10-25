@@ -1,812 +1,631 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>STONIC AI — Neural Command</title>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-
-:root{
-  --bg:#070a10;
-  --panel:#0d121c;
-  --panel2:#101826;
-  --line:#202c3d;
-  --muted:#8391a7;
-  --text:#eaf2ff;
-  --cyan:#5cf4e8;
-  --violet:#a68bff;
-  --lime:#b7ff81;
-  --red:#ff6689;
-}
-
-*{box-sizing:border-box}
-
-body{
-  margin:0;
-  background:radial-gradient(
-    ellipse at 48% -20%,
-    #17283c 0%,
-    var(--bg) 55%
-  );
-  color:var(--text);
-  font-family:'Space Grotesk',sans-serif;
-  min-height:100vh;
-}
-
-body:before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background-image:
-    linear-gradient(#17243735 1px,transparent 1px),
-    linear-gradient(90deg,#17243735 1px,transparent 1px);
-  background-size:44px 44px;
-  mask-image:linear-gradient(to bottom,#0007,transparent 88%);
-}
-
-.app{
-  max-width:1500px;
-  margin:auto;
-  padding:22px;
-  position:relative;
-}
-
-.top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  margin-bottom:20px;
-}
-
-.brand{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.mark{
-  width:42px;
-  height:42px;
-  border:1px solid var(--cyan);
-  border-radius:13px;
-  display:grid;
-  place-items:center;
-  color:var(--cyan);
-  font-weight:700;
-  box-shadow:0 0 28px #5cf4e822;
-}
-
-.brand h1{
-  font-size:18px;
-  letter-spacing:.17em;
-  margin:0;
-}
-
-.brand small{
-  display:block;
-  color:var(--muted);
-  font:10px 'DM Mono';
-  letter-spacing:.12em;
-  margin-top:4px;
-}
-
-.statusbar{
-  display:flex;
-  align-items:center;
-  gap:18px;
-  font:11px 'DM Mono';
-  color:var(--muted);
-}
-
-.live{color:var(--lime)}
-
-.live:before{
-  content:"";
-  display:inline-block;
-  width:6px;
-  height:6px;
-  background:var(--lime);
-  border-radius:50%;
-  margin-right:7px;
-  box-shadow:0 0 12px var(--lime);
-}
-
-button,input{font:inherit}
-button{cursor:pointer}
-
-.btn{
-  border:1px solid #2a3b4e;
-  background:#111b29;
-  color:var(--text);
-  border-radius:10px;
-  padding:10px 13px;
-  font-size:12px;
-  transition:.2s;
-}
-
-.btn:hover{
-  border-color:var(--cyan);
-  transform:translateY(-1px);
-}
-
-.btn.primary{
-  background:var(--cyan);
-  color:#041014;
-  border-color:var(--cyan);
-  font-weight:700;
-}
-
-.layout{
-  display:grid;
-  grid-template-columns:1fr 1.28fr 1fr;
-  gap:14px;
-}
-
-.panel{
-  background:linear-gradient(145deg,#101722ed,#0a1019f2);
-  border:1px solid var(--line);
-  border-radius:17px;
-  overflow:hidden;
-  min-width:0;
-  box-shadow:0 15px 50px #0003;
-}
-
-.ph{
-  padding:16px 17px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.eyebrow{
-  font:10px 'DM Mono';
-  color:var(--muted);
-  letter-spacing:.13em;
-}
-
-.ptitle{
-  font-size:14px;
-  font-weight:600;
-  margin-top:5px;
-}
-
-.pill{
-  font:10px 'DM Mono';
-  color:var(--cyan);
-  background:#5cf4e812;
-  border:1px solid #5cf4e83a;
-  padding:5px 8px;
-  border-radius:99px;
-}
-
-/* BRAIN PANEL */
-
-.brain-area{padding:16px}
-
-.brainbox{
-  position:relative;
-  height:270px;
-  border:1px solid #1b3041;
-  border-radius:13px;
-  overflow:hidden;
-  background:radial-gradient(
-    ellipse,
-    #112b38 0%,
-    #09121d 65%
-  );
-}
-
-canvas{
-  width:100%;
-  height:100%;
-  display:block;
-}
-
-.brain-label{
-  position:absolute;
-  left:14px;
-  bottom:13px;
-  font:10px 'DM Mono';
-  color:#92abbc;
-}
-
-.node-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:9px;
-  margin-top:12px;
-}
-
-.node{
-  padding:12px;
-  background:#0b121c;
-  border:1px solid var(--line);
-  border-radius:11px;
-  text-align:left;
-  color:var(--text);
-}
-
-.node b{
-  display:block;
-  font-size:12px;
-  margin-bottom:4px;
-}
-
-.node span{
-  font:10px 'DM Mono';
-  color:var(--muted);
-}
-
-.node.active{
-  border-color:var(--cyan);
-  background:#10212a;
-}
-
-.context{
-  margin-top:12px;
-  padding:13px;
-  border:1px solid var(--line);
-  border-radius:11px;
-  background:#0a1018;
-}
-
-.context strong{font-size:12px}
-
-.context p{
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.55;
-  margin:6px 0 0;
-}
-
-.core-actions{
-  display:flex;
-  gap:8px;
-  margin-top:12px;
-}
-
-.core-actions .btn{flex:1}
-
-.danger{
-  color:var(--red);
-  border-color:#79344a;
-}
-
-/* AGENT TOWN */
-
-.town{padding:15px}
-
-.towncanvas{
-  height:286px;
-  border:1px solid #263b46;
-  border-radius:13px;
-  overflow:hidden;
-  background:#0b1720;
-  position:relative;
-}
-
-.towncanvas canvas{image-rendering:pixelated}
-
-.town-foot{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-top:12px;
-}
-
-.legend{
-  font:10px 'DM Mono';
-  color:var(--muted);
-}
-
-.agent-list{
-  margin-top:15px;
-  display:grid;
-  gap:8px;
-}
-
-.agent{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px;
-  background:#0a111a;
-  border:1px solid var(--line);
-  border-radius:10px;
-}
-
-.avatar{
-  width:32px;
-  height:32px;
-  display:grid;
-  place-items:center;
-  background:#182c39;
-  border-radius:9px;
-  color:var(--cyan);
-  font-size:12px;
-}
-
-.agent-info{flex:1}
-
-.agent-info b{
-  font-size:11px;
-  display:block;
-}
-
-.agent-info small{
-  font:10px 'DM Mono';
-  color:var(--muted);
-}
-
-.dot{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:var(--lime);
-}
-
-/* STREAM */
-
-.stream{padding:15px}
-
-.viz{
-  height:85px;
-  background:#0a1119;
-  border:1px solid var(--line);
-  border-radius:12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:4px;
-  padding:10px;
-  overflow:hidden;
-}
-
-.bar{
-  width:5px;
-  border-radius:5px;
-  background:linear-gradient(to top,var(--violet),var(--cyan));
-  height:15%;
-  animation:wave 1s ease-in-out infinite alternate;
-  animation-play-state:paused;
-}
-
-.viz.playing .bar{animation-play-state:running}
-
-@keyframes wave{
-  from{height:12%}
-  to{height:90%}
-}
-
-.streamhead{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin:15px 0 8px;
-}
-
-.terminal{
-  height:310px;
-  overflow:auto;
-  background:#070c12;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:13px;
-  font:11px/1.7 'DM Mono';
-  color:#b4c6d9;
-}
-
-.msg{margin-bottom:10px}
-.msg .who{color:var(--cyan)}
-.msg .time{color:#526176;font-size:9px}
-
-.msg p{
-  margin:3px 0;
-  color:#c8d5e4;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-}
-
-.composer{
-  display:flex;
-  gap:7px;
-  margin-top:10px;
-}
-
-.composer input{
-  width:100%;
-  min-width:0;
-  background:#080e16;
-  border:1px solid #29374a;
-  border-radius:10px;
-  padding:12px;
-  color:var(--text);
-  outline:none;
-}
-
-.composer input:focus{border-color:var(--cyan)}
-
-.composer button{
-  border:0;
-  border-radius:10px;
-  background:var(--cyan);
-  color:#031313;
-  font-weight:700;
-  padding:0 15px;
-}
-
-.foot{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  color:#586a80;
-  font:10px 'DM Mono';
-  padding:17px 2px;
-}
-
-.toast{
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translate(-50%,20px);
-  opacity:0;
-  background:#172632;
-  border:1px solid #355466;
-  padding:11px 15px;
-  border-radius:10px;
-  font-size:12px;
-  transition:.25s;
-  pointer-events:none;
-}
-
-.toast.show{
-  opacity:1;
-  transform:translate(-50%,0);
-}
-
-/* RESPONSIVE */
-
-@media(max-width:1050px){
-  .layout{grid-template-columns:1fr 1fr}
-  .layout .right{grid-column:1/-1}
-  .terminal{height:230px}
-}
-
-@media(max-width:650px){
-  .app{padding:13px}
-  .top{
-    align-items:flex-start;
-    flex-direction:column;
-  }
-  .statusbar{
-    width:100%;
-    justify-content:space-between;
-    gap:8px;
-    flex-wrap:wrap;
-  }
-  .layout{grid-template-columns:1fr}
-  .layout .right{grid-column:auto}
-  .brainbox{height:240px}
-  .towncanvas{height:260px}
-  .foot{flex-direction:column}
-}
-</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MY PERSONAL AI - Neural Command</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Orbitron:wght@400;500;700&family=Space+Grotesk:wght@400;600&display=swap');
+
+        :root {
+            --bg: #070a10;
+            --panel: #0d121c;
+            --panel2: #101826;
+            --line: #202c3d;
+            --muted: #8391a7;
+            --text: #eaf2ff;
+            --cyan: #5cf4e8;
+            --violet: #a68bff;
+            --lime: #b7ff81;
+            --red: #ff6689;
+            --gold: #ffd700;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(ellipse at 48% -20%, #17283c 0%, var(--bg) 55%);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            min-height: 100vh;
+        }
+
+        body:before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: linear-gradient(#17243735 1px, transparent 1px), linear-gradient(90deg, #17243735 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: linear-gradient(to bottom, #0007, transparent 88%);
+        }
+
+        .app {
+            max-width: 1500px;
+            margin: auto;
+            padding: 22px;
+            position: relative;
+        }
+
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mark {
+            width: 42px;
+            height: 42px;
+            border: 1px solid var(--cyan);
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            color: var(--cyan);
+            font-weight: 700;
+            box-shadow: 0 0 28px #5cf4e822;
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            letter-spacing: .17em;
+            margin: 0;
+        }
+
+        .brand small {
+            display: block;
+            color: var(--muted);
+            font: 10px 'DM Mono';
+            letter-spacing: .12em;
+            margin-top: 4px;
+        }
+
+        .statusbar {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            font: 11px 'DM Mono';
+            color: var(--muted);
+        }
+
+        .live {
+            color: var(--lime);
+        }
+
+        .live:before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background: var(--lime);
+            border-radius: 50%;
+            margin-right: 7px;
+            box-shadow: 0 0 12px var(--lime);
+        }
+
+        button, input {
+            font: inherit;
+        }
+
+        .btn {
+            border: 1px solid #2a3b4e;
+            background: #111b29;
+            color: var(--text);
+            border-radius: 10px;
+            padding: 10px 13px;
+            font-size: 12px;
+            transition: .2s;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: var(--line);
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 1.28fr 1fr;
+            gap: 14px;
+        }
+
+        .panel {
+            background: linear-gradient(145deg, #10172677 0%, var(--panel) 100%);
+            border: 1px solid var(--line);
+            border-radius: 17px;
+            overflow: hidden;
+            min-width: 0;
+            box-shadow: 0 15px 50px #0003;
+        }
+
+        .ph {
+            padding: 16px 17px;
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .eyebrow {
+            font: 10px 'DM Mono';
+            color: var(--muted);
+            letter-spacing: .13em;
+        }
+
+        .ptitle {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .pill {
+            font: 10px 'DM Mono';
+            color: var(--cyan);
+            background: #5cf4e812;
+            padding: 5px 8px;
+            border-radius: 99px;
+            border: 1px solid #5cf4e83a;
+        }
+
+        .brain-area {
+            padding: 16px;
+        }
+
+        .brainbox {
+            position: relative;
+            height: 270px;
+            border: 1px solid #1b3041;
+            border-radius: 13px;
+            overflow: hidden;
+            background: radial-gradient(ellipse, #112b38 0%, #09121d 65%);
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .brain-label {
+            position: absolute;
+            left: 14px;
+            bottom: 13px;
+            font: 10px 'DM Mono';
+            color: #92abbc;
+        }
+
+        .node-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 9px;
+            margin-top: 12px;
+        }
+
+        button.node {
+            background: var(--panel2);
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            padding: 13px;
+            text-align: left;
+            transition: .2s;
+            cursor: pointer;
+        }
+
+        button.node b {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        button.node span {
+            font: 10px 'DM Mono';
+            color: var(--muted);
+        }
+
+        button.node.active {
+            border-color: var(--cyan);
+            background: #5cf4e80a;
+        }
+
+        button.node.active b {
+            color: var(--cyan);
+        }
+
+        .agent-list {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .agent {
+            background: var(--panel2);
+            border: 1px solid var(--line);
+            border-radius: 13px;
+            padding: 11px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-weight: 700;
+        }
+
+        .agent-info small {
+            display: block;
+            font: 10px 'DM Mono';
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+
+        .stream {
+            padding: 15px;
+        }
+
+        .viz {
+            height: 85px;
+            background: #0a1119;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .bar {
+            width: 5px;
+            border-radius: 5px;
+            background: linear-gradient(to top, var(--cyan), var(--violet));
+            height: 15px;
+            animation: wave 1s ease-in-out infinite alternate;
+            animation-play-state: paused;
+        }
+
+        .viz.playing .bar {
+            animation-play-state: running;
+        }
+
+        .terminal {
+            height: 310px;
+            background: #060a10;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 13px;
+            font: 11px 'DM Mono';
+            overflow: auto;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .msg .time {
+            color: var(--muted);
+            margin-right: 8px;
+        }
+
+        .msg .who {
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        .msg.system {
+            color: var(--cyan);
+        }
+
+        .msg.agent {
+            color: var(--violet);
+        }
+
+        .composer {
+            margin-top: 14px;
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: var(--panel2);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text);
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--cyan);
+        }
+
+        .composer button {
+            border: 0;
+            border-radius: 10px;
+            background: var(--cyan);
+            color: #031313;
+            font-weight: 700;
+            padding: 0 15px;
+        }
+
+        .foot {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--muted);
+            font: 10px 'DM Mono';
+            padding: 17px 2px;
+        }
+    </style>
 </head>
-
 <body>
+
 <div class="app">
-
-<header class="top">
-  <div class="brand">
-    <div class="mark">S/</div>
-    <div>
-      <h1>STONIC <span style="color:var(--cyan)">AI</span></h1>
-      <small>NEURAL COMMAND CENTER · BUILD 02.6</small>
-    </div>
-  </div>
-
-  <div class="statusbar">
-    <span class="live">SYSTEM ONLINE</span>
-    <span>LATENCY <b id="lat">28</b>ms</span>
-    <span>MEMORY <b id="mem">64</b>%</span>
-    <span id="clock">--:--:--</span>
-    <button class="btn" id="sound">♫ SOUND OFF</button>
-  </div>
-</header>
-
-<main class="layout">
-
-<!-- LEFT: NEURAL CORE -->
-
-<section class="panel">
-  <div class="ph">
-    <div>
-      <div class="eyebrow">01 / COGNITION CORE</div>
-      <div class="ptitle">Neural Network</div>
-    </div>
-    <span class="pill">● STABLE</span>
-  </div>
-
-  <div class="brain-area">
-
-    <div class="brainbox">
-      <canvas id="brain"></canvas>
-      <div class="brain-label">
-        NEURAL FIELD // LIVE SIMULATION
-      </div>
-    </div>
-
-    <div class="node-grid">
-      <button class="node active" data-name="Memory">
-        <b>◈ Memory</b>
-        <span>Context store · ready</span>
-      </button>
-
-      <button class="node" data-name="Skills">
-        <b>⌘ Skills</b>
-        <span>12 modules loaded</span>
-      </button>
-
-      <button class="node" data-name="Soul">
-        <b>✧ Soul</b>
-        <span>Persona framework</span>
-      </button>
-
-      <button class="node" data-name="Settings">
-        <b>⚙ Settings</b>
-        <span>Runtime preferences</span>
-      </button>
-    </div>
-
-    <div class="context">
-      <strong id="ctxTitle">Memory / Context store</strong>
-      <p id="ctxText">
-        Working memory is simulated for this dashboard.
-        Connect a backend to persist real context between sessions.
-      </p>
-    </div>
-
-    <div class="core-actions">
-      <button class="btn danger" id="terminate">■ TERMINATE</button>
-      <button class="btn" id="reboot">↻ REBOOT CORE</button>
-    </div>
-
-  </div>
-</section>
-
-<!-- CENTER: AGENT TOWN -->
-
-<section class="panel">
-  <div class="ph">
-    <div>
-      <div class="eyebrow">02 / MULTI-AGENT WORKSPACE</div>
-      <div class="ptitle">Agent Town</div>
-    </div>
-    <span class="pill" id="agentCount">03 WORKERS</span>
-  </div>
-
-  <div class="town">
-    <div class="towncanvas">
-      <canvas id="town"></canvas>
-    </div>
-
-    <div class="town-foot">
-      <span class="legend" id="townState">
-        ● 3 agents active · simulation
-      </span>
-
-      <div style="display:flex;gap:7px">
-        <button class="btn" id="pause">Ⅱ PAUSE</button>
-        <button class="btn primary" id="deploy">＋ DEPLOY</button>
-      </div>
-    </div>
-
-    <div class="agent-list" id="agents">
-
-      <div class="agent">
-        <div class="avatar">R</div>
-        <div class="agent-info">
-          <b>Research Agent</b>
-          <small>Gathering references</small>
+    <header class="top">
+        <div class="brand">
+            <div class="mark">S</div>
+            <div>
+                <h1>MY PERSONAL AI</h1>
+                <small>NEURAL COMMAND CENTER</small>
+            </div>
         </div>
-        <span class="dot"></span>
-      </div>
-
-      <div class="agent">
-        <div class="avatar">C</div>
-        <div class="agent-info">
-          <b>Code Agent</b>
-          <small>Reviewing components</small>
+        <div class="statusbar">
+            <span class="live" id="sys-status">SYSTEM ONLINE</span>
+            <span>LATENCY <b id="lat">28</b>ms</span>
+            <span>MEMORY <b id="mem">64</b>%</span>
+            <span id="clock">--:--:--</span>
+            <button class="btn" id="sound">SOUND OFF</button>
         </div>
-        <span class="dot"></span>
-      </div>
+    </header>
 
-      <div class="agent">
-        <div class="avatar">A</div>
-        <div class="agent-info">
-          <b>Analysis Agent</b>
-          <small>Mapping task flow</small>
-        </div>
-        <span class="dot"></span>
-      </div>
+    <main class="layout">
+        <section class="panel">
+            <div class="ph">
+                <div>
+                    <div class="eyebrow">01 / COGNITION CORE</div>
+                    <div class="ptitle">Neural Network</div>
+                </div>
+                <span class="pill">STABLE</span>
+            </div>
+            <div class="brain-area">
+                <div class="brainbox">
+                    <canvas id="brain"></canvas>
+                    <div class="label-bg"></div>
+                    <div class="brain-label">NEURAL FIELD // LIVE SIMULATION</div>
+                </div>
+                <div class="node-grid">
+                    <button class="node active" data-name="Memory">
+                        <b>Memory</b>
+                        <span>Context store · ready</span>
+                    </button>
+                    <button class="node" data-name="Skills">
+                        <b>Skills</b>
+                        <span>>12 modules loaded</span>
+                    </button>
+                    <button class="node" data-name="Soul">
+                        <b>Soul</b>
+                        <span>Core ethics · active</span>
+                    </button>
+                    <button class="node" data-name="Settings">
+                        <b>Settings</b>
+                        <span>Config · nominal</span>
+                    </button>
+                </div>
+            </div>
+        </section>
 
-    </div>
-  </div>
-</section>
+        <section class="panel">
+            <div class="ph">
+                <div>
+                    <div class="eyebrow">02 / AGENT TOWN</div>
+                    <div class="ptitle">Virtual Hub</div>
+                </div>
+            </div>
+            <div class="agent-list">
+                <div class="agent">
+                    <div class="avatar" style="background: #5cf4e822; color: var(--cyan);">R</div>
+                    <div class="agent-info">
+                        <b>Research Agent</b>
+                        <small>Browsing live data...</small>
+                    </div>
+                    <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
+                </div>
+                <div class="agent">
+                    <div class="avatar" style="background: #a68bff22; color: var(--violet);">C</div>
+                    <div class="agent-info">
+                        <b>Coder Agent</b>
+                        <small>Reviewing components...</small>
+                    </div>
+                    <div class="dot" style="background: var(--line);"></div>
+                </div>
+                <div class="agent">
+                    <div class="avatar" style="background: #ff668922; color: var(--red);">A</div>
+                    <div class="agent-info">
+                        <b>Analyst Agent</b>
+                        <small>Mapping task flow...</small>
+                    </div>
+                    <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
+                </div>
+            </div>
+        </section>
 
-<!-- RIGHT: LIVE TERMINAL -->
+        <section class="panel right">
+            <div class="ph">
+                <div>
+                    <div class="eyebrow">03 / SIGNAL INTERFACE</div>
+                    <div class="ptitle">Live Stream & Terminal</div>
+                </div>
+                <span class="pill">LOCAL DEMO</span>
+            </div>
+            <div class="stream">
+                <div class="eyebrow" style="margin: 0 0 8px 0;">ACTIVITY</div>
+                <div class="viz" id="viz">
+                    <div class="bar" style="--h: 20%"></div>
+                    <div class="bar" style="--h: 55%"></div>
+                    <div class="bar" style="--h: 35%"></div>
+                    <div class="bar" style="--h: 80%"></div>
+                    <div class="bar" style="--h: 40%"></div>
+                    <div class="bar" style="--h: 65%"></div>
+                    <div class="bar" style="--h: 30%"></div>
+                    <div class="bar" style="--h: 90%"></div>
+                </div>
+                
+                <div class="eyebrow" style="margin: 15px 0 8px 0;">AGENT MESSAGE LOG</div>
+                <button class="btn" id="clear" style="margin-bottom: 8px;">CLEAR</button>
+                <div class="terminal" id="terminal" aria-live="polite">
+                    <div class="msg system">
+                        <span class="time">14:31:02</span>
+                        <span class="who">[SYSTEM]</span>
+                        <span>Core initialized. Awaiting user input.</span>
+                    </div>
+                </div>
+                <div class="composer">
+                    <input type="text" id="userInput" placeholder="Send a command...">
+                    <button class="btn" id="sendBtn">SEND</button>
+                </div>
+            </div>
+        </section>
+    </main>
 
-<section class="panel right">
-  <div class="ph">
-    <div>
-      <div class="eyebrow">03 / SIGNAL INTERFACE</div>
-      <div class="ptitle">Live Stream & Terminal</div>
-    </div>
-    <span class="pill">LOCAL DEMO</span>
-  </div>
-
-  <div class="stream">
-    <div class="eyebrow" style="margin:0 0 8px">
-      VOICE ACTIVITY
-    </div>
-
-    <div class="viz" id="viz"></div>
-
-    <div class="streamhead">
-      <span class="eyebrow">AGENT MESSAGE LOG</span>
-      <button class="btn" id="clear">CLEAR</button>
-    </div>
-
-    <div class="terminal" id="terminal" aria-live="polite">
-
-      <div class="msg">
-        <span class="time">14:31:02</span>
-        <span class="who">[SYSTEM]</span>
-        <p>Stonic dashboard initialized.</p>
-      </div>
-
-      <div class="msg">
-        <span class="time">14:31:03</span>
-        <span class="who">[CORE]</span>
-        <p>Simulation modules are standing by.</p>
-      </div>
-
-      <div class="msg">
-        <span class="time">14:31:04</span>
-        <span class="who">[NOTICE]</span>
-        <p>Terminal input is a local UI demo, not connected to a live AI.</p>
-      </div>
-
-    </div>
-
-    <form class="composer" id="form">
-      <input
-        id="query"
-        placeholder="Send a command to the console…"
-        autocomplete="off"
-        aria-label="Console command"
-      >
-      <button type="submit">SEND ↗</button>
-    </form>
-
-  </div>
-</section>
-
-</main>
-
-<footer class="foot">
-  <span>STONIC AI / INTERFACE CONCEPT</span>
-  <span>FRONTEND SIMULATION · API NOT CONNECTED</span>
-  <span>DESIGNED FOR CLARITY & CONTROL</span>
-</footer>
-
+    <footer class="foot">
+        <span>STONIC AI / INTERFACE CONCEPT</span>
+        <span>FRONTEND SIMULATION · API NOT CONNECTED</span>
+        <span>DESIGNED FOR CLARITY & CONTROL</span>
+    </footer>
 </div>
 
-<div class="toast" id="toast"></div>
-
 <script>
-const $ = s => document.querySelector(s);
-
-const toast = t => {
-  let el = $('#toast');
-  el.textContent = t;
-  el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'),2300);
-};
-
-// SYSTEM CLOCK / DEMO METRICS
-
-function clock(){
-  $('#clock').textContent = new Date().toLocaleTimeString();
-
-  // Demo values only. Not actual server measurements.
-  $('#lat').textContent = 24 + Math.floor(Math.random()*17);
-  $('#mem').textContent = 61 + Math.floor(Math.random()*9);
-}
-
-clock();
-setInterval(clock,1000);
-
-// BRAIN CANVAS
-
-const brain = $('#brain');
-const bc = brain.getContext('2d');
-
-let pts = [], bw, bh;
-
-function sizeBrain(){
-  let r = brain.getBoundingClientRect();
-
-  brain.width = r.width * devicePixelRatio;
-  brain.height = r.height * devicePixelRatio;
-
-  bc.setTransform(
-    devicePixelRatio,0,0,
-    devicePixelRatio,0,0
-  );
-
-  bw = r.width;
-  bh = r.height;
-  pts = [];
-
-  for(let i=0;i<150;i++){
-    let a = Math.random()*Math.PI*2;
-    let z = Math.random()*2-1;
-    let q = Math.sqrt(1-z*z);
-
-    pts.push({
-      x:q*Math.cos(a),
-      y:z,
-      z:q*Math.sin(a),
-      p:Math.random()*6
-    });
-  }
-}
-
-sizeBrain();
-window.addEventListener('resize',sizeBrain);
-
-let turn = 0;
-
-function drawBrain(){
-  turn += .003;
-  bc.clearRect(0,0,bw,bh);
-
-  let proj = pts.map(p=>{
-    let x = p.x*Math.cos(turn)-p.z*Math.sin(turn);
-    let z = p.x*Math.sin(turn)+p.z*Math.cos(turn);
-    let s = 92/(2.5-z);
-
-    return {
-      x:bw/2+x*s,
-      y:bh/2+p.y*s*.95,
-      z
-    };
-  });
-
-  for(let i=0;i<proj.length;i++){
-    for(let j=i+1;j<proj.length;j++){
-      let a=proj[i],b=proj[j];
-      let d=Math.hypot(a.x-b.x,a.y-b.y);
-
-      if(d<27){
-        bc.strokeStyle=
-          `rgba(92,244,232,${(1-d/27)*.24})`;
-
-        bc.lineWidth=.6;
-        bc.beginPath();
-        bc.moveTo(a.x,a.y);
-        bc.lineTo(b.x,b.y);
-        bc.stroke();
-      }
+    // System Clock
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
     }
-  }
+    setInterval(updateClock, 1000);
+    updateClock();
 
-  proj.forEach((p,i)=>{
-    bc.fillStyle=i%8===0?'#a68bff':'#5
+    // Sound Toggle
+    const soundBtn = document.getElementById('sound');
+    soundBtn.addEventListener('click', () => {
+        if(soundBtn.textContent === 'SOUND OFF') {
+            soundBtn.textContent = 'SOUND ON';
+            soundBtn.style.borderColor = 'var(--violet)';
+            soundBtn.style.color = 'var(--violet)';
+        } else {
+            soundBtn.textContent = 'SOUND OFF';
+            soundBtn.style.borderColor = '#2a3b4e';
+            soundBtn.style.color = 'var(--text)';
+        }
+    });
+
+    // Viz animation toggle on hover
+    const viz = document.getElementById('viz');
+    document.querySelectorAll('.node').forEach(node => {
+        node.addEventListener('mouseenter', () => viz.classList.add('playing'));
+        node.addEventListener('mouseleave', () => viz.classList.remove('playing'));
+    });
+
+    // Terminal logic
+    const terminal = document.getElementById('terminal');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const clearBtn = document.getElementById('clear');
+
+    function addMessage(who, text, type) {
+        const now = new Date();
+        const time = now.toTimeString().split(' ')[0];
+        const msg = document.createElement('div');
+        msg.className = `msg ${type || 'agent'}`;
+        msg.innerHTML = `
+            <span class="time">${time}</span>
+            <span class="who">[${who}]</span>
+            <span>${text}</span>
+        `;
+        terminal.appendChild(msg);
+        terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    sendBtn.addEventListener('click', () => {
+        const val = userInput.value.trim();
+        if(val) {
+            addMessage('USER', val, 'system');
+            userInput.value = '';
+            
+            // Simulate agent response
+            setTimeout(() => {
+                addMessage('CODER', 'Acknowledged. Processing...', 'agent');
+            }, 500);
+        }
+    });
+
+    clearBtn.addEventListener('click', () => {
+        terminal.innerHTML = '<div class="msg system"><span class="time">--:--:--</span><span class="who">[SYSTEM]</span><span>Log cleared.</span></div>';
+    });
+
+    // Node switching
+    document.querySelectorAll('.node').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.node').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            addMessage('SYSTEM', `Switched active focus to ${this.dataset.name}.`, 'system');
+        });
+    });
+
+    // Simulated Canvas rendering placeholder
+    const canvas = document.getElementById('brain');
+    const ctx = canvas.getContext('2d');
+    function resize() {
+        canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+        canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+    
+    // Simple static drawing for the demo
+    function draw() {
+        ctx.clearRect(0,0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#5cf4e844';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(canvas.width/2, canvas.height/2, 50, 0, Math.PI*2);
+        ctx.stroke();
+        
+        ctx.fillStyle = '#a68bff88';
+        ctx.beginPath();
+        ctx.arc(canvas.width/2 - 20, canvas.height/2 - 20, 5, 0, Math.PI*2);
+        ctx.fill();
+        
+        ctx.fillStyle = '#b7ff8188';
+        ctx.beginPath();
+        ctx.arc(canvas.width/2 + 30, canvas.height/2 + 10, 8, 0, Math.PI*2);
+        ctx.fill();
+    }
+    draw();
+
+</script>
+</body>
+</html>

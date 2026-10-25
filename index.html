@@ -663,7 +663,7 @@ const recognition = new SpeechRecognition();
 
 recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
-    console.log("You said: " + transcript);
+    document.querySelector('input').value = transcript;
     // You can process the transcript and call speakText() here
 };
 

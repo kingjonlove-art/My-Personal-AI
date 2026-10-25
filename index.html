@@ -602,7 +602,6 @@
         addMessage('USER', val, 'system');
         userInput.value = '';
 
-        // এআই উত্তর বলার সময় লিসেনিং সাময়িকভাবে বন্ধ রাখা
         if (isListening && recognition) {
             isAutoRestart = false;
             recognition.stop();
@@ -617,7 +616,9 @@
                 body: JSON.stringify({ message: val })
             });
 
-            if (!response.ok) throw new Error(`Server Error: ${response.status}`);
+            if (!response.ok) {
+                throw new Error(`Server status: ${response.status}`);
+            }
             
             const data = await response.json();
             const reply = data.reply || data.response || data.message || "No response received from server.";
@@ -625,7 +626,7 @@
             addMessage('GEMINI', reply, 'agent');
             speakText(reply);
         } catch (err) {
-            addMessage('ERROR', `Connection Failed: ${err.message}`, 'error');
+            addMessage('ERROR', `Connection Failed: ${err.message}. (Server might be waking up, please try again)`, 'error');
             resumeListening();
         }
     }

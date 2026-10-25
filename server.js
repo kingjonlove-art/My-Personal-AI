@@ -1,8 +1,8 @@
-require("dotenv").config();
+import express from 'express';
+import { GoogleGenAI } from '@google/genai';
+import dotenv from 'dotenv';
 
-const express = require("express");
-const { GoogleGenAI } = require("require("express");
-const { GoogleGenAI } = require("@google/genai");
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -54,19 +54,6 @@ ${task}`,
     });
   }
 });
-
-import express from 'express';
-import { GoogleGenAI } from '@google/genai';
-import dotenv from 'dotenv';
-
-dotenv.config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(express.json());
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 app.post('/api/chat', async (req, res) => {
   try {

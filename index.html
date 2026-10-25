@@ -624,7 +624,34 @@
         ctx.arc(canvas.width/2 + 30, canvas.height/2 + 10, 8, 0, Math.PI*2);
         ctx.fill();
     }
-    draw();// Text-to-Speech: Convert text to voice
+    function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // First sphere
+    ctx.strokeStyle = '#5cf4e844';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, canvas.height/2, 50, 0, Math.PI*2);
+    ctx.stroke();
+    
+    // Second sphere
+    ctx.fillStyle = '#a68bff88';
+    ctx.beginPath();
+    ctx.arc(canvas.width/2 - 20, canvas.height/2 - 20, 5, 0, Math.PI*2);
+    ctx.fill();
+    
+    // Third sphere
+    ctx.fillStyle = '#b7ff8188';
+    ctx.beginPath();
+    ctx.arc(canvas.width/2 + 30, canvas.height/2 + 10, 8, 0, Math.PI*2);
+    ctx.fill();
+
+    // Call requestAnimationFrame to loop the animation
+    requestAnimationFrame(draw);
+}
+
+// Start the animation loop
+draw();// Text-to-Speech: Convert text to voice
 function speakText(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     speechSynthesis.speak(utterance);

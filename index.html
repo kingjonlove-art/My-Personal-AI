@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MY PERSONAL AI - Continuous Voice Command</title>
+    <title>MY PERSONAL AI - Neural Command Center</title>
     <!-- Three.js Library for 3D Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -505,7 +505,7 @@
                     <div class="eyebrow">03 / SIGNAL INTERFACE</div>
                     <div class="ptitle">Live Stream & Terminal</div>
                 </div>
-                <span class="pill">AUTO-LISTEN ON</span>
+                <span class="pill">GEMINI AI ACTIVE</span>
             </div>
             <div class="stream">
                 <div class="eyebrow" style="margin: 0 0 8px 0;">ACTIVITY</div>
@@ -526,12 +526,12 @@
                     <div class="msg system">
                         <span class="time">14:31:02</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Continuous Voice Mode active. Start speaking...</span>
+                        <span>Gemini Voice Interface ready. Speak freely...</span>
                     </div>
                 </div>
                 <div class="composer">
                     <button class="btn mic-btn active" id="micBtn" title="Toggle Continuous Listening">MIC ON</button>
-                    <input type="text" id="userInput" placeholder="Listening automatically...">
+                    <input type="text" id="userInput" placeholder="Speak or type a command...">
                     <button class="btn" id="sendBtn">SEND</button>
                 </div>
             </div>
@@ -540,7 +540,7 @@
 
     <footer class="foot">
         <span>STONIC AI / INTERFACE CONCEPT</span>
-        <span>CONTINUOUS CONVERSATION READY</span>
+        <span>GEMINI API POWERED</span>
         <span>DESIGNED FOR CLARITY & CONTROL</span>
     </footer>
 </div>
@@ -556,7 +556,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    let soundEnabled = true; // ডিফল্টভাবে ভয়েস আউটপুট অন রাখা হয়েছে
+    let soundEnabled = true;
     const soundBtn = document.getElementById('sound');
     soundBtn.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
@@ -591,10 +591,9 @@
     });
 
     // -----------------------------------------------------------------
-    // 2. BACKEND & API CONFIGURATION
+    // 2. GOOGLE GEMINI API CONFIGURATION (আপনার এপিআই কি এখানে বসান)
     // -----------------------------------------------------------------
-    const API_ENDPOINT = ""; 
-    const API_KEY = "";
+    const GEMINI_API_KEY = "এখানে_আপনার_জেমিনি_এপিআই_কি_বসাবেন"; 
 
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
@@ -603,41 +602,45 @@
         addMessage('USER', val, 'system');
         userInput.value = '';
 
-        // এআই উত্তর বলার সময় যাতে লিসেনিং সাময়িকভাবে বন্ধ থাকে (যাতে নিজের কথা নিজে না শুনে)
+        // এআই উত্তর বলার সময় লিসেনিং সাময়িকভাবে বন্ধ রাখা
         if (isListening && recognition) {
             isAutoRestart = false;
             recognition.stop();
         }
 
-        if (API_ENDPOINT !== "") {
+        if (GEMINI_API_KEY && GEMINI_API_KEY !== "এখানে_আপনার_জেমিনি_এপিআই_কি_বসাবেন") {
             try {
-                addMessage('SYSTEM', 'Processing API request...', 'system');
-                const response = await fetch(API_ENDPOINT, {
+                addMessage('SYSTEM', 'Consulting Gemini AI...', 'system');
+                
+                // Gemini 1.5 Flash API Endpoint
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const response = await fetch(url, {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        ...(API_KEY ? { 'Authorization': `Bearer ${API_KEY}` } : {})
-                    },
-                    body: JSON.stringify({ prompt: val, message: val })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{ text: val }]
+                        }]
+                    })
                 });
 
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                if (!response.ok) throw new Error(`API Error: ${response.status}`);
                 
                 const data = await response.json();
-                const reply = data.reply || data.response || data.choices?.[0]?.text || "Response received.";
-                addMessage('AI_BOT', reply, 'agent');
+                const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated.";
+                
+                addMessage('GEMINI', reply, 'agent');
                 speakText(reply);
             } catch (err) {
-                addMessage('ERROR', `Backend Failed: ${err.message}`, 'error');
+                addMessage('ERROR', `Gemini Failed: ${err.message}`, 'error');
                 resumeListening();
             }
         } else {
-            // সিমুলেটেড রেসপন্স (আপনার প্রম্পট অনুযায়ী উত্তর দিয়ে আবার লিসেনিং শুরু করবে)
-            setTimeout(() => {
-                const textReply = `I heard you say: "${val}". How else can I help you?`;
-                addMessage('CODER', textReply, 'agent');
-                speakText(textReply);
-            }, 100);
+            // যদি এপিআই কি না দেওয়া থাকে তবে সর্তকতা দেখাবে
+            const fallbackMsg = "Please insert your valid Gemini API Key in the code to get intelligent responses.";
+            addMessage('ERROR', fallbackMsg, 'error');
+            speakText(fallbackMsg);
         }
     }
 
@@ -659,16 +662,17 @@
             return;
         }
         speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
         
-        // ভাষা সেট করতে পারেন (যেমন বাংলা চাইলে 'bn-BD' বা ইংরেজি চাইলে 'en-US')
-        utterance.lang = 'en-US'; 
+        // ক্লিন টেক্সট তৈরি করা (অপ্রয়োজনীয় মার্কডাউন বা কোড সরিয়ে মুখে বলার উপযোগী করা)
+        const cleanText = text.replace(/[*#_`]/g, '');
+        const utterance = new SpeechSynthesisUtterance(cleanText);
+        
+        utterance.lang = 'en-US'; // বাংলা কথা বলালে 'bn-BD' দিতে পারেন
 
         if (viz) {
             viz.classList.add('playing');
         }
 
-        // কথা বলা শেষ হলে আবার স্বয়ংক্রিয়ভাবে লিসেনিং চালু হবে
         utterance.onend = () => {
             if (viz) viz.classList.remove('playing');
             resumeListening();
@@ -684,9 +688,9 @@
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.continuous = true; // কন্টিনিউয়াস মোড অন রাখা হয়েছে যাতে বারবার বন্ধ না হয়
+        recognition.continuous = true;
         recognition.interimResults = false;
-        recognition.lang = 'en-US'; // বাংলা বলার জন্য 'bn-BD' দিতে পারেন
+        recognition.lang = 'en-US'; // বাংলা ভয়েস ইনপুট চাইলে 'bn-BD' করুন
 
         recognition.onstart = () => {
             isListening = true;
@@ -703,7 +707,7 @@
         };
 
         recognition.onerror = (event) => {
-            console.log("Mic error or no speech detected: ", event.error);
+            console.log("Mic error: ", event.error);
         };
 
         recognition.onend = () => {
@@ -711,7 +715,6 @@
             micBtn.classList.remove('active');
             micBtn.textContent = "MIC OFF";
             
-            // যদি ইউজার নিজে বন্ধ না করে থাকেন, তবে স্বয়ংক্রিয়ভাবে আবার লিসেনিং শুরু হবে
             if (isAutoRestart) {
                 setTimeout(() => {
                     try { recognition.start(); } catch(e) {}
@@ -719,27 +722,22 @@
             }
         };
 
-        // পেজ লোড হওয়ার সাথে সাথেই অটো-লিসেনিং শুরু করে দেওয়া
         setTimeout(() => {
             try {
                 isAutoRestart = true;
                 recognition.start();
-            } catch(e) {
-                console.log("Auto start blocked by browser policy. Click MIC to start.");
-            }
+            } catch(e) {}
         }, 1000);
 
     } else {
         micBtn.disabled = true;
-        micBtn.title = "Speech recognition not supported in browser.";
+        micBtn.title = "Speech recognition not supported.";
     }
 
     function resumeListening() {
         if (recognition && !isListening) {
             isAutoRestart = true;
-            try {
-                recognition.start();
-            } catch(e) {}
+            try { recognition.start(); } catch(e) {}
         }
     }
 
@@ -750,9 +748,7 @@
             recognition.stop();
         } else {
             isAutoRestart = true;
-            try {
-                recognition.start();
-            } catch (e) {}
+            try { recognition.start(); } catch (e) {}
         }
     });
 

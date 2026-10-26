@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MY PERSONAL AI - Neural Command Center</title>
+    <title>MY PERSONAL AI - Continuous Voice Command</title>
     <!-- Three.js Library for 3D Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -505,7 +505,7 @@
                     <div class="eyebrow">03 / SIGNAL INTERFACE</div>
                     <div class="ptitle">Live Stream & Terminal</div>
                 </div>
-                <span class="pill" id="server-status" style="color: var(--lime);">GEMINI API ACTIVE</span>
+                <span class="pill">AUTO-LISTEN ON</span>
             </div>
             <div class="stream">
                 <div class="eyebrow" style="margin: 0 0 8px 0;">ACTIVITY</div>
@@ -526,12 +526,12 @@
                     <div class="msg system">
                         <span class="time">14:31:02</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Gemini AI Connected. Type or speak your message to get proper answers.</span>
+                        <span>Continuous Voice Mode active. Start speaking...</span>
                     </div>
                 </div>
                 <div class="composer">
-                    <button class="btn mic-btn" id="micBtn" title="Toggle Continuous Listening">MIC OFF</button>
-                    <input type="text" id="userInput" placeholder="Ask anything to Gemini...">
+                    <button class="btn mic-btn active" id="micBtn" title="Toggle Continuous Listening">MIC ON</button>
+                    <input type="text" id="userInput" placeholder="Listening automatically...">
                     <button class="btn" id="sendBtn">SEND</button>
                 </div>
             </div>
@@ -540,7 +540,7 @@
 
     <footer class="foot">
         <span>STONIC AI / INTERFACE CONCEPT</span>
-        <span>GEMINI API POWERED</span>
+        <span>CONTINUOUS CONVERSATION READY</span>
         <span>DESIGNED FOR CLARITY & CONTROL</span>
     </footer>
 </div>
@@ -556,7 +556,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    let soundEnabled = true;
+    let soundEnabled = true; // ডিফল্টভাবে ভয়েস আউটপুট অন রাখা হয়েছে
     const soundBtn = document.getElementById('sound');
     soundBtn.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
@@ -591,9 +591,10 @@
     });
 
     // -----------------------------------------------------------------
-    // 2. DIRECT GEMINI API INTEGRATION (PROPER ANSWERS)
+    // 2. BACKEND & API CONFIGURATION
     // -----------------------------------------------------------------
-    const GEMINI_API_KEY = "YOUR_API_KEY_HERE"; // এখানে আপনার আসল জেমিনি API Key বসিয়ে দিন
+    const API_ENDPOINT = ""; 
+    const API_KEY = "";
 
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
@@ -602,38 +603,41 @@
         addMessage('USER', val, 'system');
         userInput.value = '';
 
-        if (GEMINI_API_KEY === "YOUR_API_KEY_HERE" || !GEMINI_API_KEY) {
-            addMessage('ERROR', 'দয়া করে কোডের ভেতরে আপনার জেমিনি API Key (GEMINI_API_KEY) বসিয়ে দিন।', 'error');
-            return;
+        // এআই উত্তর বলার সময় যাতে লিসেনিং সাময়িকভাবে বন্ধ থাকে (যাতে নিজের কথা নিজে না শুনে)
+        if (isListening && recognition) {
+            isAutoRestart = false;
+            recognition.stop();
         }
 
-        try {
-            addMessage('SYSTEM', 'Generating proper response from Gemini AI...', 'system');
+        if (API_ENDPOINT !== "") {
+            try {
+                addMessage('SYSTEM', 'Processing API request...', 'system');
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        ...(API_KEY ? { 'Authorization': `Bearer ${API_KEY}` } : {})
+                    },
+                    body: JSON.stringify({ prompt: val, message: val })
+                });
 
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{ text: val }]
-                    }]
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`API Error: ${response.status}`);
+                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                
+                const data = await response.json();
+                const reply = data.reply || data.response || data.choices?.[0]?.text || "Response received.";
+                addMessage('AI_BOT', reply, 'agent');
+                speakText(reply);
+            } catch (err) {
+                addMessage('ERROR', `Backend Failed: ${err.message}`, 'error');
+                resumeListening();
             }
-
-            const data = await response.json();
-            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "দুঃখিত, কোনো উত্তর পাওয়া যায়নি।";
-
-            addMessage('GEMINI', reply, 'agent');
-            speakText(reply);
-
-        } catch (err) {
-            addMessage('ERROR', `Connection Failed: ${err.message}`, 'error');
+        } else {
+            // সিমুলেটেড রেসপন্স (আপনার প্রম্পট অনুযায়ী উত্তর দিয়ে আবার লিসেনিং শুরু করবে)
+            setTimeout(() => {
+                const textReply = `I heard you say: "${val}". How else can I help you?`;
+                addMessage('CODER', textReply, 'agent');
+                speakText(textReply);
+            }, 100);
         }
     }
 
@@ -643,25 +647,36 @@
     });
 
     // -----------------------------------------------------------------
-    // 3. VOICE RECOGNITION (Speech-to-Text & Text-to-Speech)
+    // 3. CONTINUOUS VOICE RECOGNITION & SPEECH SYNTHESIS
     // -----------------------------------------------------------------
     let recognition = null;
     let isListening = false;
-    let manualStop = false;
+    let isAutoRestart = true;
 
     function speakText(text) {
-        if (!soundEnabled || !('speechSynthesis' in window)) return;
+        if (!soundEnabled || !('speechSynthesis' in window)) {
+            resumeListening();
+            return;
+        }
         speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
         
-        const cleanText = text.replace(/[*#_`]/g, '');
-        const utterance = new SpeechSynthesisUtterance(cleanText);
-        
-        const hasBangla = /[\u0980-\u09FF]/.test(cleanText);
-        utterance.lang = hasBangla ? 'bn-BD' : 'en-US';
+        // ভাষা সেট করতে পারেন (যেমন বাংলা চাইলে 'bn-BD' বা ইংরেজি চাইলে 'en-US')
+        utterance.lang = 'en-US'; 
 
-        if (viz) viz.classList.add('playing');
-        utterance.onend = () => { if (viz) viz.classList.remove('playing'); };
-        utterance.onerror = () => { if (viz) viz.classList.remove('playing'); };
+        if (viz) {
+            viz.classList.add('playing');
+        }
+
+        // কথা বলা শেষ হলে আবার স্বয়ংক্রিয়ভাবে লিসেনিং চালু হবে
+        utterance.onend = () => {
+            if (viz) viz.classList.remove('playing');
+            resumeListening();
+        };
+        utterance.onerror = () => {
+            if (viz) viz.classList.remove('playing');
+            resumeListening();
+        };
 
         speechSynthesis.speak(utterance);
     }
@@ -669,13 +684,12 @@
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.continuous = true; 
+        recognition.continuous = true; // কন্টিনিউয়াস মোড অন রাখা হয়েছে যাতে বারবার বন্ধ না হয়
         recognition.interimResults = false;
-        recognition.lang = 'bn-BD'; 
+        recognition.lang = 'en-US'; // বাংলা বলার জন্য 'bn-BD' দিতে পারেন
 
         recognition.onstart = () => {
             isListening = true;
-            manualStop = false;
             micBtn.classList.add('active');
             micBtn.textContent = "MIC ON";
         };
@@ -689,37 +703,56 @@
         };
 
         recognition.onerror = (event) => {
-            console.log("Mic error: ", event.error);
+            console.log("Mic error or no speech detected: ", event.error);
         };
 
         recognition.onend = () => {
-            if (isListening && !manualStop) {
-                try { recognition.start(); } catch(e) {}
-            } else {
-                isListening = false;
-                micBtn.classList.remove('active');
-                micBtn.textContent = "MIC OFF";
+            isListening = false;
+            micBtn.classList.remove('active');
+            micBtn.textContent = "MIC OFF";
+            
+            // যদি ইউজার নিজে বন্ধ না করে থাকেন, তবে স্বয়ংক্রিয়ভাবে আবার লিসেনিং শুরু হবে
+            if (isAutoRestart) {
+                setTimeout(() => {
+                    try { recognition.start(); } catch(e) {}
+                }, 500);
             }
         };
+
+        // পেজ লোড হওয়ার সাথে সাথেই অটো-লিসেনিং শুরু করে দেওয়া
+        setTimeout(() => {
+            try {
+                isAutoRestart = true;
+                recognition.start();
+            } catch(e) {
+                console.log("Auto start blocked by browser policy. Click MIC to start.");
+            }
+        }, 1000);
+
     } else {
         micBtn.disabled = true;
-        micBtn.title = "Speech recognition not supported in this browser.";
+        micBtn.title = "Speech recognition not supported in browser.";
+    }
+
+    function resumeListening() {
+        if (recognition && !isListening) {
+            isAutoRestart = true;
+            try {
+                recognition.start();
+            } catch(e) {}
+        }
     }
 
     micBtn.addEventListener('click', () => {
         if (!recognition) return;
         if (isListening) {
-            manualStop = true;
-            isListening = false;
-            try { recognition.stop(); } catch(e) {}
-            micBtn.classList.remove('active');
-            micBtn.textContent = "MIC OFF";
+            isAutoRestart = false;
+            recognition.stop();
         } else {
-            manualStop = false;
-            isListening = true;
-            try { recognition.start(); } catch (e) {}
-            micBtn.classList.add('active');
-            micBtn.textContent = "MIC ON";
+            isAutoRestart = true;
+            try {
+                recognition.start();
+            } catch (e) {}
         }
     });
 
@@ -799,12 +832,15 @@
 
         function animate3D() {
             requestAnimationFrame(animate3D);
+
             particleSystem.rotation.y += 0.003 + mouseX * 0.008;
             particleSystem.rotation.x += 0.001 - mouseY * 0.008;
+
             coreMesh.rotation.y -= 0.005;
             if (targetColor) {
                 coreMesh.material.color.lerp(targetColor, 0.05);
             }
+
             renderer.render(scene, camera);
         }
         animate3D();

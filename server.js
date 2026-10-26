@@ -2,7 +2,7 @@ import express from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from "dotenv";
 import { randomUUID } from "node:crypto";
-
+import cors from 'cors';
 dotenv.config();
 
 const app = express();

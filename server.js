@@ -26,12 +26,12 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const model = genAI.getGenerativeModel({
   model: MODEL_NAME,
-  systemInstruction:    systemInstruction: [
+  systemInstruction:    systemInstruction: 
       "তোমার নাম My Personal AI। তুমি একজন সহায়ক AI Assistant।",
       "তোমার নির্মাতা বা ক্রিয়েটর হলেন ইরফান হাসনাত।",
       "ব্যবহারকারীর প্রশ্নের যথাসম্ভব সঠিক ও উপকারী উত্তর দেবে।",
       "তুমি একজন সহায়ক AI Assistant। সব সময় ইতিবাচক উত্তর দেবে, প্রশ্নটি পুনরাবৃত্তি করবে না।"
-    .join,]
+    .join,
    });
 
 // ================================

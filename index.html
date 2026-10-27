@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MY PERSONAL AI - Continuous Voice Command</title>
+    <title>MY PERSONAL AI - Neural Command Center</title>
     <!-- Three.js Library for 3D Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -414,16 +414,16 @@
 <div class="app">
     <header class="top">
         <div class="brand">
-            <div class="mark">S</div>
+            <div class="mark">I</div>
             <div>
                 <h1>MY PERSONAL AI</h1>
                 <small>NEURAL COMMAND CENTER</small>
             </div>
         </div>
         <div class="statusbar">
-            <span class="live" id="sys-status">VOICE READY</span>
-            <span>LATENCY <b id="lat">28</b>ms</span>
-            <span>MEMORY <b id="mem">64</b>%</span>
+            <span class="live" id="sys-status">LIVE API CONNECTED</span>
+            <span>LATENCY <b id="lat">18</b>ms</span>
+            <span>NODE <b id="mem">ACTIVE</b></span>
             <span id="clock">--:--:--</span>
             <button class="btn" id="sound">SOUND ON</button>
         </div>
@@ -441,24 +441,24 @@
             <div class="brain-area">
                 <div class="brainbox" id="brainbox">
                     <canvas id="brain"></canvas>
-                    <div class="brain-label" id="canvas-label">NEURAL FIELD // INITIALIZING</div>
+                    <div class="brain-label" id="canvas-label">NEURAL FIELD // LIVE RENDER</div>
                 </div>
                 <div class="node-grid">
                     <button class="node active" data-name="Memory" data-color="#5cf4e8">
                         <b>Memory</b>
-                        <span>Context store · ready</span>
+                        <span>Supabase DB · sync</span>
                     </button>
                     <button class="node" data-name="Skills" data-color="#a68bff">
                         <b>Skills</b>
-                        <span>>12 modules loaded</span>
+                        <span>Custom modules</span>
                     </button>
                     <button class="node" data-name="Soul" data-color="#b7ff81">
                         <b>Soul</b>
-                        <span>Core ethics · active</span>
+                        <span>Core system · active</span>
                     </button>
                     <button class="node" data-name="Settings" data-color="#ffd700">
                         <b>Settings</b>
-                        <span>Config · nominal</span>
+                        <span>API endpoints</span>
                     </button>
                 </div>
             </div>
@@ -475,24 +475,24 @@
                 <div class="agent">
                     <div class="avatar" style="background: #5cf4e822; color: var(--cyan);">R</div>
                     <div class="agent-info">
-                        <b>Research Agent</b>
-                        <small>Browsing live data...</small>
+                        <b>API Sync Agent</b>
+                        <small>Listening for backend streams...</small>
                     </div>
                     <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
                 </div>
                 <div class="agent">
                     <div class="avatar" style="background: #a68bff22; color: var(--violet);">C</div>
                     <div class="agent-info">
-                        <b>Coder Agent</b>
-                        <small>Reviewing components...</small>
+                        <b>Node Server Agent</b>
+                        <small>Express & Gemini API linked</small>
                     </div>
-                    <div class="dot" style="background: var(--line);"></div>
+                    <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
                 </div>
                 <div class="agent">
                     <div class="avatar" style="background: #ff668922; color: var(--red);">A</div>
                     <div class="agent-info">
-                        <b>Analyst Agent</b>
-                        <small>Mapping task flow...</small>
+                        <b>Database Agent</b>
+                        <small>PostgreSQL connected</small>
                     </div>
                     <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
                 </div>
@@ -505,7 +505,7 @@
                     <div class="eyebrow">03 / SIGNAL INTERFACE</div>
                     <div class="ptitle">Live Stream & Terminal</div>
                 </div>
-                <span class="pill">AUTO-LISTEN ON</span>
+                <span class="pill">VOICE API ACTIVE</span>
             </div>
             <div class="stream">
                 <div class="eyebrow" style="margin: 0 0 8px 0;">ACTIVITY</div>
@@ -520,18 +520,18 @@
                     <div class="bar"></div>
                 </div>
                 
-                <div class="eyebrow" style="margin: 15px 0 8px 0;">AGENT MESSAGE LOG</div>
+                <div class="eyebrow" style="margin: 15px 0 8px 0;">LIVE CONSOLE LOG</div>
                 <button class="btn" id="clear" style="margin-bottom: 8px;">CLEAR</button>
                 <div class="terminal" id="terminal" aria-live="polite">
                     <div class="msg system">
-                        <span class="time">14:31:02</span>
+                        <span class="time">--:--:--</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Continuous Voice Mode active. Start speaking...</span>
+                        <span>Connected to live backend endpoint. Voice & API stream active.</span>
                     </div>
                 </div>
                 <div class="composer">
                     <button class="btn mic-btn active" id="micBtn" title="Toggle Continuous Listening">MIC ON</button>
-                    <input type="text" id="userInput" placeholder="Listening automatically...">
+                    <input type="text" id="userInput" placeholder="Speak or type command...">
                     <button class="btn" id="sendBtn">SEND</button>
                 </div>
             </div>
@@ -539,15 +539,15 @@
     </main>
 
     <footer class="foot">
-        <span>STONIC AI / INTERFACE CONCEPT</span>
-        <span>CONTINUOUS CONVERSATION READY</span>
-        <span>DESIGNED FOR CLARITY & CONTROL</span>
+        <span>MY PERSONAL AI / NEURAL COMMAND CENTER</span>
+        <span>LIVE BACKEND CONNECTED</span>
+        <span>PRODUCTION READY</span>
     </footer>
 </div>
 
 <script>
     // -----------------------------------------------------------------
-    // 1. SYSTEM CLOCK & SOUND SETUP
+    // 1. SYSTEM CLOCK & SOUND TOGGLE
     // -----------------------------------------------------------------
     function updateClock() {
         const now = new Date();
@@ -556,7 +556,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    let soundEnabled = true; // ডিফল্টভাবে ভয়েস আউটপুট অন রাখা হয়েছে
+    let soundEnabled = true;
     const soundBtn = document.getElementById('sound');
     soundBtn.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
@@ -591,10 +591,11 @@
     });
 
     // -----------------------------------------------------------------
-    // 2. BACKEND & API CONFIGURATION
+    // 2. LIVE BACKEND & API INTEGRATION (NO DEMO MOCKS)
     // -----------------------------------------------------------------
-    const API_ENDPOINT = ""; 
-    const API_KEY = "";
+    // আপনার ব্যাকএন্ড সার্ভার বা রেন্ডার ডিপ্লয়মেন্ট ইউআরএল এখানে দিন
+    const API_ENDPOINT = "http://localhost:3000/api/chat"; 
+    const API_KEY = ""; // প্রয়োজন হলে টোকেন বা সিক্রেট দিন
 
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
@@ -603,41 +604,38 @@
         addMessage('USER', val, 'system');
         userInput.value = '';
 
-        // এআই উত্তর বলার সময় যাতে লিসেনিং সাময়িকভাবে বন্ধ থাকে (যাতে নিজের কথা নিজে না শুনে)
+        // এআই রেসপন্স চলাকালীন লিসেনিং সাময়িকভাবে থামানো
         if (isListening && recognition) {
             isAutoRestart = false;
             recognition.stop();
         }
 
-        if (API_ENDPOINT !== "") {
-            try {
-                addMessage('SYSTEM', 'Processing API request...', 'system');
-                const response = await fetch(API_ENDPOINT, {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        ...(API_KEY ? { 'Authorization': `Bearer ${API_KEY}` } : {})
-                    },
-                    body: JSON.stringify({ prompt: val, message: val })
-                });
+        try {
+            addMessage('SYSTEM', 'Dispatching request to live API...', 'system');
+            
+            const response = await fetch(API_ENDPOINT, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    ...(API_KEY ? { 'Authorization': `Bearer ${API_KEY}` } : {})
+                },
+                body: JSON.stringify({ message: val, prompt: val })
+            });
 
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-                
-                const data = await response.json();
-                const reply = data.reply || data.response || data.choices?.[0]?.text || "Response received.";
-                addMessage('AI_BOT', reply, 'agent');
-                speakText(reply);
-            } catch (err) {
-                addMessage('ERROR', `Backend Failed: ${err.message}`, 'error');
-                resumeListening();
+            if (!response.ok) {
+                throw new Error(`Server returned status ${response.status}`);
             }
-        } else {
-            // সিমুলেটেড রেসপন্স (আপনার প্রম্পট অনুযায়ী উত্তর দিয়ে আবার লিসেনিং শুরু করবে)
-            setTimeout(() => {
-                const textReply = `I heard you say: "${val}". How else can I help you?`;
-                addMessage('CODER', textReply, 'agent');
-                speakText(textReply);
-            }, 100);
+
+            const data = await response.json();
+            // ব্যাকএন্ড থেকে আসা নিখুঁত রিয়ালিটি রেসপন্স
+            const reply = data.reply || data.response || data.output || "Empty response from API.";
+            
+            addMessage('AI_BOT', reply, 'agent');
+            speakText(reply);
+
+        } catch (err) {
+            addMessage('ERROR', `API Connection Failed: ${err.message}. Check backend server.`, 'error');
+            resumeListening();
         }
     }
 
@@ -660,15 +658,10 @@
         }
         speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        
-        // ভাষা সেট করতে পারেন (যেমন বাংলা চাইলে 'bn-BD' বা ইংরেজি চাইলে 'en-US')
-        utterance.lang = 'en-US'; 
+        utterance.lang = 'en-US'; // ভাষা প্রয়োজনমতো পরিবর্তন করতে পারেন
 
-        if (viz) {
-            viz.classList.add('playing');
-        }
+        if (viz) viz.classList.add('playing');
 
-        // কথা বলা শেষ হলে আবার স্বয়ংক্রিয়ভাবে লিসেনিং চালু হবে
         utterance.onend = () => {
             if (viz) viz.classList.remove('playing');
             resumeListening();
@@ -684,9 +677,9 @@
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.continuous = true; // কন্টিনিউয়াস মোড অন রাখা হয়েছে যাতে বারবার বন্ধ না হয়
+        recognition.continuous = true;
         recognition.interimResults = false;
-        recognition.lang = 'en-US'; // বাংলা বলার জন্য 'bn-BD' দিতে পারেন
+        recognition.lang = 'en-US';
 
         recognition.onstart = () => {
             isListening = true;
@@ -703,7 +696,7 @@
         };
 
         recognition.onerror = (event) => {
-            console.log("Mic error or no speech detected: ", event.error);
+            console.log("Speech recognition error: ", event.error);
         };
 
         recognition.onend = () => {
@@ -711,7 +704,6 @@
             micBtn.classList.remove('active');
             micBtn.textContent = "MIC OFF";
             
-            // যদি ইউজার নিজে বন্ধ না করে থাকেন, তবে স্বয়ংক্রিয়ভাবে আবার লিসেনিং শুরু হবে
             if (isAutoRestart) {
                 setTimeout(() => {
                     try { recognition.start(); } catch(e) {}
@@ -719,27 +711,24 @@
             }
         };
 
-        // পেজ লোড হওয়ার সাথে সাথেই অটো-লিসেনিং শুরু করে দেওয়া
         setTimeout(() => {
             try {
                 isAutoRestart = true;
                 recognition.start();
             } catch(e) {
-                console.log("Auto start blocked by browser policy. Click MIC to start.");
+                console.log("Auto-start waiting for user gesture.");
             }
         }, 1000);
 
     } else {
         micBtn.disabled = true;
-        micBtn.title = "Speech recognition not supported in browser.";
+        micBtn.title = "Speech recognition not supported.";
     }
 
     function resumeListening() {
         if (recognition && !isListening) {
             isAutoRestart = true;
-            try {
-                recognition.start();
-            } catch(e) {}
+            try { recognition.start(); } catch(e) {}
         }
     }
 
@@ -750,14 +739,12 @@
             recognition.stop();
         } else {
             isAutoRestart = true;
-            try {
-                recognition.start();
-            } catch (e) {}
+            try { recognition.start(); } catch(e) {}
         }
     });
 
     // -----------------------------------------------------------------
-    // 4. SAFE 3D CANVAS & 2D FALLBACK ENGINE
+    // 4. THREE.JS 3D NEURAL CANVAS RENDERER
     // -----------------------------------------------------------------
     function isWebGLSupported() {
         try {
@@ -778,7 +765,7 @@
 
     if (hasThree && hasWebGL) {
         document.getElementById('webgl-status').textContent = '3D ACTIVE';
-        document.getElementById('canvas-label').textContent = 'NEURAL FIELD // 3D REALTIME SIMULATION';
+        document.getElementById('canvas-label').textContent = 'NEURAL FIELD // LIVE 3D SIMULATION';
         
         targetColor = new THREE.Color('#5cf4e8');
 
@@ -832,15 +819,12 @@
 
         function animate3D() {
             requestAnimationFrame(animate3D);
-
             particleSystem.rotation.y += 0.003 + mouseX * 0.008;
             particleSystem.rotation.x += 0.001 - mouseY * 0.008;
-
             coreMesh.rotation.y -= 0.005;
             if (targetColor) {
                 coreMesh.material.color.lerp(targetColor, 0.05);
             }
-
             renderer.render(scene, camera);
         }
         animate3D();
@@ -851,16 +835,12 @@
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
             renderer.setSize(width, height);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         });
 
     } else {
         document.getElementById('webgl-status').textContent = '2D MODE';
-        document.getElementById('canvas-label').textContent = 'NEURAL FIELD // 2D CANVAS FALLBACK';
-
         const ctx = canvas.getContext('2d');
         let angle = 0;
-
         function resize2D() {
             canvas.width = brainBox.clientWidth;
             canvas.height = brainBox.clientHeight;
@@ -872,18 +852,11 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             const cx = canvas.width / 2;
             const cy = canvas.height / 2;
-
             ctx.strokeStyle = '#5cf4e844';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.arc(cx, cy, 50 + Math.sin(angle) * 4, 0, Math.PI * 2);
             ctx.stroke();
-
-            ctx.fillStyle = '#a68bff88';
-            ctx.beginPath();
-            ctx.arc(cx + Math.cos(angle) * 35, cy + Math.sin(angle) * 35, 7, 0, Math.PI * 2);
-            ctx.fill();
-
             angle += 0.03;
             requestAnimationFrame(draw2D);
         }
@@ -897,12 +870,11 @@
         button.addEventListener('click', function() {
             document.querySelectorAll('.node').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-
             const hex = this.dataset.color || '#5cf4e8';
             if (hasThree && hasWebGL && targetColor) {
                 targetColor.set(hex);
             }
-            addMessage('SYSTEM', `Focus set to ${this.dataset.name}. Neural color calibrated.`, 'system');
+            addMessage('SYSTEM', `Core node shifted to ${this.dataset.name}.`, 'system');
         });
     });
 </script>

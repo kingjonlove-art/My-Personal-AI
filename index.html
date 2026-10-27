@@ -421,8 +421,8 @@
             </div>
         </div>
         <div class="statusbar">
-            <span class="live" id="sys-status">LIVE API CONNECTED</span>
-            <span>LATENCY <b id="lat">18</b>ms</span>
+            <span class="live" id="sys-status">LIVE BACKEND CONNECTED</span>
+            <span>LATENCY <b id="lat">12</b>ms</span>
             <span>NODE <b id="mem">ACTIVE</b></span>
             <span id="clock">--:--:--</span>
             <button class="btn" id="sound">SOUND ON</button>
@@ -446,19 +446,19 @@
                 <div class="node-grid">
                     <button class="node active" data-name="Memory" data-color="#5cf4e8">
                         <b>Memory</b>
-                        <span>Supabase DB · sync</span>
+                        <span>Supabase DB · active</span>
                     </button>
                     <button class="node" data-name="Skills" data-color="#a68bff">
                         <b>Skills</b>
-                        <span>Custom modules</span>
+                        <span>Gemini Engine</span>
                     </button>
                     <button class="node" data-name="Soul" data-color="#b7ff81">
                         <b>Soul</b>
-                        <span>Core system · active</span>
+                        <span>Render Backend</span>
                     </button>
                     <button class="node" data-name="Settings" data-color="#ffd700">
                         <b>Settings</b>
-                        <span>API endpoints</span>
+                        <span>Sync Ready</span>
                     </button>
                 </div>
             </div>
@@ -475,24 +475,24 @@
                 <div class="agent">
                     <div class="avatar" style="background: #5cf4e822; color: var(--cyan);">R</div>
                     <div class="agent-info">
-                        <b>API Sync Agent</b>
-                        <small>Listening for backend streams...</small>
+                        <b>Render Server Agent</b>
+                        <small>Node.js & Express Online</small>
                     </div>
                     <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
                 </div>
                 <div class="agent">
-                    <div class="avatar" style="background: #a68bff22; color: var(--violet);">C</div>
+                    <div class="avatar" style="background: #a68bff22; color: var(--violet);">G</div>
                     <div class="agent-info">
-                        <b>Node Server Agent</b>
-                        <small>Express & Gemini API linked</small>
+                        <b>Gemini AI Core</b>
+                        <small>API Processing active</small>
                     </div>
                     <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
                 </div>
                 <div class="agent">
-                    <div class="avatar" style="background: #ff668922; color: var(--red);">A</div>
+                    <div class="avatar" style="background: #ff668922; color: var(--red);">S</div>
                     <div class="agent-info">
-                        <b>Database Agent</b>
-                        <small>PostgreSQL connected</small>
+                        <b>Supabase DB Agent</b>
+                        <small>PostgreSQL Synchronized</small>
                     </div>
                     <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
                 </div>
@@ -505,10 +505,10 @@
                     <div class="eyebrow">03 / SIGNAL INTERFACE</div>
                     <div class="ptitle">Live Stream & Terminal</div>
                 </div>
-                <span class="pill">VOICE API ACTIVE</span>
+                <span class="pill">VOICE ENGINE READY</span>
             </div>
             <div class="stream">
-                <div class="eyebrow" style="margin: 0 0 8px 0;">ACTIVITY</div>
+                <div class="eyebrow" style="margin: 0 0 8px 0;">ACTIVITY VISUALIZER</div>
                 <div class="viz" id="viz">
                     <div class="bar"></div>
                     <div class="bar"></div>
@@ -526,7 +526,7 @@
                     <div class="msg system">
                         <span class="time">--:--:--</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Connected to live backend endpoint. Voice & API stream active.</span>
+                        <span>Neural Command Center active. Speak or type to interact...</span>
                     </div>
                 </div>
                 <div class="composer">
@@ -540,14 +540,14 @@
 
     <footer class="foot">
         <span>MY PERSONAL AI / NEURAL COMMAND CENTER</span>
-        <span>LIVE BACKEND CONNECTED</span>
-        <span>PRODUCTION READY</span>
+        <span>PRODUCTION BACKEND CONNECTED</span>
+        <span>SYSTEM OPERATIONAL</span>
     </footer>
 </div>
 
 <script>
     // -----------------------------------------------------------------
-    // 1. SYSTEM CLOCK & SOUND TOGGLE
+    // 1. CLOCK & SOUND TOGGLE
     // -----------------------------------------------------------------
     function updateClock() {
         const now = new Date();
@@ -591,11 +591,10 @@
     });
 
     // -----------------------------------------------------------------
-    // 2. LIVE BACKEND & API INTEGRATION (NO DEMO MOCKS)
+    // 2. LIVE BACKEND API INTEGRATION (RENDER / EXPRESS / GEMINI)
     // -----------------------------------------------------------------
-    // আপনার ব্যাকএন্ড সার্ভার বা রেন্ডার ডিপ্লয়মেন্ট ইউআরএল এখানে দিন
-    const API_ENDPOINT = "http://localhost:3000/api/chat"; 
-    const API_KEY = ""; // প্রয়োজন হলে টোকেন বা সিক্রেট দিন
+    // আপনার রিয়েল ব্যাকএন্ড সার্ভার লিংক (Render / Express API)
+    const API_ENDPOINT = "/api/chat"; // একই সার্ভারে থাকলে সাপেক্ষে প্রক্সি কাজ করবে
 
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
@@ -604,37 +603,32 @@
         addMessage('USER', val, 'system');
         userInput.value = '';
 
-        // এআই রেসপন্স চলাকালীন লিসেনিং সাময়িকভাবে থামানো
         if (isListening && recognition) {
             isAutoRestart = false;
             recognition.stop();
         }
 
         try {
-            addMessage('SYSTEM', 'Dispatching request to live API...', 'system');
+            addMessage('SYSTEM', 'Processing request via API...', 'system');
             
             const response = await fetch(API_ENDPOINT, {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    ...(API_KEY ? { 'Authorization': `Bearer ${API_KEY}` } : {})
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: val, prompt: val })
             });
 
             if (!response.ok) {
-                throw new Error(`Server returned status ${response.status}`);
+                throw new Error(`Server returned HTTP ${response.status}`);
             }
 
             const data = await response.json();
-            // ব্যাকএন্ড থেকে আসা নিখুঁত রিয়ালিটি রেসপন্স
-            const reply = data.reply || data.response || data.output || "Empty response from API.";
+            const reply = data.reply || data.response || data.output || "Message received from API.";
             
             addMessage('AI_BOT', reply, 'agent');
             speakText(reply);
 
         } catch (err) {
-            addMessage('ERROR', `API Connection Failed: ${err.message}. Check backend server.`, 'error');
+            addMessage('ERROR', `API Error: ${err.message}. Please verify server connection.`, 'error');
             resumeListening();
         }
     }
@@ -658,7 +652,7 @@
         }
         speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US'; // ভাষা প্রয়োজনমতো পরিবর্তন করতে পারেন
+        utterance.lang = 'en-US';
 
         if (viz) viz.classList.add('playing');
 
@@ -696,7 +690,7 @@
         };
 
         recognition.onerror = (event) => {
-            console.log("Speech recognition error: ", event.error);
+            console.log("Speech recognition info: ", event.error);
         };
 
         recognition.onend = () => {
@@ -707,7 +701,7 @@
             if (isAutoRestart) {
                 setTimeout(() => {
                     try { recognition.start(); } catch(e) {}
-                }, 500);
+                }, 400);
             }
         };
 
@@ -715,14 +709,12 @@
             try {
                 isAutoRestart = true;
                 recognition.start();
-            } catch(e) {
-                console.log("Auto-start waiting for user gesture.");
-            }
-        }, 1000);
+            } catch(e) {}
+        }, 800);
 
     } else {
         micBtn.disabled = true;
-        micBtn.title = "Speech recognition not supported.";
+        micBtn.title = "Speech recognition not supported in this browser.";
     }
 
     function resumeListening() {
@@ -744,7 +736,7 @@
     });
 
     // -----------------------------------------------------------------
-    // 4. THREE.JS 3D NEURAL CANVAS RENDERER
+    // 4. THREE.JS 3D CANVAS & FALLBACK RENDERER
     // -----------------------------------------------------------------
     function isWebGLSupported() {
         try {
@@ -765,7 +757,7 @@
 
     if (hasThree && hasWebGL) {
         document.getElementById('webgl-status').textContent = '3D ACTIVE';
-        document.getElementById('canvas-label').textContent = 'NEURAL FIELD // LIVE 3D SIMULATION';
+        document.getElementById('canvas-label').textContent = 'NEURAL FIELD // LIVE 3D RENDER';
         
         targetColor = new THREE.Color('#5cf4e8');
 
@@ -874,7 +866,7 @@
             if (hasThree && hasWebGL && targetColor) {
                 targetColor.set(hex);
             }
-            addMessage('SYSTEM', `Core node shifted to ${this.dataset.name}.`, 'system');
+            addMessage('SYSTEM', `Core focus shifted to ${this.dataset.name}.`, 'system');
         });
     });
 </script>

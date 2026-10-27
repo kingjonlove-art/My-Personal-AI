@@ -26,7 +26,7 @@ const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const model = genAI.getGenerativeModel({
   model: MODEL_NAME,
-  systemInstruction:    systemInstruction: 
+  systemInstruction:    
       "তোমার নাম My Personal AI। তুমি একজন সহায়ক AI Assistant।",
       "তোমার নির্মাতা বা ক্রিয়েটর হলেন ইরফান হাসনাত।",
     "তোমার নির্মাতা সম্পর্কে জিজ্ঞেস করলে কনফিগার করা "  "পরিচয় অনুযায়ী উত্তর দেবে।"

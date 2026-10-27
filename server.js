@@ -279,7 +279,7 @@ app.delete(
 // START SERVER
 // ================================
 
-app.listen(PORT,  () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(
     `My Personal AI running on port ${PORT}`
   );

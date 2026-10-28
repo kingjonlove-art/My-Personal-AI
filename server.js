@@ -1,58 +1,55 @@
-const express = require('express');
-const cors = require('cors');
-const { GoogleGenAI } = require('@google/genai');
+import express from 'express';
+import dotenv from 'dotenv';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+// এনভায়রনমেন্ট ভেরিয়েবল লোড করা
+dotenv.config();
 
 const app = express();
-
-// ১. মিডলওয়্যার কনফিগারেশন (CORS ও JSON পার্সিং যাতে ফ্রন্টএন্ডের সাথে ব্লক না হয়)
-app.use(cors({
-    origin: '*', // প্রয়োজনে নির্দিষ্ট ডোমেইন দিতে পারেন, '*' দিলে যেকোনো ফ্রন্টএন্ড থেকে এক্সেস পাবে
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type']
-}));
-app.use(express.json());
-
-// ২. Gemini API ইনিশিয়ালাইজেশন (Render-এর Environment Variable থেকে API Key নিবে)
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-// ৩. হেলথ চেক রাউট (আপনার ফ্রন্টএন্ডের HEALTH_ENDPOINT এটি চেক করে)
-app.get('/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// ৪. মূল চ্যাট রাউট (ফ্রন্টএন্ডের API_ENDPOINT থেকে রিকোয়েস্ট রিসিভ করবে)
-app.post('/api/chat', async (req, res) => {
-    try {
-        const { message, conversationId } = req.body;
-        
-        if (!message || !message.trim()) {
-            return res.status(400).json({ error: "Message is required" });
-        }
-
-        // Gemini মডেল কল করা (gemini-2.5-flash ব্যবহার করা হচ্ছে)
-        const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: message,
-        });
-
-        const replyText = response.text;
-
-        // সফলভাবে ফ্রন্টএন্ডে উত্তর পাঠানো
-        res.json({
-            reply: replyText,
-            conversationId: conversationId || "conv_" + Date.now()
-        });
-
-    } catch (error) {
-        console.error("Gemini API Error:", error);
-        res.status(500).json({ 
-            error: error.message || "Internal Server Error. Please try again later." 
-        });
-    }
-});
-
-// ৫. সার্ভার পোর্ট লিসেনিং (Render স্বয়ংক্রিয়ভাবে PORT অ্যাসাইন করবে)
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running successfully on port ${PORT}`);
+
+// মিডলওয়্যার
+app.use(express.json());
+app.use(express.static('public'));
+
+// জেমিনি এপিআই ইনিশিয়ালাইজেশন
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const modelName = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+
+// রুট রাউট (টেস্ট করার জন্য)
+app.get('/', (req, res) => {
+  res.send('My Personal AI Server is running successfully!');
+});
+
+// চ্যাট এপিআই এন্ডপয়েন্ট
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { message, prompt } = req.body;
+    const userMessage = message || prompt;
+
+    if (!userMessage) {
+      return res.status(400).json({ error: 'Message is required' });
+    }
+
+    // সিস্টেম ইনস্ট্রাকশন বা ক্রিয়েটরের পরিচয় (আপনার নাম সেট করা)
+    const systemInstruction = "তোমার নাম একটি এআই সহকারী এবং তোমার ক্রিয়েটর বা নির্মাতা হলেন ইরফান হাসনাত (Irfan Hasnat)। কেউ যদি তোমার ক্রিয়েটর সম্পর্কে জানতে চায়, তবে তুমি স্পষ্টভাবে বলবে যে তোমার ক্রিয়েটর ইরফান হাসনাত।";
+
+    const model = genAI.getGenerativeModel({ 
+      model: modelName,
+      systemInstruction: systemInstruction
+    });
+
+    const result = await model.generateContent(userMessage);
+    const responseText = result.response.text();
+
+    res.json({ reply: responseText, response: responseText });
+  } catch (error) {
+    console.error('Error generating content:', error);
+    res.status(500).json({ error: 'Internal Server Error', details: error.message });
+  }
+});
+
+// সার্ভার স্টার্ট (0.0.0.0 সহ পোর্ট বাইন্ডিং নিশ্চিত করা হয়েছে যাতে রেন্ডার পোর্ট ধরতে পারে)
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
 });

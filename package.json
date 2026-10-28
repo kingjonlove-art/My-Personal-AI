@@ -1,13 +1,15 @@
 {
-  "name": "my-personal-ai-backend",
+  "name": "my-personal-ai-server",
   "version": "1.0.0",
+  "description": "Backend server for My Personal AI with Gemini API",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "@google/genai": "^0.1.1",
-    "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "@google/generative-ai": "^0.21.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
   }
 }

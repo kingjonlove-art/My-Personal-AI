@@ -1,15 +1,13 @@
 {
-  "name": "my-personal-ai",
+  "name": "my-personal-ai-backend",
   "version": "1.0.0",
-  "type": "module",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.24.1",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "pg": "^8.13.1",
-"cors": "^2.8.5"
+    "@google/genai": "^0.1.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
   }
 }

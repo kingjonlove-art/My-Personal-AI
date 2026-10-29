@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MY PERSONAL AI - Smart Multilingual Voice</title>
+    <title>MY PERSONAL AI - Manual Toggle Continuous Voice</title>
     <!-- Three.js Library for 3D Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -20,6 +20,7 @@
             --violet: #a68bff;
             --lime: #b7ff81;
             --red: #ff6689;
+            --gold: #ffd700;
         }
 
         * { box-sizing: border-box; }
@@ -30,6 +31,16 @@
             color: var(--text);
             font-family: 'Space Grotesk', sans-serif;
             min-height: 100vh;
+        }
+
+        body:before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: linear-gradient(#17243735 1px, transparent 1px), linear-gradient(90deg, #17243735 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: linear-gradient(to bottom, #0007, transparent 88%);
         }
 
         .app {
@@ -78,8 +89,9 @@
             flex-wrap: wrap;
         }
 
-        .live { color: var(--lime); }
-        .live:before {
+        .live { color: var(--muted); }
+        .live.active { color: var(--lime); }
+        .live.active:before {
             content: "";
             display: inline-block;
             width: 6px;
@@ -145,6 +157,40 @@
         }
         canvas { width: 100% !important; height: 100% !important; display: block; }
         .brain-label { position: absolute; left: 14px; bottom: 13px; font: 10px 'DM Mono'; color: #92abbc; pointer-events: none; }
+
+        .node-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 9px;
+            margin-top: 12px;
+        }
+
+        button.node {
+            background: var(--panel2);
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            padding: 13px;
+            text-align: left;
+            cursor: pointer;
+        }
+        button.node b { display: block; font-size: 12px; margin-bottom: 3px; }
+        button.node span { font: 10px 'DM Mono'; color: var(--muted); }
+        button.node.active { border-color: var(--cyan); background: #5cf4e80a; }
+        button.node.active b { color: var(--cyan); }
+
+        .agent-list { padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+        .agent {
+            background: var(--panel2);
+            border: 1px solid var(--line);
+            border-radius: 13px;
+            padding: 11px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .avatar { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; }
+        .agent-info small { display: block; font: 10px 'DM Mono'; color: var(--muted); margin-top: 2px; }
+        .dot { width: 6px; height: 6px; border-radius: 50%; margin-left: auto; }
 
         .stream { padding: 15px; }
         .viz {
@@ -220,10 +266,25 @@
             cursor: pointer;
         }
 
+        .mic-btn {
+            border: 1px solid var(--line) !important;
+            background: var(--panel2) !important;
+            color: var(--muted) !important;
+        }
         .mic-btn.active {
             border-color: var(--lime) !important;
             color: var(--lime) !important;
             box-shadow: 0 0 12px rgba(183, 255, 129, 0.4);
+        }
+
+        .foot {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            color: var(--muted);
+            font: 10px 'DM Mono';
+            padding: 17px 2px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
@@ -235,11 +296,13 @@
             <div class="mark">S</div>
             <div>
                 <h1>MY PERSONAL AI</h1>
-                <small>SMART MULTILINGUAL VOICE</small>
+                <small>NEURAL COMMAND CENTER</small>
             </div>
         </div>
         <div class="statusbar">
-            <span class="live" id="sys-status">VOICE READY</span>
+            <span class="live" id="sys-status">VOICE OFF</span>
+            <span>LATENCY <b id="lat">28</b>ms</span>
+            <span>MEMORY <b id="mem">64</b>%</span>
             <span id="clock">--:--:--</span>
             <button class="btn" id="sound">SOUND ON</button>
         </div>
@@ -252,12 +315,30 @@
                     <div class="eyebrow">01 / COGNITION CORE</div>
                     <div class="ptitle">Neural Network</div>
                 </div>
-                <span class="pill" id="webgl-status">3D ACTIVE</span>
+                <span class="pill" id="webgl-status">INIT...</span>
             </div>
             <div class="brain-area">
                 <div class="brainbox" id="brainbox">
                     <canvas id="brain"></canvas>
-                    <div class="brain-label" id="canvas-label">NEURAL FIELD // READY</div>
+                    <div class="brain-label" id="canvas-label">NEURAL FIELD // INITIALIZING</div>
+                </div>
+                <div class="node-grid">
+                    <button class="node active" data-name="Memory" data-color="#5cf4e8">
+                        <b>Memory</b>
+                        <span>Context store · ready</span>
+                    </button>
+                    <button class="node" data-name="Skills" data-color="#a68bff">
+                        <b>Skills</b>
+                        <span>>12 modules loaded</span>
+                    </button>
+                    <button class="node" data-name="Soul" data-color="#b7ff81">
+                        <b>Soul</b>
+                        <span>Core ethics · active</span>
+                    </button>
+                    <button class="node" data-name="Settings" data-color="#ffd700">
+                        <b>Settings</b>
+                        <span>Config · nominal</span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -265,14 +346,35 @@
         <section class="panel">
             <div class="ph">
                 <div>
-                    <div class="eyebrow">02 / AGENT STATUS</div>
-                    <div class="ptitle">Active Hub</div>
+                    <div class="eyebrow">02 / AGENT TOWN</div>
+                    <div class="ptitle">Virtual Hub</div>
                 </div>
             </div>
-            <div style="padding: 16px; font-size: 13px; color: var(--muted);">
-                <p>💡 <b>Language Mode:</b> Auto-detects Bangla & English.</p>
-                <p>🗣️ Speak in Bangla ➔ AI replies in Bangla.</p>
-                <p>🗣️ Speak in English ➔ AI replies in English.</p>
+            <div class="agent-list">
+                <div class="agent">
+                    <div class="avatar" style="background: #5cf4e822; color: var(--cyan);">R</div>
+                    <div class="agent-info">
+                        <b>Research Agent</b>
+                        <small>Browsing live data...</small>
+                    </div>
+                    <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
+                </div>
+                <div class="agent">
+                    <div class="avatar" style="background: #a68bff22; color: var(--violet);">C</div>
+                    <div class="agent-info">
+                        <b>Coder Agent</b>
+                        <small>Reviewing components...</small>
+                    </div>
+                    <div class="dot" style="background: var(--line);"></div>
+                </div>
+                <div class="agent">
+                    <div class="avatar" style="background: #ff668922; color: var(--red);">A</div>
+                    <div class="agent-info">
+                        <b>Analyst Agent</b>
+                        <small>Mapping task flow...</small>
+                    </div>
+                    <div class="dot" style="background: var(--lime); box-shadow: 0 0 8px var(--lime);"></div>
+                </div>
             </div>
         </section>
 
@@ -282,7 +384,7 @@
                     <div class="eyebrow">03 / SIGNAL INTERFACE</div>
                     <div class="ptitle">Live Stream & Terminal</div>
                 </div>
-                <span class="pill">AUTO-LISTEN ON</span>
+                <span class="pill" id="listen-pill">MIC OFF</span>
             </div>
             <div class="stream">
                 <div class="eyebrow" style="margin: 0 0 8px 0;">ACTIVITY</div>
@@ -297,17 +399,23 @@
                     <div class="msg system">
                         <span class="time">--:--:--</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Continuous Voice Mode active. Start speaking in Bangla or English...</span>
+                        <span>Microphone is OFF initially. Click 'MIC ON' to start speaking.</span>
                     </div>
                 </div>
                 <div class="composer">
-                    <button class="btn mic-btn active" id="micBtn">MIC ON</button>
-                    <input type="text" id="userInput" placeholder="Listening automatically...">
+                    <button class="btn mic-btn" id="micBtn" title="Toggle Continuous Listening">MIC OFF</button>
+                    <input type="text" id="userInput" placeholder="Type or turn on MIC...">
                     <button class="btn" id="sendBtn">SEND</button>
                 </div>
             </div>
         </section>
     </main>
+
+    <footer class="foot">
+        <span>STONIC AI / INTERFACE CONCEPT</span>
+        <span>MANUAL TOGGLE VOICE READY</span>
+        <span>DESIGNED FOR CLARITY & CONTROL</span>
+    </footer>
 </div>
 
 <script>
@@ -331,6 +439,8 @@
     const sendBtn = document.getElementById('sendBtn');
     const clearBtn = document.getElementById('clear');
     const micBtn = document.getElementById('micBtn');
+    const sysStatus = document.getElementById('sys-status');
+    const listenPill = document.getElementById('listen-pill');
 
     function addMessage(who, text, type) {
         const time = new Date().toTimeString().split(' ')[0];
@@ -358,7 +468,7 @@
         userInput.value = '';
 
         if (isListening && recognition) {
-            isAutoRestart = false;
+            userWantedMicOn = false; // সাময়িকভাবে পজ করার সময় ইউজার স্টেট ধরে রাখা
             try { recognition.stop(); } catch(e) {}
         }
 
@@ -379,6 +489,7 @@
 
         } catch (err) {
             addMessage('ERROR', `Server Connection Failed: ${err.message}`, 'error');
+            userWantedMicOn = true;
             resumeListening();
         }
     }
@@ -388,10 +499,10 @@
         if (e.key === 'Enter') handleSendMessage();
     });
 
-    // Smart Text-to-Speech (Detects Language Automatically)
     function speakText(text) {
         if (!soundEnabled || !('speechSynthesis' in window)) {
             setTimeout(() => { lastSentText = ""; }, 1000);
+            userWantedMicOn = true;
             resumeListening();
             return;
         }
@@ -400,8 +511,6 @@
         isSpeaking = true;
 
         const utterance = new SpeechSynthesisUtterance(text);
-        
-        // অটোমেটিক ভাষা ডিটেক্ট করা (বাংলা হরফ থাকলে 'bn-BD', না থাকলে 'en-US')
         const isBangla = /[\u0980-\u09FF]/.test(text);
         utterance.lang = isBangla ? 'bn-BD' : 'en-US'; 
 
@@ -411,6 +520,7 @@
             if (viz) viz.classList.remove('playing');
             isSpeaking = false;
             setTimeout(() => { lastSentText = ""; }, 1000); 
+            userWantedMicOn = true;
             resumeListening();
         };
         
@@ -418,6 +528,7 @@
             if (viz) viz.classList.remove('playing');
             isSpeaking = false;
             setTimeout(() => { lastSentText = ""; }, 1000);
+            userWantedMicOn = true;
             resumeListening();
         };
 
@@ -426,19 +537,22 @@
 
     let recognition = null;
     let isListening = false;
-    let isAutoRestart = true;
+    let userWantedMicOn = false; // ইউজার নিজে অন করেছে কি না তা ট্র্যাক করার জন্য
 
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = false;
-        recognition.lang = 'bn-IN'; // বাংলা ও ইংরেজি উভয় উচ্চারণ ধরতে সাহায্য করে
+        recognition.lang = 'bn-IN';
 
         recognition.onstart = () => {
             isListening = true;
             micBtn.classList.add('active');
             micBtn.textContent = "MIC ON";
+            sysStatus.textContent = "VOICE READY";
+            sysStatus.className = "live active";
+            listenPill.textContent = "AUTO-LISTEN ON";
         };
 
         recognition.onresult = (event) => {
@@ -454,39 +568,113 @@
             isListening = false;
             micBtn.classList.remove('active');
             micBtn.textContent = "MIC OFF";
+            sysStatus.textContent = "VOICE OFF";
+            sysStatus.className = "live";
+            listenPill.textContent = "MIC OFF";
             
-            if (isAutoRestart && !isSpeaking) {
+            // যদি ইউজার ম্যানুয়ালি অফ না করে থাকেন এবং এআই কথা শেষ করে, তবে আবার লিসেনিং চালু হবে
+            if (userWantedMicOn && !isSpeaking) {
                 setTimeout(() => {
                     try { recognition.start(); } catch(e) {}
                 }, 800);
             }
         };
 
-        setTimeout(() => {
-            try {
-                isAutoRestart = true;
-                recognition.start();
-            } catch(e) {}
-        }, 1000);
+        recognition.onerror = (event) => {
+            console.log("Speech Error: ", event.error);
+        };
+
+    } else {
+        micBtn.disabled = true;
+        micBtn.title = "Speech recognition not supported.";
     }
 
     function resumeListening() {
-        if (recognition && !isListening && !isSpeaking) {
-            isAutoRestart = true;
+        if (recognition && !isListening && userWantedMicOn && !isSpeaking) {
             try { recognition.start(); } catch(e) {}
         }
     }
 
+    // ম্যানুয়াল মাইক্রোফোন টগল বাটন
     micBtn.addEventListener('click', () => {
         if (!recognition) return;
         if (isListening) {
-            isAutoRestart = false;
+            userWantedMicOn = false; // ইউজার নিজে অফ করল
             recognition.stop();
+            addMessage('SYSTEM', 'Microphone turned OFF manually.', 'system');
         } else {
-            isAutoRestart = true;
-            try { recognition.start(); } catch (e) {}
+            userWantedMicOn = true; // ইউজার নিজে অন করল
+            try {
+                recognition.start();
+                addMessage('SYSTEM', 'Microphone turned ON. Start speaking...', 'system');
+            } catch (e) {}
         }
     });
+
+    // 3D & 2D Engine
+    function isWebGLSupported() {
+        try {
+            const testCanvas = document.createElement('canvas');
+            return !!(window.WebGLRenderingContext && 
+                (testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl')));
+        } catch (e) { return false; }
+    }
+
+    const brainBox = document.getElementById('brainbox');
+    const canvas = document.getElementById('brain');
+    let targetColor = null;
+    const hasThree = typeof THREE !== 'undefined';
+    const hasWebGL = isWebGLSupported();
+
+    if (hasThree && hasWebGL) {
+        document.getElementById('webgl-status').textContent = '3D ACTIVE';
+        document.getElementById('canvas-label').textContent = 'NEURAL FIELD // 3D REALTIME SIMULATION';
+        targetColor = new THREE.Color('#5cf4e8');
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, brainBox.clientWidth / brainBox.clientHeight, 0.1, 1000);
+        camera.position.z = 18;
+
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+        renderer.setSize(brainBox.clientWidth, brainBox.clientHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const particlesCount = 350;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particlesCount * 3);
+        const colors = new Float32Array(particlesCount * 3);
+
+        for (let i = 0; i < particlesCount; i++) {
+            const u = Math.random(), v = Math.random();
+            const theta = u * 2.0 * Math.PI, phi = Math.acos(2.0 * v - 1.0);
+            const r = 5.5 + (Math.random() - 0.5) * 0.8;
+            positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+            positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+            positions[i * 3 + 2] = r * Math.cos(phi);
+            colors[i * 3] = 0.36; colors[i * 3 + 1] = 0.95; colors[i * 3 + 2] = 0.91;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+        const material = new THREE.PointsMaterial({ size: 0.25, vertexColors: true, transparent: true, opacity: 0.85 });
+        const particleSystem = new THREE.Points(geometry, material);
+        scene.add(particleSystem);
+
+        const coreGeo = new THREE.IcosahedronGeometry(3.5, 2);
+        const coreMat = new THREE.MeshBasicMaterial({ color: 0x5cf4e8, wireframe: true, transparent: true, opacity: 0.25 });
+        const coreMesh = new THREE.Mesh(coreGeo, coreMat);
+        scene.add(coreMesh);
+
+        function animate3D() {
+            requestAnimationFrame(animate3D);
+            particleSystem.rotation.y += 0.003;
+            coreMesh.rotation.y -= 0.005;
+            if (targetColor) coreMesh.material.color.lerp(targetColor, 0.05);
+            renderer.render(scene, camera);
+        }
+        animate3D();
+    }
 </script>
 </body>
 </html>

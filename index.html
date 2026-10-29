@@ -556,7 +556,7 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    let soundEnabled = true; // ডিফল্টভাবে ভয়েস আউটপুট অন রাখা হয়েছে
+    let soundEnabled = true;
     const soundBtn = document.getElementById('sound');
     soundBtn.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
@@ -591,10 +591,10 @@
     });
 
     // -----------------------------------------------------------------
-    // 2. BACKEND & API CONFIGURATION
+    // 2. BACKEND & API CONFIGURATION (RENDER URL UPDATED)
     // -----------------------------------------------------------------
-    const API_ENDPOINT = ""; 
-    const API_KEY = "";
+    const API_ENDPOINT = "https://my-personal-ai-1-lz9o.onrender.com/api/chat"; // আপনার রেন্ডার সার্ভার এন্ডপয়েন্ট
+    const API_KEY = ""; 
 
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
@@ -603,7 +603,6 @@
         addMessage('USER', val, 'system');
         userInput.value = '';
 
-        // এআই উত্তর বলার সময় যাতে লিসেনিং সাময়িকভাবে বন্ধ থাকে (যাতে নিজের কথা নিজে না শুনে)
         if (isListening && recognition) {
             isAutoRestart = false;
             recognition.stop();
@@ -611,33 +610,36 @@
 
         if (API_ENDPOINT !== "") {
             try {
-                addMessage('SYSTEM', 'Processing API request...', 'system');
+                addMessage('SYSTEM', 'Connecting to Render server...', 'system');
+                
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
                         ...(API_KEY ? { 'Authorization': `Bearer ${API_KEY}` } : {})
                     },
-                    body: JSON.stringify({ prompt: val, message: val })
+                    body: JSON.stringify({ prompt: val, message: val, query: val })
                 });
 
-                if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+                if (!response.ok) throw new Error(`Server Error: ${response.status}`);
                 
                 const data = await response.json();
-                const reply = data.reply || data.response || data.choices?.[0]?.text || "Response received.";
+                
+                const reply = data.reply || data.response || data.message || data.output || (data.choices && data.choices[0]?.text) || "Response processed successfully.";
+                
                 addMessage('AI_BOT', reply, 'agent');
                 speakText(reply);
+
             } catch (err) {
-                addMessage('ERROR', `Backend Failed: ${err.message}`, 'error');
+                addMessage('ERROR', `Server Connection Failed: ${err.message}`, 'error');
                 resumeListening();
             }
         } else {
-            // সিমুলেটেড রেসপন্স (আপনার প্রম্পট অনুযায়ী উত্তর দিয়ে আবার লিসেনিং শুরু করবে)
             setTimeout(() => {
-                const textReply = `I heard you say: "${val}". How else can I help you?`;
-                addMessage('CODER', textReply, 'agent');
+                const textReply = `Please configure API_ENDPOINT. Received: "${val}"`;
+                addMessage('AI_BOT', textReply, 'agent');
                 speakText(textReply);
-            }, 100);
+            }, 300);
         }
     }
 
@@ -661,18 +663,17 @@
         speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
         
-        // ভাষা সেট করতে পারেন (যেমন বাংলা চাইলে 'bn-BD' বা ইংরেজি চাইলে 'en-US')
-        utterance.lang = 'en-US'; 
+        utterance.lang = 'bn-BD'; 
 
         if (viz) {
             viz.classList.add('playing');
         }
 
-        // কথা বলা শেষ হলে আবার স্বয়ংক্রিয়ভাবে লিসেনিং চালু হবে
         utterance.onend = () => {
             if (viz) viz.classList.remove('playing');
             resumeListening();
         };
+        
         utterance.onerror = () => {
             if (viz) viz.classList.remove('playing');
             resumeListening();
@@ -684,9 +685,9 @@
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.continuous = true; // কন্টিনিউয়াস মোড অন রাখা হয়েছে যাতে বারবার বন্ধ না হয়
+        recognition.continuous = true;
         recognition.interimResults = false;
-        recognition.lang = 'en-US'; // বাংলা বলার জন্য 'bn-BD' দিতে পারেন
+        recognition.lang = 'bn-BD';
 
         recognition.onstart = () => {
             isListening = true;
@@ -703,7 +704,7 @@
         };
 
         recognition.onerror = (event) => {
-            console.log("Mic error or no speech detected: ", event.error);
+            console.log("Speech Error: ", event.error);
         };
 
         recognition.onend = () => {
@@ -711,7 +712,6 @@
             micBtn.classList.remove('active');
             micBtn.textContent = "MIC OFF";
             
-            // যদি ইউজার নিজে বন্ধ না করে থাকেন, তবে স্বয়ংক্রিয়ভাবে আবার লিসেনিং শুরু হবে
             if (isAutoRestart) {
                 setTimeout(() => {
                     try { recognition.start(); } catch(e) {}
@@ -719,7 +719,6 @@
             }
         };
 
-        // পেজ লোড হওয়ার সাথে সাথেই অটো-লিসেনিং শুরু করে দেওয়া
         setTimeout(() => {
             try {
                 isAutoRestart = true;

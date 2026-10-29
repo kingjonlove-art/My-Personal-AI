@@ -400,7 +400,7 @@
                     <div class="msg system">
                         <span class="time">--:--:--</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Microphone is strictly manual. Click 'MIC ON' when you want to speak.</span>
+                        <span>Connected to backend server. Microphone is manual.</span>
                     </div>
                 </div>
                 <div class="composer">
@@ -414,13 +414,12 @@
 
     <footer class="foot">
         <span>STONIC AI / INTERFACE CONCEPT</span>
-        <span>MANUAL CONTROL VOICE READY</span>
+        <span>SERVER SECURED BACKEND API</span>
         <span>DESIGNED FOR CLARITY & CONTROL</span>
     </footer>
 </div>
 
 <script>
-    // ঘড়ি সচল রাখার ফাংশন
     function updateClock() {
         const now = new Date();
         document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
@@ -473,6 +472,7 @@
         terminal.innerHTML = '<div class="msg system"><span class="time">--:--:--</span><span class="who">[SYSTEM]</span><span>Terminal log cleared.</span></div>';
     });
 
+    // আপনার রেন্ডার ব্যাকএন্ড সার্ভারের API এন্ডপয়েন্ট
     const API_ENDPOINT = "https://my-personal-ai-1-lz9o.onrender.com/api/chat"; 
     let lastSentText = "";
     let isSpeaking = false;
@@ -544,11 +544,11 @@
     let recognition = null;
     let isListening = false;
 
-    // মাইক্রোফোন ও ভয়েস রিকগনিশন সিস্টেম (১০০% ম্যানুয়াল কন্ট্রোল)
+    // মাইক্রোফোন সিস্টেম (১০০% ম্যানুয়াল কন্ট্রোল - নিজে থেকে অন বা অফ হবে না)
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
-        recognition.continuous = false; // কথা বলা শেষ হলে নিজে থেকে বন্ধ হবে, কিন্তু পুনরায় অটো চালু হবে না
+        recognition.continuous = false; 
         recognition.interimResults = false;
         recognition.lang = 'bn-IN';
 
@@ -577,7 +577,6 @@
             sysStatus.textContent = "VOICE OFF";
             sysStatus.className = "live";
             listenPill.textContent = "MIC OFF";
-            // এখানে কোনো অটো-স্টার্ট লজিক নেই। এটি সম্পূর্ণ আপনার নির্দেশের ওপর নির্ভরশীল।
         };
 
         recognition.onerror = (event) => {
@@ -595,7 +594,6 @@
         micBtn.title = "Speech recognition not supported.";
     }
 
-    // শুধুমাত্র যখন আপনি বাটনে ক্লিক করবেন, তখনই মাইক্রোফোন অন বা অফ হবে
     micBtn.addEventListener('click', () => {
         if (!recognition) return;
         if (isListening) {

@@ -3,12 +3,20 @@ const cors = require('cors');
 const { GoogleGenAI } = require("@google/genai");
 
 const app = express();
+
+// মিডলওয়্যার কনফিগারেশন
 app.use(express.json());
 app.use(cors());
 
-// জেমিনি এপিআই ইনিশিয়ালাইজ (আপনার রেন্ডার এনভায়রনমেন্ট ভ্যারিয়েবলে GEMINI_API_KEY থাকতে হবে)
+// জেমিনি এপিআই ইনিশিয়ালাইজ (রেন্ডারের Environment Variables থেকে API Key রিড করবে)
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
+// রুট টেস্ট রাউট
+app.get('/', (req, res) => {
+    res.send('My Personal AI Server is running successfully!');
+});
+
+// চ্যাট এন্ডপয়েন্ট
 app.post('/api/chat', async (req, res) => {
     try {
         const userMessage = req.body.prompt || req.body.message || req.body.query;
@@ -20,12 +28,13 @@ app.post('/api/chat', async (req, res) => {
             model: 'gemini-2.5-flash',
             contents: userMessage,
             config: {
-                // নির্মাতা সম্পর্কিত নির্দেশনা
-                systemInstruction: "You are 'My Personal AI'. You were created, built, and developed by Irfan Hasnat (ইরফান হাসনাত). If anyone asks who created you, who is your creator, or who made you, always proudly answer that you were created by Irfan Hasnat (ইরফান হাসনাত).",
+                // নির্মাতা সম্পর্কিত সুনির্দিষ্ট নির্দেশনা
+                systemInstruction: "You are 'My Personal AI'. You were created, built, and developed by Irfan Hasnat (ইরফান হাসনাত). If anyone asks who created you, who is your creator, or who made you, always proudly answer that you were created by Irfan Hasnat (ইরফান হাসনাত)."
             }
         });
 
-        const replyText = response.text || "বিকল্প উত্তর পাওয়া যায়নি।";
+        // রেসপন্স টেক্সট এক্সট্রাক্ট করা
+        const replyText = response.text || response.candidates?.[0]?.content?.parts?.[0]?.text || "দুঃখিত, উত্তর পাওয়া যায়নি।";
         res.json({ reply: replyText });
 
     } catch (error) {
@@ -35,6 +44,6 @@ app.post('/api/chat', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on port ${PORT}`);
 });

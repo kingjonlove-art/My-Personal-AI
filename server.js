@@ -1,10 +1,14 @@
 const express = require('express');
+const cors = require('cors');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 const app = express();
+
+// CORS এবং JSON মিডলওয়্যার এনাবল করা হলো যাতে ফ্রন্টএন্ড থেকে রিকোয়েস্ট ব্লক না হয়
+app.use(cors());
 app.use(express.json());
 
-// রেন্ডারের Environment Variables থেকে GEMINI_API_KEY নিবে
+// রেন্ডারের Environment Variables থেকে স্বয়ংক্রিয়ভাবে GEMINI_API_KEY নিবে
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post('/api/chat', async (req, res) => {
@@ -15,7 +19,7 @@ app.post('/api/chat', async (req, res) => {
             return res.status(400).json({ error: "Prompt is required" });
         }
 
-        // gemini-3.7-flash বা আপনার পছন্দের মডেল এখানে দিন
+        // জেমিনির স্টেবল মডেল ব্যবহার করা হলো
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent(userPrompt);

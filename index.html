@@ -102,6 +102,39 @@
             box-shadow: 0 0 12px var(--lime);
         }
 
+        /* সার্ভার স্ট্যাটাসের জন্য নতুন স্টাইল */
+        .server-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 8px;
+            border-radius: 99px;
+            font: 10px 'DM Mono';
+            border: 1px solid var(--line);
+            background: var(--panel2);
+        }
+        .server-status-badge.online {
+            color: var(--lime);
+            border-color: rgba(183, 255, 129, 0.4);
+        }
+        .server-status-badge.online .status-dot {
+            background: var(--lime);
+            box-shadow: 0 0 8px var(--lime);
+        }
+        .server-status-badge.offline {
+            color: var(--red);
+            border-color: rgba(255, 102, 137, 0.4);
+        }
+        .server-status-badge.offline .status-dot {
+            background: var(--red);
+            box-shadow: 0 0 8px var(--red);
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
         button, input { font: inherit; }
 
         .btn {
@@ -301,6 +334,11 @@
             </div>
         </div>
         <div class="statusbar">
+            <!-- সার্ভার স্ট্যাটাস ব্যাজ এখানে যুক্ত করা হয়েছে -->
+            <div id="serverStatusBadge" class="server-status-badge offline">
+                <span class="status-dot"></span>
+                <span id="serverStatusText">SERVER OFFLINE</span>
+            </div>
             <span class="live" id="sys-status">VOICE OFF</span>
             <span>LATENCY <b id="lat">28</b>ms</span>
             <span>MEMORY <b id="mem">64</b>%</span>
@@ -400,7 +438,7 @@
                     <div class="msg system">
                         <span class="time">--:--:--</span>
                         <span class="who">[SYSTEM]</span>
-                        <span>Connected to backend server. Microphone is manual.</span>
+                        <span>Checking server online status...</span>
                     </div>
                 </div>
                 <div class="composer">
@@ -458,6 +496,10 @@
     const micBtn = document.getElementById('micBtn');
     const sysStatus = document.getElementById('sys-status');
     const listenPill = document.getElementById('listen-pill');
+    
+    // সার্ভার স্ট্যাটাসের এলিমেন্টসমূহ
+    const serverStatusBadge = document.getElementById('serverStatusBadge');
+    const serverStatusText = document.getElementById('serverStatusText');
 
     function addMessage(who, text, type) {
         const time = new Date().toTimeString().split(' ')[0];
@@ -472,10 +514,31 @@
         terminal.innerHTML = '<div class="msg system"><span class="time">--:--:--</span><span class="who">[SYSTEM]</span><span>Terminal log cleared.</span></div>';
     });
 
-    // আপনার রেন্ডার ব্যাকএন্ড সার্ভারের API এন্ডপয়েন্ট
-    const API_ENDPOINT = "https://my-personal-ai-1-lz9o.onrender.com/api/chat"; 
+    // সার্ভার রুট ও চ্যাট এন্ডপয়েন্ট
+    const SERVER_BASE_URL = "https://my-personal-ai-1-lz9o.onrender.com";
+    const API_ENDPOINT = `${SERVER_BASE_URL}/api/chat`; 
     let lastSentText = "";
     let isSpeaking = false;
+
+    // সার্ভার অনলাইন আছে কি না চেক করার ফাংশন
+    async function checkServerStatus() {
+        try {
+            const response = await fetch(SERVER_BASE_URL, { method: 'GET', cache: 'no-store' });
+            if (response.ok) {
+                serverStatusBadge.className = "server-status-badge online";
+                serverStatusText.textContent = "SERVER ONLINE";
+            } else {
+                throw new Error("Server not ok");
+            }
+        } catch (error) {
+            serverStatusBadge.className = "server-status-badge offline";
+            serverStatusText.textContent = "SERVER OFFLINE";
+        }
+    }
+
+    // পেজ লোড হওয়ার সাথে সাথে চেক করবে এবং প্রতি ১০ সেকেন্ড পর পর চেক করতে থাকবে
+    checkServerStatus();
+    setInterval(checkServerStatus, 10000);
 
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
@@ -544,7 +607,7 @@
     let recognition = null;
     let isListening = false;
 
-    // মাইক্রোফোন সিস্টেম (১০০% ম্যানুয়াল কন্ট্রোল - নিজে থেকে অন বা অফ হবে না)
+    // মাইক্রোফোন সিস্টেম (১০০% ম্যানুয়াল কন্ট্রোল)
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();

@@ -11,6 +11,15 @@ app.use(express.json());
 // রেন্ডারের Environment Variables থেকে স্বয়ংক্রিয়ভাবে GEMINI_API_KEY নিবে
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// ১. রুট রাউট (Root Route) যোগ করা হলো যাতে ব্রাউজারে হোম পেজে গেলে "Cannot GET /" না দেখায়
+app.get('/', (req, res) => {
+    res.status(200).json({ 
+        status: "success", 
+        message: "AI Chatbot Backend is running successfully!" 
+    });
+});
+
+// ২. চ্যাট API রাউট
 app.post('/api/chat', async (req, res) => {
     try {
         const userPrompt = req.body.prompt || req.body.message || req.body.query;

@@ -11,11 +11,11 @@ app.use(express.json());
 // রেন্ডারের Environment Variables থেকে স্বয়ংক্রিয়ভাবে GEMINI_API_KEY নিবে
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// রুট রাউট (ব্রাউজারে হোম পেজে গেলে "Cannot GET /" দেখাবে না)
+// রুট রাউট 
 app.get('/', (req, res) => {
     res.status(200).json({ 
         status: "success", 
-        message: "AI Chatbot Backend is running successfully!" 
+        message: "AI Chatbot Backend is running successfully with Gemini 3.7 Flash!" 
     });
 });
 
@@ -28,7 +28,12 @@ app.post('/api/chat', async (req, res) => {
             return res.status(400).json({ error: "Prompt is required" });
         }
 
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        // Gemini 3.7 Flash মডেল এবং সিস্টেম ইনস্ট্রাকশন সেট করা হলো
+        const model = genAI.getGenerativeModel({ 
+            model: "gemini-3.7-flash",
+            systemInstruction: "তোমাকে কে তৈরি করেছে বা কে বানিয়েছে—এই ধরনের কোনো প্রশ্ন করা হলে তুমি সবসময় উত্তর দেবে যে তোমাকে 'ইরফান হাসান' (Irfan Hasnat) তৈরি করেছেন। এছাড়া তোমার নিজের পরিচয় বা অন্যান্য বিষয়ে স্বাভাবিকভাবে উত্তর দেবে।"
+        });
+
         const result = await model.generateContent(userPrompt);
         const responseText = result.response.text();
 

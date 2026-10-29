@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>MY PERSONAL AI - Manual Toggle Continuous Voice</title>
+    <title>MY PERSONAL AI - Neural Command Center</title>
     <!-- Three.js Library for 3D Animations -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
@@ -172,6 +172,7 @@
             padding: 13px;
             text-align: left;
             cursor: pointer;
+            transition: 0.2s;
         }
         button.node b { display: block; font-size: 12px; margin-bottom: 3px; }
         button.node span { font: 10px 'DM Mono'; color: var(--muted); }
@@ -419,6 +420,7 @@
 </div>
 
 <script>
+    // ঘড়ি সচল রাখার ফাংশন
     function updateClock() {
         const now = new Date();
         document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
@@ -426,11 +428,29 @@
     setInterval(updateClock, 1000);
     updateClock();
 
+    // ১. সাউন্ড টগল বাটন (Sound On/Off)
     let soundEnabled = true;
     const soundBtn = document.getElementById('sound');
     soundBtn.addEventListener('click', () => {
         soundEnabled = !soundEnabled;
         soundBtn.textContent = soundEnabled ? 'SOUND ON' : 'SOUND OFF';
+        addMessage('SYSTEM', `Voice output sound is now ${soundEnabled ? 'ENABLED' : 'DISABLED'}.`, 'system');
+    });
+
+    // ২. নোড বাটনসমূহ (Memory, Skills, Soul, Settings) হ্যান্ডলিং
+    document.querySelectorAll('.node').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.node').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+
+            const nodeName = this.dataset.name;
+            const hex = this.dataset.color || '#5cf4e8';
+            
+            if (targetColor && typeof targetColor.set === 'function') {
+                targetColor.set(hex);
+            }
+            addMessage('SYSTEM', `Neural Core switched to [${nodeName} mode]. Parameters updated successfully.`, 'system');
+        });
     });
 
     const viz = document.getElementById('viz');
@@ -451,14 +471,16 @@
         terminal.scrollTop = terminal.scrollHeight;
     }
 
+    // ৩. ক্লিয়ার বাটন (Clear Terminal Log)
     clearBtn.addEventListener('click', () => {
-        terminal.innerHTML = '<div class="msg system"><span class="time">--:--:--</span><span class="who">[SYSTEM]</span><span>Log cleared.</span></div>';
+        terminal.innerHTML = '<div class="msg system"><span class="time">--:--:--</span><span class="who">[SYSTEM]</span><span>Terminal log cleared.</span></div>';
     });
 
     const API_ENDPOINT = "https://my-personal-ai-1-lz9o.onrender.com/api/chat"; 
     let lastSentText = "";
     let isSpeaking = false;
 
+    // ৪. টেক্সট বা ভয়েস প্রম্পট সার্ভারে পাঠানোর ফাংশন
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
         if (!val || val === lastSentText) return; 
@@ -468,7 +490,7 @@
         userInput.value = '';
 
         if (isListening && recognition) {
-            userWantedMicOn = false; // সাময়িকভাবে পজ করার সময় ইউজার স্টেট ধরে রাখা
+            userWantedMicOn = false;
             try { recognition.stop(); } catch(e) {}
         }
 
@@ -499,6 +521,7 @@
         if (e.key === 'Enter') handleSendMessage();
     });
 
+    // ৫. ভয়েস আউটপুট ও ভাষা ডিটেকশন (বাংলা/ইংরেজি)
     function speakText(text) {
         if (!soundEnabled || !('speechSynthesis' in window)) {
             setTimeout(() => { lastSentText = ""; }, 1000);
@@ -537,8 +560,9 @@
 
     let recognition = null;
     let isListening = false;
-    let userWantedMicOn = false; // ইউজার নিজে অন করেছে কি না তা ট্র্যাক করার জন্য
+    let userWantedMicOn = false;
 
+    // ৬. মাইক্রোফোন ও ভয়েস রিকগনিশন সিস্টেম
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         recognition = new SpeechRecognition();
@@ -572,7 +596,6 @@
             sysStatus.className = "live";
             listenPill.textContent = "MIC OFF";
             
-            // যদি ইউজার ম্যানুয়ালি অফ না করে থাকেন এবং এআই কথা শেষ করে, তবে আবার লিসেনিং চালু হবে
             if (userWantedMicOn && !isSpeaking) {
                 setTimeout(() => {
                     try { recognition.start(); } catch(e) {}
@@ -595,15 +618,15 @@
         }
     }
 
-    // ম্যানুয়াল মাইক্রোফোন টগল বাটন
+    // ৭. মাইক্রোফোন অন/অফ টগল বাটন
     micBtn.addEventListener('click', () => {
         if (!recognition) return;
         if (isListening) {
-            userWantedMicOn = false; // ইউজার নিজে অফ করল
+            userWantedMicOn = false;
             recognition.stop();
             addMessage('SYSTEM', 'Microphone turned OFF manually.', 'system');
         } else {
-            userWantedMicOn = true; // ইউজার নিজে অন করল
+            userWantedMicOn = true;
             try {
                 recognition.start();
                 addMessage('SYSTEM', 'Microphone turned ON. Start speaking...', 'system');
@@ -611,7 +634,7 @@
         }
     });
 
-    // 3D & 2D Engine
+    // ৮. থ্রি-ডি ক্যানভাস ইঞ্জিন (3D Neural Field Animation)
     function isWebGLSupported() {
         try {
             const testCanvas = document.createElement('canvas');

@@ -21,7 +21,7 @@ app.post('/api/chat', async (req, res) => {
         }
 
         const model = genAI.getGenerativeModel({ 
-            model: 'gemini-1.5-flash',
+            model: 'gemini-3.8-flash',
             systemInstruction: `You are 'My Personal AI', created, built, and developed by Irfan Hasnat (ইরফান হাসনাত). 
             CRITICAL LANGUAGE RULE: 
             - If the user's input is in English, you MUST reply strictly in English.

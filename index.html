@@ -591,27 +591,28 @@
     });
 
     // -----------------------------------------------------------------
-    // 2. BACKEND & API CONFIGURATION (RENDER URL UPDATED)
+    // 2. BACKEND & API CONFIGURATION (RENDER URL LINKED)
     // -----------------------------------------------------------------
-    const API_ENDPOINT = "https://my-personal-ai-1-lz9o.onrender.com/api/chat"; // আপনার রেন্ডার সার্ভার এন্ডপয়েন্ট
+    const API_ENDPOINT = "https://my-personal-ai-1-lz9o.onrender.com/api/chat"; 
     const API_KEY = ""; 
+
+    let lastSentText = ""; // ডুপ্লিকেট রিকুয়েস্ট আটকানোর জন্য
 
     async function handleSendMessage(customText = null) {
         const val = customText || userInput.value.trim();
-        if (!val) return;
+        if (!val || val === lastSentText) return; 
 
+        lastSentText = val;
         addMessage('USER', val, 'system');
         userInput.value = '';
 
         if (isListening && recognition) {
             isAutoRestart = false;
-            recognition.stop();
+            try { recognition.stop(); } catch(e) {}
         }
 
         if (API_ENDPOINT !== "") {
             try {
-                addMessage('SYSTEM', 'Connecting to Render server...', 'system');
-                
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers: { 
@@ -624,8 +625,7 @@
                 if (!response.ok) throw new Error(`Server Error: ${response.status}`);
                 
                 const data = await response.json();
-                
-                const reply = data.reply || data.response || data.message || data.output || (data.choices && data.choices[0]?.text) || "Response processed successfully.";
+                const reply = data.reply || data.response || data.message || data.output || "Done.";
                 
                 addMessage('AI_BOT', reply, 'agent');
                 speakText(reply);
@@ -636,7 +636,7 @@
             }
         } else {
             setTimeout(() => {
-                const textReply = `Please configure API_ENDPOINT. Received: "${val}"`;
+                const textReply = `Received: "${val}"`;
                 addMessage('AI_BOT', textReply, 'agent');
                 speakText(textReply);
             }, 300);
@@ -649,37 +649,43 @@
     });
 
     // -----------------------------------------------------------------
-    // 3. CONTINUOUS VOICE RECOGNITION & SPEECH SYNTHESIS
+    // 3. CONTINUOUS VOICE RECOGNITION & SPEECH SYNTHESIS (FIXED)
     // -----------------------------------------------------------------
     let recognition = null;
     let isListening = false;
     let isAutoRestart = true;
+    let isSpeaking = false; 
 
     function speakText(text) {
         if (!soundEnabled || !('speechSynthesis' in window)) {
+            setTimeout(() => { lastSentText = ""; }, 1000);
             resumeListening();
             return;
         }
-        speechSynthesis.cancel();
+
+        window.speechSynthesis.cancel(); 
+        isSpeaking = true;
+
         const utterance = new SpeechSynthesisUtterance(text);
-        
         utterance.lang = 'bn-BD'; 
 
-        if (viz) {
-            viz.classList.add('playing');
-        }
+        if (viz) viz.classList.add('playing');
 
         utterance.onend = () => {
             if (viz) viz.classList.remove('playing');
+            isSpeaking = false;
+            setTimeout(() => { lastSentText = ""; }, 1000); 
             resumeListening();
         };
         
         utterance.onerror = () => {
             if (viz) viz.classList.remove('playing');
+            isSpeaking = false;
+            setTimeout(() => { lastSentText = ""; }, 1000);
             resumeListening();
         };
 
-        speechSynthesis.speak(utterance);
+        window.speechSynthesis.speak(utterance);
     }
 
     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
@@ -696,8 +702,10 @@
         };
 
         recognition.onresult = (event) => {
+            if (isSpeaking) return;
+
             const transcript = event.results[event.results.length - 1][0].transcript.trim();
-            if (transcript) {
+            if (transcript && transcript !== lastSentText) {
                 userInput.value = transcript;
                 handleSendMessage(transcript);
             }
@@ -712,10 +720,10 @@
             micBtn.classList.remove('active');
             micBtn.textContent = "MIC OFF";
             
-            if (isAutoRestart) {
+            if (isAutoRestart && !isSpeaking) {
                 setTimeout(() => {
                     try { recognition.start(); } catch(e) {}
-                }, 500);
+                }, 800);
             }
         };
 
@@ -723,9 +731,7 @@
             try {
                 isAutoRestart = true;
                 recognition.start();
-            } catch(e) {
-                console.log("Auto start blocked by browser policy. Click MIC to start.");
-            }
+            } catch(e) {}
         }, 1000);
 
     } else {
@@ -734,7 +740,7 @@
     }
 
     function resumeListening() {
-        if (recognition && !isListening) {
+        if (recognition && !isListening && !isSpeaking) {
             isAutoRestart = true;
             try {
                 recognition.start();

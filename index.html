@@ -189,7 +189,7 @@ $("micBtn").addEventListener("click",()=>{
   }
 });
 
-// থ্রি-ডি নিউরাল কোর অ্যানিমেশন (নিশ্চিত দৃশ্যমান)
+// থ্রি-ডি নিউরাল কোর অ্যানিমেশন
 function initNeural(){
   const box=$("brainbox"),canvas=$("brain");
   try{
@@ -298,12 +298,13 @@ function initMansion(){
       scene.add(zSprite);
     });
 
+    // পারফেক্ট এবং সুবিন্যস্ত এজেন্ট ডেটা (কোনো ডুপ্লিকেট নেই)
     const agentData = [
-      { name: "Main AI", color: 0x5cf4e8, bedX: -2.0, workX: -4.8 },
-      { name: "Research", color: 0xa68bff, bedX: -1.3, workX: -4.0 },
-      { name: "Coder", color: 0x5cf4e8, bedX: -0.6, workX: -3.2 },
-      { name: "Analyst", color: 0ffd700, bedX: 0.1, workX: -2.4 },
-      { name: "Task", color: 0xb7ff81, bedX: 1.5, workX: 0 }
+      { name: "Main AI", color: 0x5cf4e8, bedX: -2.2, workX: -4.8 },
+      { name: "Research", color: 0xa68bff, bedX: -1.5, workX: -4.0 },
+      { name: "Coder", color: 0x5cf4e8, bedX: -0.8, workX: -3.2 },
+      { name: "Analyst", color: 0xffd700, bedX: -0.1, workX: -2.4 },
+      { name: "Task", color: 0xb7ff81, bedX: 0.6, workX: -1.6 }
     ];
 
     const agents = [];
@@ -313,16 +314,16 @@ function initMansion(){
       const agentGroup = new THREE.Group();
 
       // পিক্সেল মানুষের বডি
-      const bodyGeo = new THREE.BoxGeometry(0.35, 0.55, 0.25);
+      const bodyGeo = new THREE.BoxGeometry(0.32, 0.5, 0.2);
       const mat = new THREE.MeshBasicMaterial({color: data.color, wireframe: true});
       const body = new THREE.Mesh(bodyGeo, mat);
       body.position.y = -0.3;
       agentGroup.add(body);
 
       // পিক্সেল মানুষের মাথা
-      const headGeo = new THREE.BoxGeometry(0.25, 0.25, 0.25);
+      const headGeo = new THREE.BoxGeometry(0.22, 0.22, 0.22);
       const head = new THREE.Mesh(headGeo, mat);
-      head.position.y = 0.25;
+      head.position.y = 0.22;
       agentGroup.add(head);
 
       agentGroup.position.set(data.bedX, -0.4, 0); // শুরুতে বেডরুমে রেস্টে থাকবে

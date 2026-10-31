@@ -13,7 +13,7 @@ const API_KEY = process.env.GEMINI_API_KEY;
 
 // Primary and fallback models can be configured in Render.
 const PRIMARY_MODEL =
-    process.env.GEMINI_MODEL || "gemini-3.8-flash";
+    process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
 const FALLBACK_MODEL =
     process.env.GEMINI_FALLBACK_MODEL || "";

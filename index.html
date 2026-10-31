@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#070a10">
-<title>MY PERSONAL AI — Realistic 3D House Mansion</title>
+<title>MY PERSONAL AI — Ultra Realistic 3D House Mansion</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Orbitron:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
@@ -18,7 +18,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:15px;fl
 .layout{display:grid;grid-template-columns:minmax(260px,1fr) minmax(300px,1.1fr) minmax(340px,1.25fr);gap:14px}.panel{background:linear-gradient(145deg,#10172677,var(--panel));border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:0 15px 50px #0003;min-width:0}.ph{padding:16px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}.eyebrow{font:10px 'DM Mono';color:var(--muted);letter-spacing:.13em}.ptitle{font-size:14px;font-weight:700;margin-top:5px}.pill{font:10px 'DM Mono';color:var(--cyan);background:#5cf4e812;padding:5px 8px;border-radius:99px;border:1px solid #5cf4e83a}
 .brain-area{padding:16px}.brainbox{position:relative;height:280px;border:1px solid #1b3041;border-radius:13px;overflow:hidden;background:radial-gradient(ellipse,#112b38,#09121d 65%)}canvas{width:100%!important;height:100%!important;display:block}.brain-label{position:absolute;left:14px;bottom:13px;font:10px 'DM Mono';color:#92abbc;pointer-events:none;z-index:5}.node-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:12px}.node{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:13px;text-align:left;color:var(--text)}.node b{display:block;font-size:12px;margin-bottom:3px}.node span{font:10px 'DM Mono';color:var(--muted)}.node.active{border-color:var(--cyan);background:#5cf4e80a}.node.active b{color:var(--cyan)}
 .agent-panel{grid-column:span 2}.agent-tools{display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 0}.agent-grid{padding:14px 16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.agent{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;min-width:0}.avatar{width:35px;height:35px;flex-shrink:0;border-radius:10px;display:grid;place-items:center;font-weight:700}.agent-info{min-width:0}.agent-info b{display:block;font-size:12px}.agent-info small{display:block;font:10px 'DM Mono';color:var(--muted);margin-top:4px;overflow-wrap:anywhere}.agent-state{margin-left:auto;width:8px;height:8px;flex-shrink:0;border-radius:50%;background:#708097}.agent[data-status="Working"] .agent-state{background:var(--gold);box-shadow:0 0 9px #ffd70088}.agent[data-status="Done"] .agent-state{background:var(--lime)}.agent[data-status="Error"] .agent-state{background:var(--red)}.agent[data-status="Queued"] .agent-state{background:var(--violet)}
-.mansion-monitor{margin:0 16px 16px;border:1px solid #1b3041;border-radius:13px;overflow:hidden;background:radial-gradient(ellipse,#0d1f2d,#070d14 65%);height:320px;position:relative}.mansion-label{position:absolute;left:10px;bottom:8px;font:9px 'DM Mono';color:#5cf4e8;pointer-events:none;z-index:5}
+.mansion-monitor{margin:0 16px 16px;border:1px solid #1b3041;border-radius:13px;overflow:hidden;background:radial-gradient(ellipse,#0d1f2d,#070d14 65%);height:340px;position:relative}.mansion-label{position:absolute;left:10px;bottom:8px;font:9px 'DM Mono';color:#5cf4e8;pointer-events:none;z-index:5}
 .monitor-note{margin:0 16px 16px;padding:11px;border:1px solid var(--line);border-radius:10px;color:var(--muted);font:10px/1.6 'DM Mono'}.right{grid-column:auto}.stream{padding:15px}.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}.controls label{font:10px 'DM Mono';color:var(--muted)}select{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:9px;border-radius:9px;max-width:100%}.thinking{font:10px 'DM Mono';color:var(--lime);margin-left:auto}.viz{height:48px;background:#0a1119;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;margin-bottom:13px}.bar{width:5px;border-radius:5px;background:linear-gradient(to top,var(--cyan),var(--violet));height:9px;animation:wave .65s ease-in-out infinite alternate;animation-play-state:paused}.viz.playing .bar{animation-play-state:running}@keyframes wave{to{height:31px}}
 .chatlog{height:280px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:12px;background:#060a10;border:1px solid var(--line);border-radius:12px;scroll-behavior:smooth}.bubble{max-width:96%;padding:10px 12px;border-radius:12px;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}.bubble .tag{display:block;font:9px 'DM Mono';letter-spacing:.08em;margin-bottom:4px;opacity:.8}.bubble.user{align-self:flex-end;background:#102a31;border:1px solid #24514f}.bubble.ai{align-self:flex-start;background:#151d2d;border:1px solid #28364c}.bubble.system{align-self:center;color:var(--muted);font:10px 'DM Mono';max-width:100%;text-align:center}.bubble.error{align-self:flex-start;background:#2a101b;border:1px solid #673047;color:#ff9ab2}.composer{display:flex;gap:8px;margin-top:10px}.composer input{min-width:0;flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--text);outline:none}.composer input:focus{border-color:var(--cyan)}.subrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px 'DM Mono'}.foot{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font:10px 'DM Mono';padding:17px 2px;flex-wrap:wrap}
 @media(max-width:1100px){.layout{grid-template-columns:1fr 1fr}.agent-panel{grid-column:1/-1}.right{grid-column:1/-1}}@media(max-width:680px){.app{padding:12px}.layout{grid-template-columns:1fr}.agent-panel,.right{grid-column:auto}.agent-grid{grid-template-columns:1fr}.statusbar{gap:7px}.brand h1{font-size:15px}.composer{flex-wrap:wrap}.composer input{flex-basis:55%}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
@@ -26,14 +26,14 @@ header{display:flex;justify-content:space-between;align-items:center;gap:15px;fl
 </head>
 <body><div class="app">
 <header>
- <div class="brand"><div class="mark">AI</div><div><h1>MY PERSONAL AI</h1><small>REALISTIC 3D HOUSE MANSION // ROOMS & FURNITURE</small></div></div>
+ <div class="brand"><div class="mark">AI</div><div><h1>MY PERSONAL AI</h1><small>REALISTIC 3D HOUSE MANSION // SEPARATE ROOMS & DESKS</small></div></div>
  <div class="statusbar"><span class="status" id="serverBadge"><i class="dot"></i><span id="serverText">CHECKING SERVER</span></span><span id="sysStatus">VOICE OFF</span><span>LATENCY <b id="lat">--</b>ms</span><span id="clock">--:--:--</span><button class="btn" id="soundBtn" type="button">SOUND ON</button></div>
 </header>
 <main class="layout">
 <section class="panel"><div class="ph"><div><div class="eyebrow">01 / COGNITION CORE</div><div class="ptitle">Neural Network</div></div><span class="pill" id="webglStatus">INITIALIZING</span></div>
 <div class="brain-area"><div class="brainbox" id="brainbox"><canvas id="brain" aria-label="Animated neural network visualization"></canvas><div class="brain-label" id="brainLabel">NEURAL FIELD // LIVE</div></div>
 <div class="node-grid"><button class="node active" data-name="Memory" data-color="#5cf4e8"><b>Memory</b><span>Conversation context</span></button><button class="node" data-name="Skills" data-color="#a68bff"><b>Skills</b><span>Agent capabilities</span></button><button class="node" data-name="Core" data-color="#b7ff81"><b>Core</b><span>Behavior settings</span></button><button class="node" data-name="Settings" data-color="#ffd700"><b>Settings</b><span>Interface config</span></button></div></div></section>
-<section class="panel agent-panel"><div class="ph"><div><div class="eyebrow">02 / AGENT OPERATIONS</div><div class="ptitle">3D House Mansion (Work Desks, Beds, TV & Dining)</div></div><span class="pill" id="agentSummary">5 AGENTS · IDLE</span></div>
+<section class="panel agent-panel"><div class="ph"><div><div class="eyebrow">02 / AGENT OPERATIONS</div><div class="ptitle">3D House Mansion (Separate Rooms, Computer Desks, Beds & Chairs)</div></div><span class="pill" id="agentSummary">5 AGENTS · IDLE</span></div>
 <div class="agent-tools"><button class="btn" id="refreshAgents" type="button">REFRESH STATUS</button><span class="thinking" id="monitorText">Waiting for a command</span></div>
 <div class="agent-grid" id="agentGrid">
 <div class="agent" data-agent="main" data-status="Ready"><div class="avatar" style="background:#5cf4e822;color:var(--cyan)">M</div><div class="agent-info"><b>Main AI / Dispatcher</b><small>Plans and routes tasks</small></div><i class="agent-state"></i></div>
@@ -42,12 +42,12 @@ header{display:flex;justify-content:space-between;align-items:center;gap:15px;fl
 <div class="agent" data-agent="analyst" data-status="Ready"><div class="avatar" style="background:#ffd70022;color:var(--gold)">A</div><div class="agent-info"><b>Analyst Agent</b><small>Analyze supplied information</small></div><i class="agent-state"></i></div>
 <div class="agent" data-agent="task" data-status="Ready"><div class="avatar" style="background:#b7ff8122;color:var(--lime)">T</div><div class="agent-info"><b>Task Agent</b><small>Track and organize subtasks</small></div><i class="agent-state"></i></div>
 </div>
-<!-- রিয়ালিস্টিক থ্রি-ডি হাউস ফ্লোর প্ল্যান ও রুম ডিজাইন -->
+<!-- অতি বাস্তবসম্মত থ্রি-ডি হাউস ফ্লোর প্ল্যান ও রুম ডিজাইন -->
 <div class="mansion-monitor" id="mansionBox">
   <canvas id="mansionCanvas" aria-label="Realistic 3D House Mansion Rooms"></canvas>
-  <div class="mansion-label">3D HOUSE MANSION // DESKS, BEDS, TV LOUNGE & DINING</div>
+  <div class="mansion-label">3D HOUSE MANSION // SEPARATE ROOMS, DESKS, CHAIRS & BEDS</div>
 </div>
-<p class="monitor-note">AGENT STATUS<br>Live execution requires backend orchestrator. When command is given, agents walk to their computer desks. When finished, they return to their beds to rest.</p></section>
+<p class="monitor-note">AGENT STATUS<br>Live execution requires backend orchestrator. When command is given, agents walk to their computer desks and sit on chairs to code. When finished, they return to their beds to rest.</p></section>
 <section class="panel right"><div class="ph"><div><div class="eyebrow">03 / SIGNAL INTERFACE</div><div class="ptitle">Command Chat & Voice</div></div><span class="pill" id="micPill">MIC OFF</span></div><div class="stream">
 <div class="controls"><label for="languageMode">REPLY</label><select id="languageMode"><option value="auto">AUTO</option><option value="en">ENGLISH</option><option value="bn">BENGALI</option></select><span class="thinking" id="thinking" aria-live="polite">AI READY</span></div>
 <div class="viz" id="viz" aria-label="Voice playback animation"><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
@@ -244,145 +244,138 @@ function initNeural(){
   }
 }
 
-// রিয়ালিস্টিক থ্রি-ডি হাউস ফ্লোর প্ল্যান ও রুম ডিজাইন (কম্পিউটার ডেস্ক, বেড, টিভি লাউঞ্জ ও ডাইনিং)
+// আল্ট্রা রিয়ালিস্টিক থ্রি-ডি হাউস ফ্লোর প্ল্যান, সেপারেট রুম, ডেস্ক, চেয়ার ও হাত-পা যুক্ত ক্যারেক্টার
 function initMansion(){
   const box=$("mansionBox"),canvas=$("mansionCanvas");
   try{
     if(!window.THREE)return;
     const scene=new THREE.Scene();
     const camera=new THREE.PerspectiveCamera(50,1,1,1000);
-    camera.position.set(0, 8, 8);
-    camera.lookAt(0, -0.5, 0);
+    camera.position.set(0, 8.5, 9);
+    camera.lookAt(0, -0.3, 0);
     
     const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
     renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
 
-    // সুন্দর কাঠের ফ্লোর (Wooden Floor Look)
-    const floorGeo = new THREE.BoxGeometry(11, 0.1, 6.8);
-    const floorMat = new THREE.MeshBasicMaterial({color: 0x1f3556});
+    // সুন্দর ফ্লোর
+    const floorGeo = new THREE.BoxGeometry(12, 0.1, 7.5);
+    const floorMat = new THREE.MeshBasicMaterial({color: 0x152238});
     const floor = new THREE.Mesh(floorGeo, floorMat);
     floor.position.y = -1.15;
     scene.add(floor);
 
-    // রুমের কালারফুল দেওয়াল ও পার্টিশন
+    // আলাদা আলাদা রুমের দেওয়াল ও পার্টিশন (Separate Room Walls)
     const wallMat = new THREE.MeshBasicMaterial({color: 0x2b4c7e});
     
-    // কাজের রুমের কম্পিউটার ডেস্ক (Computer Desks)
-    for(let i=0; i<4; i++){
-      const deskGeo = new THREE.BoxGeometry(0.8, 0.4, 0.5);
-      const deskMat = new THREE.MeshBasicMaterial({color: 0x3b82f6});
-      const desk = new THREE.Mesh(deskGeo, deskMat);
-      desk.position.set(-4.2, -0.9, -1.8 + (i * 1.2));
-      scene.add(desk);
-
-      // কম্পিউটারের মনিটর
-      const monitorGeo = new THREE.BoxGeometry(0.5, 0.3, 0.05);
-      const monitorMat = new THREE.MeshBasicMaterial({color: 0x5cf4e8});
-      const monitor = new THREE.Mesh(monitorGeo, monitorMat);
-      monitor.position.set(-4.2, -0.6, -1.8 + (i * 1.2));
-      scene.add(monitor);
-    }
-
-    // ৪টি বেড রুমের বেড (Beds)
-    for(let i=0; i<4; i++){
-      const bedGeo = new THREE.BoxGeometry(0.8, 0.25, 1.2);
-      const bedMat = new THREE.MeshBasicMaterial({color: i%2===0 ? 0xa68bff : 0xff6689});
-      const bed = new THREE.Mesh(bedGeo, bedMat);
-      bed.position.set(-1.4, -1.0, -1.8 + (i * 1.2));
-      scene.add(bed);
-    }
-
-    // টিভি লাউঞ্জ (TV Lounge Area)
-    const tvGeo = new THREE.BoxGeometry(1.2, 0.7, 0.1);
-    const tvMat = new THREE.MeshBasicMaterial({color: 0xffd700});
-    const tv = new THREE.Mesh(tvGeo, tvMat);
-    tv.position.set(1.5, -0.5, -2.5);
-    scene.add(tv);
-
-    // ডাইনিং রুম টেবিল ও চেয়ার (Dining Room)
-    const tableGeo = new THREE.BoxGeometry(1.5, 0.3, 1.0);
-    const tableMat = new THREE.MeshBasicMaterial({color: 0xb7ff81});
-    const table = new THREE.Mesh(tableGeo, tableMat);
-    table.position.set(3.5, -0.9, 1.5);
-    scene.add(table);
-
-    // টেক্সট লেবেল তৈরির ফাংশন
-    function createTextSprite(message) {
-      const canvas2D = document.createElement('canvas');
-      const context = canvas2D.getContext('2d');
-      canvas2D.width = 256;
-      canvas2D.height = 128;
-      context.fillStyle = "rgba(0, 0, 0, 0)";
-      context.fillRect(0, 0, canvas2D.width, canvas2D.height);
-      context.font = "Bold 16px 'Space Grotesk', sans-serif";
-      context.fillStyle = "#ffffff";
-      context.textAlign = "center";
-      context.fillText(message, 128, 64);
-      
-      const texture = new THREE.CanvasTexture(canvas2D);
-      const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
-      const sprite = new THREE.Sprite(spriteMaterial);
-      sprite.scale.set(1.8, 0.9, 1);
-      return sprite;
-    }
-
-    // রুমের লেবেল
-    const zones = [
-      { name: "💻 Work Computers", x: -4.2, z: -2.7 },
-      { name: "🛏️ 4 Bedrooms", x: -1.4, z: -2.7 },
-      { name: "📺 TV Lounge", x: 1.5, z: -2.7 },
-      { name: "🍽️ Dining Room", x: 3.5, z: -0.2 }
-    ];
-    zones.forEach(z => {
-      const zSprite = createTextSprite(z.name);
-      zSprite.position.set(z.x, 1.5, z.z);
-      scene.add(zSprite);
+    // রুম ডিভাইডার দেওয়ালগুলো
+    const wallPositions = [-3.2, -0.8, 1.6];
+    wallPositions.forEach(x => {
+      const wallGeo = new THREE.BoxGeometry(0.15, 1.4, 7.5);
+      const wall = new THREE.Mesh(wallGeo, wallMat);
+      wall.position.set(x, -0.4, 0);
+      scene.add(wall);
     });
 
-    // এজেন্ট এবং তাদের পজিশন ডেটা
+    // প্রতিটি রুমের জন্য কম্পিউটার ডেস্ক, চেয়ার এবং বেড সেটআপ
     const agentData = [
-      { name: "Main AI", color: 0x5cf4e8, bedX: -1.4, workX: -4.2, z: -1.8 },
-      { name: "Research", color: 0xa68bff, bedX: -1.4, workX: -4.2, z: -0.6 },
-      { name: "Coder", color: 0x5cf4e8, bedX: -1.4, workX: -4.2, z: 0.6 },
-      { name: "Analyst", color: 0xffd700, bedX: -1.4, workX: -4.2, z: 1.8 },
-      { name: "Task", color: 0xb7ff81, bedX: 1.5, workX: 2.5, z: 1.5 }
+      { name: "Main AI", color: 0x5cf4e8, roomX: -4.5, bedZ: -2.0, workZ: 2.0 },
+      { name: "Research", color: 0xa68bff, roomX: -2.0, bedZ: -2.0, workZ: 2.0 },
+      { name: "Coder", color: 0x5cf4e8, roomX: 0.4, bedZ: -2.0, workZ: 2.0 },
+      { name: "Analyst", color: 0xffd700, roomX: 2.8, bedZ: -2.0, workZ: 2.0 }
     ];
 
     const agents = [];
     let isWorkingState = false;
 
-    agentData.forEach((data, i) => {
+    agentData.forEach((data) => {
+      // ১. বেডরুমে রিয়াল বেড
+      const bedGeo = new THREE.BoxGeometry(1.0, 0.25, 1.4);
+      const bedMat = new THREE.MeshBasicMaterial({color: data.color});
+      const bed = new THREE.Mesh(bedGeo, bedMat);
+      bed.position.set(data.roomX, -0.9, data.bedZ);
+      scene.add(bed);
+
+      // ২. কম্পিউটার ডেস্ক
+      const deskGeo = new THREE.BoxGeometry(1.0, 0.45, 0.6);
+      const deskMat = new THREE.MeshBasicMaterial({color: 0x1f3556});
+      const desk = new THREE.Mesh(deskGeo, deskMat);
+      desk.position.set(data.roomX, -0.9, data.workZ);
+      scene.add(desk);
+
+      // ৩. কম্পিউটার মনিটর
+      const monGeo = new THREE.BoxGeometry(0.5, 0.3, 0.05);
+      const monMat = new THREE.MeshBasicMaterial({color: data.color});
+      const monitor = new THREE.Mesh(monGeo, monMat);
+      monitor.position.set(data.roomX, -0.5, data.workZ);
+      scene.add(monitor);
+
+      // ৪. চেয়ার (ডেস্কে বসার জন্য)
+      const chairGeo = new THREE.BoxGeometry(0.4, 0.4, 0.4);
+      const chairMat = new THREE.MeshBasicMaterial({color: 0x3b82f6});
+      const chair = new THREE.Mesh(chairGeo, chairMat);
+      chair.position.set(data.roomX, -0.9, data.workZ - 0.6);
+      scene.add(chair);
+
+      // ৫. হাত ও পা যুক্ত রিয়ালিস্টিক ক্যারেক্টার গ্রুপ
       const agentGroup = new THREE.Group();
 
-      // পিক্সেল মানুষের বডি
-      const bodyGeo = new THREE.BoxGeometry(0.3, 0.45, 0.18);
       const mat = new THREE.MeshBasicMaterial({color: data.color});
-      const body = new THREE.Mesh(bodyGeo, mat);
+      
+      // বডি
+      const body = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.45, 0.18), mat);
       body.position.y = -0.3;
       agentGroup.add(body);
 
-      // পিক্সেল মানুষের মাথা
-      const headGeo = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-      const head = new THREE.Mesh(headGeo, mat);
+      // মাথা
+      const head = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.2, 0.2), mat);
       head.position.y = 0.2;
       agentGroup.add(head);
 
-      agentGroup.position.set(data.bedX, -0.4, data.z); // শুরুতে বেডরুমে থাকবে
+      // বাম হাত
+      const leftArm = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 0.08), mat);
+      leftArm.position.set(-0.2, -0.25, 0);
+      agentGroup.add(leftArm);
+
+      // ডান হাত
+      const rightArm = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 0.08), mat);
+      rightArm.position.set(0.2, -0.25, 0);
+      agentGroup.add(rightArm);
+
+      // বাম পা
+      const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 0.08), mat);
+      leftLeg.position.set(-0.08, -0.7, 0);
+      agentGroup.add(leftLeg);
+
+      // ডান পা
+      const rightLeg = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 0.08), mat);
+      rightLeg.position.set(0.08, -0.7, 0);
+      agentGroup.add(rightLeg);
+
+      agentGroup.position.set(data.roomX, -0.4, data.bedZ); // শুরুতে বেডে থাকবে
       scene.add(agentGroup);
 
-      const label = createTextSprite(data.name);
-      label.position.set(data.bedX, 0.9, data.z);
-      scene.add(label);
+      // টেক্সট লেবেল
+      const canvas2D = document.createElement('canvas');
+      const ctx = canvas2D.getContext('2d');
+      canvas2D.width = 256; canvas2D.height = 128;
+      ctx.fillStyle = "rgba(0,0,0,0)"; ctx.fillRect(0,0,256,128);
+      ctx.font = "Bold 16px 'Space Grotesk', sans-serif";
+      ctx.fillStyle = "#ffffff"; ctx.textAlign = "center";
+      ctx.fillText(data.name, 128, 64);
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({map: new THREE.CanvasTexture(canvas2D), transparent:true}));
+      sprite.scale.set(1.5, 0.75, 1);
+      sprite.position.set(data.roomX, 0.8, data.bedZ);
+      scene.add(sprite);
 
-      agents.push({group: agentGroup, label: label, bedX: data.bedX, workX: data.workX, z: data.z});
+      agents.push({group, sprite, roomX: data.roomX, bedZ: data.bedZ, workZ: data.workZ});
     });
 
-    // কমান্ড দিলে কম্পিউটারের ডেস্কে কাজ করতে যাবে
+    // কমান্ড দিলে ডেস্কে চেয়ারে বসে কোডিং করবে
     window.triggerAgentWork = function() {
       isWorkingState = true;
     };
 
-    // কাজ শেষ হলে বেডরুমে ফিরে গিয়ে রেস্ট নেবে
+    // কাজ শেষ হলে বেডে ফিরে বিশ্রাম নেবে
     window.triggerAgentRest = function() {
       isWorkingState = false;
     };
@@ -400,15 +393,14 @@ function initMansion(){
     function frame(){
       requestAnimationFrame(frame);
       agents.forEach((item, idx) => {
-        const targetX = isWorkingState ? item.workX : item.bedX;
-        // স্মুথলি হেঁটে নির্দিষ্ট রুমে যাতায়াত করা
-        item.group.position.x += (targetX - item.group.position.x) * 0.05;
-        item.label.position.x = item.group.position.x;
+        const targetZ = isWorkingState ? item.workZ - 0.2 : item.bedZ;
+        // স্মুথলি হেঁটে যাওয়া
+        item.group.position.z += (targetZ - item.group.position.z) * 0.06;
+        item.sprite.position.z = item.group.position.z;
 
-        // হাঁটার সময় পিক্সেল মানুষের লাইভ মুভমেন্ট
-        item.group.position.y = -0.4 + Math.sin(Date.now() * 0.01 + idx) * 0.06;
-        item.label.position.y = item.group.position.y + 1.1;
-        item.group.rotation.y += 0.02;
+        // হাঁটার সময় লাইভ মুভমেন্ট
+        item.group.position.y = -0.4 + Math.sin(Date.now() * 0.01 + idx) * 0.05;
+        item.sprite.position.y = item.group.position.y + 1.2;
       });
       renderer.render(scene, camera);
     }

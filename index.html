@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#070a10">
-<title>MY PERSONAL AI — Neural & Pixel Command Center</title>
+<title>MY PERSONAL AI — Agent Mansion Command Center</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Orbitron:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
@@ -18,7 +18,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:15px;fl
 .layout{display:grid;grid-template-columns:minmax(260px,1fr) minmax(300px,1.1fr) minmax(340px,1.25fr);gap:14px}.panel{background:linear-gradient(145deg,#10172677,var(--panel));border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:0 15px 50px #0003;min-width:0}.ph{padding:16px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}.eyebrow{font:10px 'DM Mono';color:var(--muted);letter-spacing:.13em}.ptitle{font-size:14px;font-weight:700;margin-top:5px}.pill{font:10px 'DM Mono';color:var(--cyan);background:#5cf4e812;padding:5px 8px;border-radius:99px;border:1px solid #5cf4e83a}
 .brain-area{padding:16px}.brainbox{position:relative;height:265px;border:1px solid #1b3041;border-radius:13px;overflow:hidden;background:radial-gradient(ellipse,#112b38,#09121d 65%)}canvas{width:100%;height:100%;display:block}.brain-label{position:absolute;left:14px;bottom:13px;font:10px 'DM Mono';color:#92abbc;pointer-events:none}.node-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:12px}.node{background:var(--panel2);border:1px solid var(--line);border-radius:11px;padding:13px;text-align:left;color:var(--text)}.node b{display:block;font-size:12px;margin-bottom:3px}.node span{font:10px 'DM Mono';color:var(--muted)}.node.active{border-color:var(--cyan);background:#5cf4e80a}.node.active b{color:var(--cyan)}
 .agent-panel{grid-column:span 2}.agent-tools{display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 0}.agent-grid{padding:14px 16px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.agent{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px;min-width:0}.avatar{width:35px;height:35px;flex-shrink:0;border-radius:10px;display:grid;place-items:center;font-weight:700}.agent-info{min-width:0}.agent-info b{display:block;font-size:12px}.agent-info small{display:block;font:10px 'DM Mono';color:var(--muted);margin-top:4px;overflow-wrap:anywhere}.agent-state{margin-left:auto;width:8px;height:8px;flex-shrink:0;border-radius:50%;background:#708097}.agent[data-status="Working"] .agent-state{background:var(--gold);box-shadow:0 0 9px #ffd70088}.agent[data-status="Done"] .agent-state{background:var(--lime)}.agent[data-status="Error"] .agent-state{background:var(--red)}.agent[data-status="Queued"] .agent-state{background:var(--violet)}
-.pixel-cube-monitor{margin:0 16px 16px;border:1px solid #1b3041;border-radius:13px;overflow:hidden;background:radial-gradient(ellipse,#0d1f2d,#070d14 65%);height:180px;position:relative}.pixel-cube-label{position:absolute;left:10px;bottom:8px;font:9px 'DM Mono';color:#5cf4e8;pointer-events:none}
+.mansion-monitor{margin:0 16px 16px;border:1px solid #1b3041;border-radius:13px;overflow:hidden;background:radial-gradient(ellipse,#0d1f2d,#070d14 65%);height:210px;position:relative}.mansion-label{position:absolute;left:10px;bottom:8px;font:9px 'DM Mono';color:#5cf4e8;pointer-events:none}
 .monitor-note{margin:0 16px 16px;padding:11px;border:1px solid var(--line);border-radius:10px;color:var(--muted);font:10px/1.6 'DM Mono'}.right{grid-column:auto}.stream{padding:15px}.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}.controls label{font:10px 'DM Mono';color:var(--muted)}select{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:9px;border-radius:9px;max-width:100%}.thinking{font:10px 'DM Mono';color:var(--lime);margin-left:auto}.viz{height:48px;background:#0a1119;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;margin-bottom:13px}.bar{width:5px;border-radius:5px;background:linear-gradient(to top,var(--cyan),var(--violet));height:9px;animation:wave .65s ease-in-out infinite alternate;animation-play-state:paused}.viz.playing .bar{animation-play-state:running}@keyframes wave{to{height:31px}}
 .chatlog{height:280px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:12px;background:#060a10;border:1px solid var(--line);border-radius:12px;scroll-behavior:smooth}.bubble{max-width:96%;padding:10px 12px;border-radius:12px;font-size:12px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}.bubble .tag{display:block;font:9px 'DM Mono';letter-spacing:.08em;margin-bottom:4px;opacity:.8}.bubble.user{align-self:flex-end;background:#102a31;border:1px solid #24514f}.bubble.ai{align-self:flex-start;background:#151d2d;border:1px solid #28364c}.bubble.system{align-self:center;color:var(--muted);font:10px 'DM Mono';max-width:100%;text-align:center}.bubble.error{align-self:flex-start;background:#2a101b;border:1px solid #673047;color:#ff9ab2}.composer{display:flex;gap:8px;margin-top:10px}.composer input{min-width:0;flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px;color:var(--text);outline:none}.composer input:focus{border-color:var(--cyan)}.subrow{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font:10px 'DM Mono'}.foot{display:flex;justify-content:space-between;gap:10px;color:var(--muted);font:10px 'DM Mono';padding:17px 2px;flex-wrap:wrap}
 @media(max-width:1100px){.layout{grid-template-columns:1fr 1fr}.agent-panel{grid-column:1/-1}.right{grid-column:1/-1}}@media(max-width:680px){.app{padding:12px}.layout{grid-template-columns:1fr}.agent-panel,.right{grid-column:auto}.agent-grid{grid-template-columns:1fr}.statusbar{gap:7px}.brand h1{font-size:15px}.composer{flex-wrap:wrap}.composer input{flex-basis:55%}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
@@ -26,14 +26,14 @@ header{display:flex;justify-content:space-between;align-items:center;gap:15px;fl
 </head>
 <body><div class="app">
 <header>
- <div class="brand"><div class="mark">AI</div><div><h1>MY PERSONAL AI</h1><small>NEURAL COMMAND CENTER // AGENT PIXEL MATRIX</small></div></div>
+ <div class="brand"><div class="mark">AI</div><div><h1>MY PERSONAL AI</h1><small>AGENT MANSION // LIVE VIRTUAL ROOMS</small></div></div>
  <div class="statusbar"><span class="status" id="serverBadge"><i class="dot"></i><span id="serverText">CHECKING SERVER</span></span><span id="sysStatus">VOICE OFF</span><span>LATENCY <b id="lat">--</b>ms</span><span id="clock">--:--:--</span><button class="btn" id="soundBtn" type="button">SOUND ON</button></div>
 </header>
 <main class="layout">
 <section class="panel"><div class="ph"><div><div class="eyebrow">01 / COGNITION CORE</div><div class="ptitle">Neural Network</div></div><span class="pill" id="webglStatus">INITIALIZING</span></div>
 <div class="brain-area"><div class="brainbox" id="brainbox"><canvas id="brain" aria-label="Animated neural network visualization"></canvas><div class="brain-label" id="brainLabel">NEURAL FIELD // STARTING</div></div>
 <div class="node-grid"><button class="node active" data-name="Memory" data-color="#5cf4e8"><b>Memory</b><span>Conversation context</span></button><button class="node" data-name="Skills" data-color="#a68bff"><b>Skills</b><span>Agent capabilities</span></button><button class="node" data-name="Core" data-color="#b7ff81"><b>Core</b><span>Behavior settings</span></button><button class="node" data-name="Settings" data-color="#ffd700"><b>Settings</b><span>Interface config</span></button></div></div></section>
-<section class="panel agent-panel"><div class="ph"><div><div class="eyebrow">02 / AGENT OPERATIONS</div><div class="ptitle">Agent Monitor & Pixel Cube Matrix</div></div><span class="pill" id="agentSummary">5 AGENTS · IDLE</span></div>
+<section class="panel agent-panel"><div class="ph"><div><div class="eyebrow">02 / AGENT OPERATIONS</div><div class="ptitle">Agent Mansion (Rooms & Pixel Humans)</div></div><span class="pill" id="agentSummary">5 AGENTS · IDLE</span></div>
 <div class="agent-tools"><button class="btn" id="refreshAgents" type="button">REFRESH STATUS</button><span class="thinking" id="monitorText">Waiting for a command</span></div>
 <div class="agent-grid" id="agentGrid">
 <div class="agent" data-agent="main" data-status="Ready"><div class="avatar" style="background:#5cf4e822;color:var(--cyan)">M</div><div class="agent-info"><b>Main AI / Dispatcher</b><small>Plans and routes tasks</small></div><i class="agent-state"></i></div>
@@ -42,10 +42,10 @@ header{display:flex;justify-content:space-between;align-items:center;gap:15px;fl
 <div class="agent" data-agent="analyst" data-status="Ready"><div class="avatar" style="background:#ffd70022;color:var(--gold)">A</div><div class="agent-info"><b>Analyst Agent</b><small>Analyze supplied information</small></div><i class="agent-state"></i></div>
 <div class="agent" data-agent="task" data-status="Ready"><div class="avatar" style="background:#b7ff8122;color:var(--lime)">T</div><div class="agent-info"><b>Task Agent</b><small>Track and organize subtasks</small></div><i class="agent-state"></i></div>
 </div>
-<!-- পিজেল কিউব এজেন্ট ভিজুয়াল মনিটর -->
-<div class="pixel-cube-monitor" id="pixelCubeBox">
-  <canvas id="pixelCubeCanvas" aria-label="Pixel Cube Agent Matrix Visualization"></canvas>
-  <div class="pixel-cube-label">PIXEL CUBE // AGENT SYNAPSE FIELD</div>
+<!-- এজেন্টদের ঘর (মেন্সন রুম ও পিক্সেল হিউম্যান ভিজুয়াল) -->
+<div class="mansion-monitor" id="mansionBox">
+  <canvas id="mansionCanvas" aria-label="AI Agent Mansion Rooms"></canvas>
+  <div class="mansion-label">AGENT MANSION // WORK, REST, TV & DINING ROOMS</div>
 </div>
 <p class="monitor-note">AGENT STATUS<br>Live execution requires the backend agent orchestrator. Until connected, these cards are interface placeholders—not separate running AI agents. Status changes only from accepted task events.</p></section>
 <section class="panel right"><div class="ph"><div><div class="eyebrow">03 / SIGNAL INTERFACE</div><div class="ptitle">Command Chat & Voice</div></div><span class="pill" id="micPill">MIC OFF</span></div><div class="stream">
@@ -54,7 +54,7 @@ header{display:flex;justify-content:space-between;align-items:center;gap:15px;fl
 <div class="chatlog" id="chatlog" role="log" aria-live="polite"><div class="bubble system">MY PERSONAL AI · Ready. Give the Main AI a task.</div></div>
 <div class="composer"><button class="btn" id="micBtn" type="button">MIC OFF</button><input id="userInput" type="text" maxlength="8000" placeholder="Give the Main AI a command or speak…" aria-label="Your command"><button class="btn primary" id="sendBtn" type="button">SEND</button></div>
 <div class="subrow"><span>Enter: send · MIC: tap to listen</span><button class="btn" id="clearBtn" type="button">CLEAR CHAT</button></div></div></section>
-</main><footer class="foot"><span>MY PERSONAL AI / NEURAL INTERFACE</span><span>BACKEND: RENDER + GEMINI</span><span>AGENT MONITOR</span></footer></div>
+</main><footer class="foot"><span>MY PERSONAL AI / NEURAL INTERFACE</span><span>BACKEND: RENDER + GEMINI</span><span>AGENT MANSION</span></footer></div>
 <script>
 "use strict";
 const SERVER_BASE_URL="https://my-personal-ai-1-lz9o.onrender.com";
@@ -67,7 +67,6 @@ let soundEnabled=true,isBusy=false,isSpeaking=false,isListening=false,recognitio
 function addMessage(who,text,kind="ai"){const el=document.createElement("div");el.className=`bubble ${kind}`;if(kind!=="system"){const tag=document.createElement("span");tag.className="tag";tag.textContent=who;el.appendChild(tag)}const content=document.createElement("span");content.textContent=String(text);el.appendChild(content);chatlog.appendChild(el);chatlog.scrollTop=chatlog.scrollHeight;return el}
 function setThinking(t){$("thinking").textContent=t}
 
-// মাইক্রোফোন এবং ভয়েস রিকগনিশন পারফেক্ট সেটআপ
 function setMicState(on){
   isListening=on;
   const btn=$("micBtn");
@@ -145,7 +144,7 @@ function speakText(text){
   speechSynthesis.speak(u);
 }
 
-// স্পিচ রিকগনিশন (মাইক্রোফোন লিসেনিং) কনফিগারেশন
+// মাইক্রোফোন লিসেনিং কনফিগারেশন
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SR){
   recognition=new SR();
@@ -187,7 +186,7 @@ $("micBtn").addEventListener("click",()=>{
   }
 });
 
-// মূল থ্রি-ডি নিউরাল নেটওয়ার্ক
+// মূল নিউরাল নেটওয়ার্ক অ্যানিমেশন
 function initNeural(){
   const box=$("brainbox"),canvas=$("brain");
   try{
@@ -236,22 +235,28 @@ function initNeural(){
   }
 }
 
-// পিজেল কিউব এজেন্ট ভিজুয়ালাইজার (এজেন্টগুলোর নামসহ কিউব অ্যানিমেশন)
-function initPixelCube(){
-  const box=$("pixelCubeBox"),canvas=$("pixelCubeCanvas");
+// এপ্রোপ্রিয়েট এজেন্ট মেন্সন রুম (Room with Pixel Humans/Agents)
+function initMansion(){
+  const box=$("mansionBox"),canvas=$("mansionCanvas");
   try{
     if(!window.THREE)return;
     const scene=new THREE.Scene();
     const camera=new THREE.PerspectiveCamera(50,box.clientWidth/box.clientHeight||1,.1,1000);
-    camera.position.z=10;
+    camera.position.set(0, 3, 9);
+    camera.lookAt(0, 0, 0);
+    
     const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
     renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
 
-    const agentNames = ["Main AI", "Research", "Coder", "Analyst", "Task"];
-    const colors = [0x5cf4e8, 0xa68bff, 0x5cf4e8, 0xffd700, 0xb7ff81];
-    const cubes = [];
+    // রুমের ব্যাকগ্রাউন্ড ফ্লোর গ্রিড
+    const floorGeo = new THREE.PlaneGeometry(10, 6);
+    const floorMat = new THREE.MeshBasicMaterial({color: 0x101b2b, wireframe: true, transparent: true, opacity: 0.4});
+    const floor = new THREE.Mesh(floorGeo, floorMat);
+    floor.rotation.x = -Math.PI / 2;
+    floor.position.y = -1.2;
+    scene.add(floor);
 
-    // ক্যানভাসে টেক্সট লেবেল রেন্ডার করার ফাংশন
+    // রুমের লেবেল বা সেকশন টেক্সট তৈরি ফাংশন
     function createTextSprite(message) {
       const canvas2D = document.createElement('canvas');
       const context = canvas2D.getContext('2d');
@@ -259,7 +264,7 @@ function initPixelCube(){
       canvas2D.height = 128;
       context.fillStyle = "rgba(0, 0, 0, 0)";
       context.fillRect(0, 0, canvas2D.width, canvas2D.height);
-      context.font = "Bold 24px 'Space Grotesk', sans-serif";
+      context.font = "Bold 22px 'Space Grotesk', sans-serif";
       context.fillStyle = "#5cf4e8";
       context.textAlign = "center";
       context.fillText(message, 128, 64);
@@ -267,25 +272,45 @@ function initPixelCube(){
       const texture = new THREE.CanvasTexture(canvas2D);
       const spriteMaterial = new THREE.SpriteMaterial({ map: texture, transparent: true });
       const sprite = new THREE.Sprite(spriteMaterial);
-      sprite.scale.set(2.2, 1.1, 1);
+      sprite.scale.set(2.0, 1.0, 1);
       return sprite;
     }
 
-    for(let i=0; i<5; i++){
-      // মূল পিজেল কিউব
-      const geo = new THREE.BoxGeometry(0.9, 0.9, 0.9);
-      const mat = new THREE.MeshBasicMaterial({color: colors[i], wireframe: true, transparent: true, opacity: 0.85});
-      const cube = new THREE.Mesh(geo, mat);
-      cube.position.x = (i - 2) * 2.0;
-      scene.add(cube);
+    const agentData = [
+      { name: "Main AI", room: "Dispatcher", color: 0x5cf4e8, x: -3.5, z: 0 },
+      { name: "Research", room: "Library/Work", color: 0xa68bff, x: -1.7, z: 0 },
+      { name: "Coder", room: "Coding Room", color: 0x5cf4e8, x: 0, z: 0 },
+      { name: "Analyst", room: "TV/Relax Room", color: 0xffd700, x: 1.7, z: 0 },
+      { name: "Task", room: "Dining Room", color: 0xb7ff81, x: 3.5, z: 0 }
+    ];
 
-      // কিউবের ঠিক উপরে এজেন্টের নাম যুক্ত লেবেল স্প্রাইট
-      const labelSprite = createTextSprite(agentNames[i]);
-      labelSprite.position.set((i - 2) * 2.0, 1.1, 0);
-      scene.add(labelSprite);
+    const agents = [];
 
-      cubes.push({cube, label: labelSprite});
-    }
+    agentData.forEach((data, i) => {
+      // পিক্সেল মানুষের মতো ছোট মডেল (হেড, বডি)
+      const agentGroup = new THREE.Group();
+
+      const bodyGeo = new THREE.BoxGeometry(0.4, 0.6, 0.3);
+      const mat = new THREE.MeshBasicMaterial({color: data.color, wireframe: true});
+      const body = new THREE.Mesh(bodyGeo, mat);
+      body.position.y = -0.3;
+      agentGroup.add(body);
+
+      const headGeo = new THREE.BoxGeometry(0.3, 0.3, 0.3);
+      const head = new THREE.Mesh(headGeo, mat);
+      head.position.y = 0.2;
+      agentGroup.add(head);
+
+      agentGroup.position.set(data.x, 0, data.z);
+      scene.add(agentGroup);
+
+      // এজেন্টের নাম ও রুমের লেবেল
+      const label = createTextSprite(data.name);
+      label.position.set(data.x, 1.0, data.z);
+      scene.add(label);
+
+      agents.push({group: agentGroup, label: label, baseColor: data.color, index: i});
+    });
 
     function resize(){
       const w=box.clientWidth,h=box.clientHeight;
@@ -299,23 +324,22 @@ function initPixelCube(){
 
     function frame(){
       requestAnimationFrame(frame);
-      cubes.forEach((item, idx)=>{
-        item.cube.rotation.x += 0.01 + idx * 0.002;
-        item.cube.rotation.y += 0.015 + idx * 0.003;
-        // সামান্য ভাসমান ও কডার বা অন্যান্য এজেন্টের মুভমেন্ট সিমুলেশন
-        item.cube.position.y = Math.sin(Date.now()*0.003 + idx)*0.3;
-        item.label.position.y = item.cube.position.y + 1.0;
+      agents.forEach((item, idx) => {
+        // ছোট পিক্সেল মানুষের মতো সামান্য নড়াচড়া বা ওয়াকিং ভাইব
+        item.group.position.y = Math.sin(Date.now() * 0.004 + idx) * 0.15;
+        item.label.position.y = item.group.position.y + 1.0;
+        item.group.rotation.y += 0.01;
       });
       renderer.render(scene, camera);
     }
     frame();
   }catch(e){
-    console.error("Pixel Cube init error",e);
+    console.error("Mansion init error", e);
   }
 }
 
 initNeural();
-initPixelCube();
+initMansion();
 setInterval(()=>$("clock").textContent=new Date().toLocaleTimeString(),1000);
 $("clock").textContent=new Date().toLocaleTimeString();
 </script></body></html>

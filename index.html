@@ -4,738 +4,337 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#070a10">
-<title>আমার ব্যক্তিগত এআই — আলটিমেট এজেন্ট ম্যানশন</title>
-<!-- Three.js লাইব্রেরি, নিউরাল নেটওয়ার্ক ভিজ্যুয়ালাইজেশনের জন্য -->
+<title>MY PERSONAL AI — Agent Mansion Command Center</title>
+<!-- Three.js লাইব্রেরি, থ্রি-ডি নিউরাল ব্রেইন এবং টাওয়ার ভিজ্যুয়ালাইজেশনের জন্য -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-/* গুগল ফন্ট ইম্পোর্ট: অরবিট্রন, ডিএম মোনো এবং স্পেস গ্রোটেস্ক */
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Orbitron:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{--bg:#070a10;--panel:#0d121c;--panel2:#101826;--line:#202c3d;--muted:#8391a7;--text:#eaf2ff;--cyan:#5cf4e8;--violet:#a68bff;--lime:#b7ff81;--red:#ff6689;--gold:#ffd700}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 48% -20%,#17283c 0%,var(--bg) 55%);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(#17243735 1px,transparent 1px),linear-gradient(90deg,#17243735 1px,transparent 1px);background-size:44px 44px;mask-image:linear-gradient(to bottom,#0007,transparent 88%)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{max-width:1650px;margin:auto;padding:20px;position:relative}
 
-/* মূল সিএসএস ভেরিয়েবল সেটআপ */
-:root{
-  --bg:#070a10; /* ব্যাকগ্রাউন্ড কালার */
-  --panel:#0d121c; /* প্যানেলের রঙ */
-  --panel2:#101826; /* দ্বিতীয় প্যানেলের রঙ */
-  --line:#202c3d; /* বর্ডার লাইন কালার */
-  --muted:#8391a7; /* হালকা টেক্সট */
-  --text:#eaf2ff; /* প্রধান টেক্সট */
-  --cyan:#5cf4e8; /* অ্যাকসেন্ট সায়ান */
-  --violet:#a68bff; /* অ্যাকসেন্ট ভায়োলেট */
-  --lime:#b7ff81; /* অ্যাকসেন্ট লাইম */
-  --red:#ff6689; /* অ্যাকসেন্ট লাল */
-  --gold:#ffd700; /* অ্যাকসেন্ট গোল্ড */
-}
-
-/* বেসিক রিসেট */
-*{box-sizing:border-box}
-
-/* বডি স্টাইল - গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
-body{
-  margin:0;
-  background:radial-gradient(ellipse at 48% -20%,#17283c 0%,var(--bg) 55%);
-  color:var(--text);
-  font-family:'Space Grotesk',sans-serif;
-  min-height:100vh;
-}
-
-/* ব্যাকগ্রাউন্ড গ্রিড প্যাটার্ন */
-body:before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background-image:linear-gradient(#17243735 1px,transparent 1px),linear-gradient(90deg,#17243735 1px,transparent 1px);
-  background-size:44px 44px;
-  mask-image:linear-gradient(to bottom,#0007,transparent 88%);
-}
-
-/* ফর্ম এলিমেন্ট এবং বাটন ফন্ট সেটআপ */
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-
-/* অ্যাপ কন্টেইনার */
-.app{
-  max-width:1550px;
-  margin:auto;
-  padding:20px;
-  position:relative;
-}
-
-/* হেডার সেকশন */
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-  flex-wrap:wrap;
-  margin-bottom:18px;
-}
-
-/* ব্র্যান্ড লোগো এবং নাম */
+/* Top Navigation Bar */
+.topnav{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 20px;margin-bottom:18px;flex-wrap:wrap;gap:15px;box-shadow:0 10px 30px #0004}
 .brand{display:flex;align-items:center;gap:12px}
-.mark{
-  width:46px;
-  height:46px;
-  border:1px solid var(--cyan);
-  border-radius:14px;
-  display:grid;
-  place-items:center;
-  color:var(--cyan);
-  font:700 20px Orbitron;
-  box-shadow:0 0 28px #5cf4e822;
-}
-.brand h1{font:700 18px Orbitron;letter-spacing:.12em;margin:0}
-.brand small{display:block;color:var(--muted);font:10px 'DM Mono';letter-spacing:.12em;margin-top:5px}
+.mark{width:42px;height:42px;border:1px solid var(--cyan);border-radius:12px;display:grid;place-items:center;color:var(--cyan);font:700 18px Orbitron;box-shadow:0 0 20px #5cf4e822}
+.brand h1{font:700 16px Orbitron;letter-spacing:.1em;margin:0}
+.brand small{display:block;color:var(--muted);font:9px 'DM Mono';letter-spacing:.1em;margin-top:3px}
+.nav-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.nav-tab{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:10px;font:11px 'Space Grotesk',sans-serif;display:flex;align-items:center;gap:6px;transition:.2s}
+.nav-tab:hover,.nav-tab.active{border-color:var(--cyan);color:var(--cyan);background:#5cf4e810}
+.top-status{display:flex;align-items:center;gap:12px;font:11px 'DM Mono';color:var(--muted)}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:#b7ff8115;border:1px solid var(--lime);color:var(--lime);padding:6px 12px;border-radius:99px;font-weight:700}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px var(--lime)}
 
-/* স্ট্যাটাসবার */
-.statusbar{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  flex-wrap:wrap;
-  color:var(--muted);
-  font:10px 'DM Mono';
-}
-.status{
-  display:inline-flex;
-  align-items:center;
-  gap:7px;
-  border:1px solid var(--line);
-  border-radius:99px;
-  padding:7px 10px;
-  background:var(--panel2);
-}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--red)}
-.status.online .dot{background:var(--lime);box-shadow:0 0 9px var(--lime)}
+/* Layout Grid */
+.layout{display:grid;grid-template-columns:320px 1fr 360px;gap:16px}
+.panel{background:linear-gradient(145deg,#10172677,var(--panel));border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 15px 40px #0003;min-width:0;display:flex;flex-direction:column}
+.ph{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.eyebrow{font:10px 'DM Mono';color:var(--muted);letter-spacing:.12em}
+.ptitle{font-size:13px;font-weight:700;margin-top:3px}
+.pill{font:10px 'DM Mono';color:var(--cyan);background:#5cf4e812;padding:4px 8px;border-radius:99px;border:1px solid #5cf4e83a}
 
-/* জেনারেল বাটন স্টাইল */
-.btn{
-  border:1px solid #2a3b4e;
-  background:#111b29;
-  color:var(--text);
-  border-radius:10px;
-  padding:10px 13px;
-  font-size:12px;
-  transition:.2s;
-}
-.btn:hover{border-color:var(--cyan);color:var(--cyan)}
-.btn.active{border-color:var(--lime);color:var(--lime);background:#b7ff8115}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.primary{background:var(--cyan);color:#031313;border-color:var(--cyan);font-weight:700}
-.primary:hover{color:#031313;background:#8ffff6}
-
-/* গ্রিড লেআউট */
-.layout{
-  display:grid;
-  grid-template-columns:minmax(260px,1fr) minmax(300px,1.1fr) minmax(340px,1.25fr);
-  gap:14px;
-}
-
-/* প্যানেল স্টাইল */
-.panel{
-  background:linear-gradient(145deg,#10172677,var(--panel));
-  border:1px solid var(--line);
-  border-radius:17px;
-  overflow:hidden;
-  box-shadow:0 15px 50px #0003;
-  min-width:0;
-}
-
-/* প্যানেল হেডার */
-.ph{
-  padding:16px 17px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-}
-.eyebrow{font:10px 'DM Mono';color:var(--muted);letter-spacing:.13em}
-.ptitle{font-size:14px;font-weight:700;margin-top:5px}
-.pill{
-  font:10px 'DM Mono';
-  color:var(--cyan);
-  background:#5cf4e812;
-  padding:5px 8px;
-  border-radius:99px;
-  border:1px solid #5cf4e83a;
-}
-
-/* কগনিশন কোর (নিউরাল নেটওয়ার্ক) */
-.brain-area{padding:16px}
-.brainbox{
-  position:relative;
-  height:280px;
-  border:1px solid #1b3041;
-  border-radius:13px;
-  overflow:hidden;
-  background:radial-gradient(ellipse,#112b38,#09121d 65%);
-}
+/* Left Column */
+.left-col{display:flex;flex-direction:column;gap:16px}
+.brain-area{padding:14px}
+.brainbox{position:relative;height:180px;border:1px solid #1b3041;border-radius:12px;overflow:hidden;background:radial-gradient(ellipse,#112b38,#09121d 65%)}
 canvas{width:100%!important;height:100%!important;display:block}
-.brain-label{
-  position:absolute;
-  left:14px;
-  bottom:13px;
-  font:10px 'DM Mono';
-  color:#92abbc;
-  pointer-events:none;
-  z-index:5;
-}
-.node-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:12px}
-.node{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  border-radius:11px;
-  padding:13px;
-  text-align:left;
-  color:var(--text);
-}
-.node b{display:block;font-size:12px;margin-bottom:3px}
-.node span{font:10px 'DM Mono';color:var(--muted)}
-.node.active{border-color:var(--cyan);background:#5cf4e80a}
-.node.active b{color:var(--cyan)}
+.brain-label{position:absolute;left:10px;bottom:10px;font:9px 'DM Mono';color:#92abbc;pointer-events:none}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.metric-card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px}
+.metric-icon{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:14px}
+.metric-info b{display:block;font-size:11px}
+.metric-info span{font:9px 'DM Mono';color:var(--muted)}
 
-/* এজেন্ট অপারেশনস প্যানেল */
-.agent-panel{grid-column:span 2}
-.agent-tools{display:flex;gap:8px;flex-wrap:wrap;padding:14px 16px 0}
-.agent-grid{
-  padding:14px 16px;
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:9px;
-}
-.agent{
-  background:var(--panel2);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:12px;
-  display:flex;
-  align-items:center;
-  gap:10px;
-  min-width:0;
-}
-.avatar{
-  width:35px;
-  height:35px;
-  flex-shrink:0;
-  border-radius:10px;
-  display:grid;
-  place-items:center;
-  font-weight:700;
-}
-.agent-info{min-width:0}
-.agent-info b{display:block;font-size:12px}
-.agent-info small{display:block;font:10px 'DM Mono';color:var(--muted);margin-top:4px;overflow-wrap:anywhere}
-.agent-state{
-  margin-left:auto;
-  width:8px;
-  height:8px;
-  flex-shrink:0;
-  border-radius:50%;
-  background:#708097;
-}
-/* এজেন্ট স্ট্যাটাস ইন্ডিকেটর রঙ */
-.agent[data-status="Working"] .agent-state{background:var(--gold);box-shadow:0 0 9px #ffd70088}
-.agent[data-status="Done"] .agent-state{background:var(--lime)}
-.agent[data-status="Error"] .agent-state{background:var(--red)}
-.agent[data-status="Queued"] .agent-state{background:var(--violet)}
+.agent-town{padding:14px;display:flex;flex-direction:column;gap:8px}
+.town-item{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px}
+.town-item b{display:block;font-size:11px}
+.town-item small{font:9px 'DM Mono';color:var(--muted)}
 
-/* রিয়ালিস্টিক হাউস ফ্লোর প্ল্যান ড্যাশবোর্ড স্টাইল */
-.mansion-monitor{
-  margin:0 16px 16px;
-  border:1px solid #1b3041;
-  border-radius:13px;
-  overflow:hidden;
-  background:#090e17;
-  height:340px;
-  position:relative;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:8px;
-  padding:12px;
-}
-.room-box{
-  background:#111927;
-  border:1px solid #22334f;
-  border-radius:10px;
-  padding:10px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  position:relative;
-  overflow:hidden;
-}
-.room-box h4{
-  margin:0 0 5px 0;
-  font-size:11px;
-  font-family:'DM Mono';
-  color:var(--cyan);
-  display:flex;
-  align-items:center;
-  gap:5px;
-}
-.room-content{font-size:10px;color:var(--muted);font-family:'DM Mono';line-height:1.4}
-.agent-badge{display:inline-block;padding:3px 6px;border-radius:6px;font-size:9px;font-weight:700;margin-top:4px}
-.mansion-label{
-  position:absolute;
-  left:14px;
-  bottom:8px;
-  font:9px 'DM Mono';
-  color:#5cf4e8;
-  pointer-events:none;
-  z-index:5;
-}
-.monitor-note{
-  margin:0 16px 16px;
-  padding:11px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  color:var(--muted);
-  font:10px/1.6 'DM Mono';
-}
+/* Center Column - Mansion & Towers */
+.center-col{display:flex;flex-direction:column;gap:16px}
+.mansion-showcase{position:relative;flex:1;min-height:480px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#060a12;display:flex;flex-direction:column;justify-content:flex-end;padding:20px}
+.mansion-overlay{position:absolute;inset:0;background:radial-gradient(circle at center,transparent 25%,#070a10dd 90%);pointer-events:none}
+.mansion-content{position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.room-badge{background:#111b29ee;border:1px solid var(--line);padding:10px;border-radius:12px;backdrop-filter:blur(5px)}
+.room-badge b{font-size:11px;color:var(--cyan);display:block;margin-bottom:2px}
+.room-badge span{font:9px 'DM Mono';color:var(--muted)}
 
-/* সিগন্যাল ইন্টারফেস প্যানেল (চ্যাট) */
-.right{grid-column:auto}
-.stream{padding:15px}
-.controls{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-bottom:12px;
-}
-.controls label{font:10px 'DM Mono';color:var(--muted)}
-select{
-  background:var(--panel2);
-  color:var(--text);
-  border:1px solid var(--line);
-  padding:9px;
-  border-radius:9px;
-  max-width:100%;
-}
-.thinking{font:10px 'DM Mono';color:var(--lime);margin-left:auto}
-.viz{
-  height:48px;
-  background:#0a1119;
-  border:1px solid var(--line);
-  border-radius:12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-  padding:8px;
-  margin-bottom:13px;
-}
-.bar{
-  width:5px;
-  border-radius:5px;
-  background:linear-gradient(to top,var(--cyan),var(--violet));
-  height:9px;
-  animation:wave .65s ease-in-out infinite alternate;
-  animation-play-state:paused;
-}
-.viz.playing .bar{animation-play-state:running}
-@keyframes wave{to{height:31px}}
-.chatlog{
-  height:280px;
-  overflow:auto;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  padding:12px;
-  background:#060a10;
-  border:1px solid var(--line);
-  border-radius:12px;
-  scroll-behavior:smooth;
-}
-.bubble{
-  max-width:96%;
-  padding:10px 12px;
-  border-radius:12px;
-  font-size:12px;
-  line-height:1.6;
-  white-space:pre-wrap;
-  overflow-wrap:anywhere;
-}
-.bubble .tag{
-  display:block;
-  font:9px 'DM Mono';
-  letter-spacing:.08em;
-  margin-bottom:4px;
-  opacity:.8;
-}
-/* চ্যাট বাবল কালার */
+/* Bottom Strip */
+.bottom-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:14px;background:var(--panel);border:1px solid var(--line);border-radius:16px;align-items:center}
+.stat-box{display:flex;align-items:center;gap:10px;font:11px 'DM Mono'}
+.stat-icon{width:32px;height:32px;border-radius:8px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;color:var(--cyan)}
+
+/* Right Column */
+.right-col{display:flex;flex-direction:column;gap:16px}
+.stream{padding:14px;display:flex;flex-direction:column;flex:1}
+.audio-viz{height:45px;background:#0a1119;border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px;margin-bottom:12px}
+.bar{width:4px;border-radius:4px;background:linear-gradient(to top,var(--cyan),var(--violet));height:8px;animation:wave .6s ease-in-out infinite alternate}
+@keyframes wave{to{height:28px}}
+.voice-toggles{display:flex;gap:8px;margin-bottom:12px}
+.v-btn{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px;font:10px 'DM Mono';display:flex;align-items:center;justify-content:center;gap:6px}
+.v-btn.active{border-color:var(--lime);color:var(--lime);background:#b7ff8110}
+.chatlog{height:260px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#060a10;border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
+.bubble{max-width:92%;padding:8px 10px;border-radius:10px;font-size:11px;line-height:1.5}
 .bubble.user{align-self:flex-end;background:#102a31;border:1px solid #24514f}
 .bubble.ai{align-self:flex-start;background:#151d2d;border:1px solid #28364c}
-.bubble.system{align-self:center;color:var(--muted);font:10px 'DM Mono';max-width:100%;text-align:center}
-.bubble.error{align-self:flex-start;background:#2a101b;border:1px solid #673047;color:#ff9ab2}
-.composer{display:flex;gap:8px;margin-top:10px}
-.composer input{
-  min-width:0;
-  flex:1;
-  background:var(--panel2);
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:12px;
-  color:var(--text);
-  outline:none;
-}
-.composer input:focus{border-color:var(--cyan)}
-.subrow{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:9px;
-  color:var(--muted);
-  font:10px 'DM Mono';
-}
+.composer{display:flex;gap:6px}
+.composer input{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;color:var(--text);outline:none;font-size:11px}
+.btn-send{background:var(--cyan);color:#031313;border:none;border-radius:8px;padding:0 14px;font-weight:700}
 
-/* ফুটার সেকশন */
-.foot{
-  display:flex;
-  justify-content:space-between;
-  gap:10px;
-  color:var(--muted);
-  font:10px 'DM Mono';
-  padding:17px 2px;
-  flex-wrap:wrap;
-}
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:14px}
+.q-btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px;border-radius:10px;font:11px 'Space Grotesk';display:flex;align-items:center;gap:8px;transition:.2s}
+.q-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 
-/* রেসপন্সিভ মিডিয়া কোয়েরি */
-@media(max-width:1100px){
-  .layout{grid-template-columns:1fr 1fr}
-  .agent-panel{grid-column:1/-1}
-  .right{grid-column:1/-1}
-}
-@media(max-width:680px){
-  .app{padding:12px}
-  .layout{grid-template-columns:1fr}
-  .agent-panel,.right{grid-column:auto}
-  .agent-grid{grid-template-columns:1fr}
-  .statusbar{gap:7px}
-  .brand h1{font-size:15px}
-  .composer{flex-wrap:wrap}
-  .composer input{flex-basis:55%}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}
-}
+.profile-card{background:linear-gradient(135deg,#1f1805,#0d121c);border:1px solid #ffd70044;border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;margin:14px}
+.profile-avatar{width:36px;height:36px;border-radius:50%;background:var(--gold);display:grid;place-items:center;color:#000;font-weight:700}
+.profile-info b{display:block;font-size:12px;color:var(--gold)}
+.profile-info small{font:9px 'DM Mono';color:var(--muted)}
+
+@media(max-width:1300px){.layout{grid-template-columns:1fr}}.bottom-strip{grid-template-columns:repeat(2,1fr)}
 </style>
 </head>
-<body><div class="app">
-<header>
- <div class="brand"><div class="mark">AI</div><div><h1>আমার ব্যক্তিগত এআই</h1><small>এজেন্ট ম্যানশন // ফ্লোর প্ল্যান এবং রুম</small></div></div>
- <div class="statusbar"><span class="status" id="serverBadge"><i class="dot"></i><span id="serverText">সার্ভার চেক করা হচ্ছে</span></span><span id="sysStatus">ভয়েস অফ</span><span>লেটেন্সি <b id="lat">--</b>ms</span><span id="clock">--:--:--</span><button class="btn" id="soundBtn" type="button">সাউন্ড অন</button></div>
-</header>
-<main class="layout">
-<section class="panel"><div class="ph"><div><div class="eyebrow">01 / কগনিশন কোর</div><div class="ptitle">নিউরাল নেটওয়ার্ক</div></div><span class="pill" id="webglStatus">ইনিশিয়ালাইজিং</span></div>
-<div class="brain-area"><div class="brainbox" id="brainbox"><canvas id="brain" aria-label="Animated neural network visualization"></canvas><div class="brain-label" id="brainLabel">নিউরাল ফিল্ড // লাইভ</div></div>
-<div class="node-grid"><button class="node active" data-name="Memory" data-color="#5cf4e8"><b>মেমোরি</b><span>কথোপকথনের প্রসঙ্গ</span></button><button class="node" data-name="Skills" data-color="#a68bff"><b>স্কিলস</b><span>এজেন্ট ক্ষমতা</span></button><button class="node" data-name="Core" data-color="#b7ff81"><b>কোর</b><span>আচরণ সেটআপ</span></button><button class="node" data-name="Settings" data-color="#ffd700"><b>সেটিংস</b><span>ইন্টারফেস কনফিগার</span></button></div></div></section>
-<section class="panel agent-panel"><div class="ph"><div><div class="eyebrow">02 / এজেন্ট অপারেশনস</div><div class="ptitle">এজেন্ট ম্যানশন (আলাদা রুম, কম্পিউটার ডেস্ক, চেয়ার এবং বেড)</div></div><span class="pill" id="agentSummary">৫টি এজেন্ট · আইডল</span></div>
-<div class="agent-tools"><button class="btn" id="refreshAgents" type="button">স্ট্যাটাস রিফ্রেশ করুন</button><span class="thinking" id="monitorText">কমান্ডের জন্য অপেক্ষা করছে</span></div>
-<div class="agent-grid" id="agentGrid">
-<div class="agent" data-agent="main" data-status="Ready"><div class="avatar" style="background:#5cf4e822;color:var(--cyan)">M</div><div class="agent-info"><b>মেইন এআই / ডিসপ্যাচার</b><small>টাস্ক প্ল্যান এবং রুট করে</small></div><i class="agent-state"></i></div>
-<div class="agent" data-agent="research" data-status="Ready"><div class="avatar" style="background:#a68bff22;color:var(--violet)">R</div><div class="agent-info"><b>রিসার্চ এজেন্ট</b><small>গবেষণা এবং সংক্ষিপ্তসার</small></div><i class="agent-state"></i></div>
-<div class="agent" data-agent="coder" data-status="Ready"><div class="avatar" style="background:#5cf4e822;color:var(--cyan)">C</div><div class="agent-info"><b>কোডার এজেন্ট</b><small>কোড রিভিউ এবং জেনারেশন</small></div><i class="agent-state"></i></div>
-<div class="agent" data-agent="analyst" data-status="Ready"><div class="avatar" style="background:#ffd70022;color:var(--gold)">A</div><div class="agent-info"><b>অ্যানালিস্ট এজেন্ট</b><small>সরবরাহকৃত তথ্য বিশ্লেষণ</small></div><i class="agent-state"></i></div>
-<div class="agent" data-agent="task" data-status="Ready"><div class="avatar" style="background:#b7ff8122;color:var(--lime)">T</div><div class="agent-info"><b>টাস্ক এজেন্ট</b><small>সাব-টাস্ক ট্র্যাক এবং অর্গানাইজ</small></div><i class="agent-state"></i></div>
+<body>
+<div class="app">
+  <!-- Top Navbar -->
+  <header class="topnav">
+    <div class="brand">
+      <div class="mark">AI</div>
+      <div>
+        <h1>MY PERSONAL AI</h1>
+        <small>— Agent Mansion Command Center —</small>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active">🏠 Home Tower</button>
+      <button class="nav-tab">🏢 Agent Tower</button>
+      <button class="nav-tab">🏛️ 3D Mansion</button>
+      <button class="nav-tab">✉️ Memory & Dim</button>
+      <button class="nav-tab">⚙️ Settings</button>
+    </div>
+    <div class="top-status">
+      <div class="live-badge"><i class="live-dot"></i> LIVE</div>
+      <span id="clock">Sun, Nov 1, 2026 4:08:00 PM</span>
+      <span style="font-size:14px;">🇧🇩</span>
+    </div>
+  </header>
+
+  <!-- Main Layout Grid -->
+  <main class="layout">
+    
+    <!-- Left Column: Cognition Core & Agent Town -->
+    <div class="left-col">
+      <section class="panel">
+        <div class="ph">
+          <div>
+            <div class="eyebrow">01 / COGNITION CORE</div>
+            <div class="ptitle">Neural Network (Gemini Brain)</div>
+          </div>
+          <span class="pill">ONLINE</span>
+        </div>
+        <div class="brain-area">
+          <div class="brainbox" id="brainbox">
+            <canvas id="brainCanvas"></canvas>
+            <div class="brain-label">NEURAL FIELD // GEMINI CORE</div>
+          </div>
+          <div class="metric-grid">
+            <div class="metric-card">
+              <div class="metric-icon" style="background:#5cf4e822; color:var(--cyan)">🗄️</div>
+              <div class="metric-info"><b>Memory DB</b><span>Supabase Sync</span></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon" style="background:#a68bff22; color:var(--violet)">⚡</div>
+              <div class="metric-info"><b>Dimensions</b><span>Multi-Agent Sync</span></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon" style="background:#b7ff8122; color:var(--lime)">🧠</div>
+              <div class="metric-info"><b>Gemini Brain</b><span>Google GenAI</span></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon" style="background:#ffd70022; color:var(--gold)">⚙️</div>
+              <div class="metric-info"><b>Settings</b><span>Render Active</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="ph">
+          <div>
+            <div class="eyebrow">02 / AGENT TOWN & TOWERS</div>
+            <div class="ptitle">Virtual Hub</div>
+          </div>
+          <span class="pill">ACTIVE</span>
+        </div>
+        <div class="agent-town">
+          <div class="town-item">
+            <div style="color:var(--cyan)">🏢</div>
+            <div><b>Agent Tower Room 1</b><small>Research & Analysis Hub</small></div>
+          </div>
+          <div class="town-item">
+            <div style="color:var(--violet)">💻</div>
+            <div><b>Agent Tower Room 2</b><small>Coding & Dev Workspace</small></div>
+          </div>
+          <div class="town-item">
+            <div style="color:var(--gold)">🌐</div>
+            <div><b>Dimension Core</b><small>Task Orchestration Space</small></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Center Column: 3D Mansion Showcase & Separate Towers -->
+    <div class="center-col">
+      <div class="mansion-showcase" id="mansionShowcase">
+        <div class="mansion-overlay"></div>
+        <div class="mansion-content">
+          <div class="room-badge">
+            <b>🏠 Home Tower</b>
+            <span>Main Control & Living Rooms</span>
+          </div>
+          <div class="room-badge">
+            <b>🏢 Agent Tower</b>
+            <span>Separate Rooms & Desks</span>
+          </div>
+          <div class="room-badge">
+            <b>🌌 Dimension Hub</b>
+            <span>Neural Field & Memory</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Control Strip -->
+      <div class="bottom-strip">
+        <div class="stat-box">
+          <div class="stat-icon">✔️</div>
+          <div><b>System Status</b><span style="color:var(--lime)">All Systems Online</span></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">⚡</div>
+          <div><b>Latency</b><span>12ms</span></div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-icon">💻</div>
+          <div><b>Memory Usage</b><span>48%</span></div>
+        </div>
+        <div class="stat-box" style="justify-content:flex-end;">
+          <span style="font-size:11px; color:var(--muted)">Powered by Google Gemini</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Signal Interface & Chat -->
+    <div class="right-col">
+      <section class="panel" style="flex:1;">
+        <div class="ph">
+          <div>
+            <div class="eyebrow">03 / SIGNAL INTERFACE</div>
+            <div class="ptitle">Live Stream & Terminal</div>
+          </div>
+          <span class="pill">READY</span>
+        </div>
+        <div class="stream">
+          <div class="audio-viz">
+            <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
+            <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
+          </div>
+          <div class="voice-toggles">
+            <button class="v-btn active" id="micToggle">🎙️ MIC ON</button>
+            <button class="v-btn active" id="soundToggle">🔊 Sound ON</button>
+          </div>
+          <div class="chatlog" id="chatlog">
+            <div class="bubble ai">
+              <b style="color:var(--cyan); font-size:9px; display:block; margin-bottom:2px;">My Personal AI:</b>
+              Hello Irfan! 👋<br>How can I help you today?
+            </div>
+          </div>
+          <div class="composer">
+            <input type="text" id="userInput" placeholder="Type your message...">
+            <button class="btn-send" id="sendBtn">➤</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="ph">
+          <div class="eyebrow">QUICK ACCESS</div>
+        </div>
+        <div class="quick-grid">
+          <button class="q-btn">🏠 Home Tower</button>
+          <button class="q-btn">🏢 Agent Tower</button>
+          <button class="q-btn">⚡ 3D View</button>
+          <button class="q-btn">🎮 Dimensions</button>
+        </div>
+        
+        <div class="profile-card">
+          <div class="profile-avatar">👑</div>
+          <div class="profile-info">
+            <b>Irfan</b>
+            <small>Welcome to your AI Mansion!</small>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
 </div>
 
-<!-- রিয়ালিস্টিক হাউস ফ্লোর প্ল্যান এবং আলাদা রুম ভিজ্যুয়ালাইজেশন -->
-<div class="mansion-monitor" id="mansionBox">
-  <div class="room-box">
-    <div>
-      <h4>💻 ওয়ার্ক রুম</h4>
-      <div class="room-content">কোডিংয়ের জন্য কম্পিউটার ডেস্ক এবং চেয়ার</div>
-    </div>
-    <div id="roomWork" class="agent-badge" style="background:#5cf4e822;color:var(--cyan)">স্ট্যাটাস: রেডি</div>
-  </div>
-  <div class="room-box">
-    <div>
-      <h4>🛏️ বেডরুম</h4>
-      <div class="room-content">বিশ্রাম এবং ঘুমের কোয়ার্টার</div>
-    </div>
-    <div id="roomBed" class="agent-badge" style="background:#a68bff22;color:var(--violet)">স্ট্যাটাস: বিশ্রাম নিচ্ছে</div>
-  </div>
-  <div class="room-box">
-    <div>
-      <h4>📺 টিভি লাউঞ্জ</h4>
-      <div class="room-content">বিনোদন এবং রিল্যাক্স এরিয়া</div>
-    </div>
-    <div id="roomTV" class="agent-badge" style="background:#ffd70022;color:var(--gold)">স্ট্যাটাস: অ্যাক্টিভ</div>
-  </div>
-  <div class="room-box">
-    <div>
-      <h4>🍽️ ডাইনিং রুম</h4>
-      <div class="room-content">খাবার এবং টিম সিঙ্ক</div>
-    </div>
-    <div id="roomDining" class="agent-badge" style="background:#b7ff8122;color:var(--lime)">স্ট্যাটাস: ওপেন</div>
-  </div>
-  <div class="mansion-label">হাউস ম্যানশন // আলাদা রুম, ডেস্ক এবং বেড</div>
-</div>
-<p class="monitor-note">এজেন্ট স্ট্যাটাস<br>লাইভ এক্সিকিউশনের জন্য ব্যাকএন্ড অর্কেস্ট্রেটর প্রয়োজন। যখন কমান্ড দেওয়া হয়, এজেন্টরা কম্পিউটার ডেস্কে কোড করতে যায়। কাজ শেষ হলে, তারা বিশ্রাম নিতে বেডরুমে ফিরে আসে।</p></section>
-<section class="panel right"><div class="ph"><div><div class="eyebrow">03 / সিগন্যাল ইন্টারফেস</div><div class="ptitle">কমান্ড চ্যাট এবং ভয়েস</div></div><span class="pill" id="micPill">মাইক অফ</span></div><div class="stream">
-<div class="controls"><label for="languageMode">রিপ্লাই</label><select id="languageMode"><option value="auto">অটো</option><option value="en">ইংলিশ</option><option value="bn">বেঙ্গলী</option></select><span class="thinking" id="thinking" aria-live="polite">এআই রেডি</span></div>
-<div class="viz" id="viz" aria-label="Voice playback animation"><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i></div>
-<div class="chatlog" id="chatlog" role="log" aria-live="polite"><div class="bubble system">আমার ব্যক্তিগত এআই · রেডি। মেইন এআই-কে একটি কাজ দিন।</div></div>
-<div class="composer"><button class="btn" id="micBtn" type="button">মাইক অফ</button><input id="userInput" type="text" maxlength="8000" placeholder="মেইন এআই-কে একটি কমান্ড দিন বা কথা বলুন…" aria-label="আপনার কমান্ড"><button class="btn primary" id="sendBtn" type="button">সেন্ড</button></div>
-<div class="subrow"><span>এন্টার: সেন্ড · মাইক: শুনতে ট্যাপ করুন</span><button class="btn" id="clearBtn" type="button">চ্যাট ক্লিয়ার করুন</button></div></div></section>
-</main><footer class="foot"><span>আমার ব্যক্তিগত এআই / নিউরাল ইন্টারফেস</span><span>ব্যাকএন্ড: রেন্ডার + জেমিনি</span><span>এজেন্ট ম্যানশন</span></footer></div>
 <script>
-"use strict";
-// এপিআই এন্ডপয়েন্ট কনফিগারেশন
-const SERVER_BASE_URL="https://my-personal-ai-1-lz9o.onrender.com";
-const API_ENDPOINT=`${SERVER_BASE_URL}/api/chat`;
-const STATUS_ENDPOINT=`${SERVER_BASE_URL}/api/agents/status`;
+// থ্রি-ডি নিউরাল ব্রেইন অ্যানিমেশন ব্যাকগ্রাউন্ড
+const canvas = document.getElementById('brainCanvas');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 1, 1000);
+camera.position.z = 15;
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-// হেল্পার ফাংশন
-const $=id=>document.getElementById(id);
-const chatlog=$("chatlog"),userInput=$("userInput"),sendBtn=$("sendBtn");
-let soundEnabled=true,isBusy=false,isSpeaking=false,isListening=false,recognition=null,targetColor=null,statusPoll=null;
-
-// চ্যাটে মেসেজ যোগ করার ফাংশন
-function addMessage(who,text,kind="ai"){
-  const el=document.createElement("div");
-  el.className=`bubble ${kind}`;
-  if(kind!=="system"){
-    const tag=document.createElement("span");
-    tag.className="tag";
-    tag.textContent=who;
-    el.appendChild(tag)
-  }
-  const content=document.createElement("span");
-  content.textContent=String(text);
-  el.appendChild(content);
-  chatlog.appendChild(el);
-  chatlog.scrollTop=chatlog.scrollHeight;
-  return el
+const geometry = new THREE.BufferGeometry();
+const count = 220;
+const positions = new Float32Array(count * 3);
+for(let i = 0; i < count * 3; i++) {
+  positions[i] = (Math.random() - 0.5) * 10;
 }
+geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const material = new THREE.PointsMaterial({ color: 0x5cf4e8, size: 0.15 });
+const points = new THREE.Points(geometry, material);
+scene.add(points);
 
-// থিংকিং স্ট্যাটাস সেট করার ফাংশন
-function setThinking(t){$("thinking").textContent=t}
-
-// মাইক্রোফোন স্টেট আপডেট করার ফাংশন
-function setMicState(on){
-  isListening=on;
-  const btn=$("micBtn");
-  btn.classList.toggle("active",on);
-  btn.textContent=on?"লিসেনিং...":"মাইক অন";
-  $("micPill").textContent=on?"লিসেনিং":"মাইক অফ";
-  $("sysStatus").textContent=on?"ভয়েস রেডি":"ভয়েস অফ";
+function animate() {
+  requestAnimationFrame(animate);
+  points.rotation.y += 0.003;
+  renderer.render(scene, camera);
 }
+animate();
 
-// ইভেন্ট লিসেনার সেটআপ
-$("clearBtn").addEventListener("click",()=>{chatlog.replaceChildren();addMessage("SYSTEM","Chat cleared. Ready for your next command.","system")});
-$("soundBtn").addEventListener("click",()=>{
-  soundEnabled=!soundEnabled;
-  $("soundBtn").textContent=soundEnabled?"SOUND ON":"SOUND OFF";
-  if(!soundEnabled&&"speechSynthesis"in window){speechSynthesis.cancel();isSpeaking=false;$("viz").classList.remove("playing")}
-  addMessage("SYSTEM",`Voice output ${soundEnabled?"enabled":"disabled"}.`,"system")
+// রিয়েল-টাইম ক্লক আপডেট
+setInterval(() => {
+  const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  document.getElementById('clock').textContent = new Date().toLocaleDateString('en-US', options);
+}, 1000);
+
+// চ্যাট হ্যান্ডলিং
+const chatlog = document.getElementById('chatlog');
+const userInput = document.getElementById('userInput');
+document.getElementById('sendBtn').addEventListener('click', () => {
+  if(!userInput.value.trim()) return;
+  const userMsg = document.createElement('div');
+  userMsg.className = 'bubble user';
+  userMsg.textContent = userInput.value;
+  chatlog.appendChild(userMsg);
+  
+  const text = userInput.value;
+  userInput.value = '';
+  chatlog.scrollTop = chatlog.scrollHeight;
+
+  setTimeout(() => {
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'bubble ai';
+    aiMsg.innerHTML = `<b style="color:var(--cyan); font-size:9px; display:block; margin-bottom:2px;">My Personal AI:</b> Processing request in Agent Tower & Dimensions: "${text}"`;
+    chatlog.appendChild(aiMsg);
+    chatlog.scrollTop = chatlog.scrollHeight;
+  }, 1000);
 });
-document.querySelectorAll(".node").forEach(b=>b.addEventListener("click",()=>{
-  document.querySelectorAll(".node").forEach(n=>n.classList.remove("active"));
-  b.classList.add("active");
-  if(targetColor)targetColor.set(b.dataset.color);
-  addMessage("SYSTEM",`${b.dataset.name} visualization selected.`,"system")
-}));
-
-// সার্ভার স্ট্যাটাস চেক ফাংশন
-async function checkServerStatus(){try{const c=new AbortController(),timer=setTimeout(()=>c.abort(),8000);const r=await fetch(SERVER_BASE_URL,{cache:"no-store",signal:c.signal});clearTimeout(timer);if(!r.ok)throw Error(`HTTP ${r.status}`);$("serverBadge").classList.add("online");$("serverText").textContent="SERVER ONLINE"}catch{$("serverBadge").classList.remove("online");$("serverText").textContent="SERVER UNREACHABLE"}}
-
-// এজেন্ট স্ট্যাটাস রিফ্রেশ ফাংশন
-async function refreshAgentStatus(){try{const r=await fetch(STATUS_ENDPOINT,{cache:"no-store"});if(!r.ok)throw Error(`HTTP ${r.status}`);const data=await r.json();const list=Array.isArray(data.agents)?data.agents:[];for(const item of list){const el=document.querySelector(`[data-agent="${CSS.escape(String(item.id||item.agent||""))}"]`);if(!el)continue;const s=String(item.status||"Ready");el.dataset.status=s;const small=el.querySelector("small");if(small&&item.detail)small.textContent=String(item.detail).slice(0,180)}const working=[...document.querySelectorAll(".agent")].filter(a=>a.dataset.status==="Working").length;$("agentSummary").textContent=`${document.querySelectorAll(".agent").length} AGENTS · ${working?working+" WORKING":"STATUS SYNCED"}`;$("monitorText").textContent="Status received from backend"}catch{$("monitorText").textContent="Backend status endpoint not connected";$("agentSummary").textContent="STATUS OFFLINE"}}
-
-$("refreshAgents").addEventListener("click",refreshAgentStatus);
-// প্রাথমিক স্ট্যাটাস চেক
-checkServerStatus();
-refreshAgentStatus();
-// নির্দিষ্ট সময় পর পর চেক
-setInterval(checkServerStatus,45000);
-statusPoll=setInterval(refreshAgentStatus,12000);
-
-// মেসেজ পাঠানোর ফাংশন
-async function handleSendMessage(override){
-  const message=(typeof override==="string"?override:userInput.value).trim();
-  if(!message||isBusy)return;
-  isBusy=true;
-  sendBtn.disabled=true;
-  if(window.triggerAgentWork) window.triggerAgentWork(); 
-  if(recognition && isListening) { try{ recognition.stop(); }catch(e){} }
-  setThinking("মেইন এআই থিংকিং…");
-  addMessage("ইউ",message,"user");
-  userInput.value="";
-  const start=performance.now();
-  const ctrl=new AbortController();
-  const timeout=setTimeout(()=>ctrl.abort(),60000);
-  try{
-    const language=$("languageMode").value;
-    const res=await fetch(API_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({message,prompt:message,language}),signal:ctrl.signal});
-    const data=await res.json().catch(()=>({}));
-    $("lat").textContent=Math.round(performance.now()-start);
-    if(!res.ok)throw Error(data.error||data.details||`HTTP ${res.status}`);
-    const reply=data.reply||data.response;
-    if(typeof reply!=="string"||!reply.trim())throw Error("The API returned an empty answer.");
-    addMessage("আমার ব্যক্তিগত এআই",reply,"ai");
-    speakText(reply);
-    if(window.triggerAgentRest) window.triggerAgentRest(); 
-    if(data.agents&&Array.isArray(data.agents)){
-      for(const a of data.agents){
-        const el=document.querySelector(`[data-agent="${CSS.escape(String(a.id||""))}"]`);
-        if(el&&a.status)el.dataset.status=String(a.status)
-      }
-      $("monitorText").textContent="Task updates received";
-    }else{
-      $("monitorText").textContent="Main AI replied; agents finished work and resting";
-    }
-    refreshAgentStatus();
-  }catch(err){
-    const detail=err.name==="AbortError"?"Request timed out. The server may be waking up; try again.":err.message;
-    addMessage("API ERROR",detail,"error");
-    setThinking("REQUEST FAILED");
-    if(window.triggerAgentRest) window.triggerAgentRest();
-  }finally{
-    clearTimeout(timeout);
-    isBusy=false;
-    sendBtn.disabled=false;
-    if($("thinking").textContent==="মেইন এআই থিংকিং…")setThinking("এআই রেডি");
-  }
-}
-
-sendBtn.addEventListener("click",()=>handleSendMessage());
-userInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();handleSendMessage()}});
-
-// টেক্সট টু স্পিচ ফাংশন
-function speakText(text){
-  if(!soundEnabled||!("speechSynthesis"in window))return;
-  speechSynthesis.cancel();
-  isSpeaking=true;
-  const u=new SpeechSynthesisUtterance(text),mode=$("languageMode").value;
-  u.lang=mode==="bn"?"bn-BD":mode==="en"?"en-US":(/[\u0980-\u09FF]/.test(text)?"bn-BD":"en-US");
-  $("viz").classList.add("playing");
-  u.onend=u.onerror=()=>{isSpeaking=false;$("viz").classList.remove("playing")};
-  speechSynthesis.speak(u);
-}
-
-// মাইক্রোফোন ভয়েস রিকগনিশন কনফিগারেশন
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(SR){
-  recognition=new SR();
-  recognition.continuous=false;
-  recognition.interimResults=false;
-  recognition.onstart=()=>setMicState(true);
-  recognition.onresult=e=>{
-    const said=e.results?.[0]?.[0]?.transcript?.trim();
-    if(said){
-      userInput.value=said;
-      handleSendMessage(said);
-    }
-  };
-  recognition.onerror=e=>{
-    addMessage("ভয়েস",`Microphone error: ${e.error}. Check browser permission.`,"error");
-    setMicState(false);
-  };
-  recognition.onend=()=>setMicState(false);
-}else{
-  $("micBtn").disabled=true;
-  $("micBtn").title="Speech recognition is unsupported in this browser.";
-}
-
-$("micBtn").addEventListener("click",()=>{
-  if(!recognition||isBusy)return;
-  if(isListening){
-    try{ recognition.stop(); }catch(e){}
-    setMicState(false);
-    return;
-  }
-  try{
-    if("speechSynthesis"in window)speechSynthesis.cancel();
-    isSpeaking=false;
-    recognition.lang=$("languageMode").value==="bn"?"bn-BD":"en-US";
-    recognition.start();
-  }catch(e){
-    addMessage("ভয়েস",`Could not start microphone: ${e.message}`,"error");
-    setMicState(false);
-  }
-});
-
-// নিউরাল কোর থ্রি-ডি অ্যানিমেশন
-function initNeural(){
-  const box=$("brainbox"),canvas=$("brain");
-  try{
-    if(!window.THREE||!window.WebGLRenderingContext)throw Error("3D unavailable");
-    const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(45,1,1,1000);
-    camera.position.z=18;
-    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
-    renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
-    
-    // বিন্দুগুলি তৈরি করা
-    const n=430,pos=new Float32Array(n*3);
-    for(let i=0;i<n;i++){
-      const u=Math.random(),v=Math.acos(2*Math.random()-1),r=5.1+(Math.random()-.5)*.7;
-      pos[3*i]=r*Math.sin(v)*Math.cos(u*2*Math.PI);
-      pos[3*i+1]=r*Math.sin(v)*Math.sin(u*2*Math.PI);
-      pos[3*i+2]=r*Math.cos(v);
-    }
-    const geo=new THREE.BufferGeometry();
-    geo.setAttribute("position",new THREE.BufferAttribute(pos,3));
-    const dots=new THREE.Points(geo,new THREE.PointsMaterial({color:0x5cf4e8,size:.14,transparent:true,opacity:.95}));
-    scene.add(dots);
-    
-    // ওয়্যারফ্রেম কোর তৈরি করা
-    const core=new THREE.Mesh(new THREE.IcosahedronGeometry(3.3,2),new THREE.MeshBasicMaterial({color:0x5cf4e8,wireframe:true,transparent:true,opacity:.35}));
-    scene.add(core);
-    
-    targetColor=new THREE.Color("#5cf4e8");
-    
-    // উইন্ডো রিসাইজ হ্যান্ডলিং
-    function resize(){
-      const w=box.clientWidth,h=box.clientHeight;
-      if(!w||!h)return;
-      camera.aspect=w/h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w,h,false);
-    }
-    new ResizeObserver(resize).observe(box);
-    resize();
-    
-    // অ্যানিমেশন ফ্রেম ফাংশন
-    function frame(){
-      requestAnimationFrame(frame);
-      dots.rotation.y+=.0025;
-      dots.rotation.x+=.0007;
-      core.rotation.y-=.0035;
-      core.material.color.lerp(targetColor,.04);
-      renderer.render(scene,camera);
-    }
-    frame();
-    $("webglStatus").textContent="3D ACTIVE";
-    $("brainLabel").textContent="নিউরাল ফিল্ড // লাইভ সিমুলেশন";
-  }catch(e){
-    console.error("Neural init error", e);
-    $("webglStatus").textContent="2D FALLBACK";
-    $("brainLabel").textContent="নিউরাল ফিল্ড // UNAVAILABLE";
-  }
-}
-
-// এজেন্ট ম্যানশন রুম আপডেট ট্রিগার
-window.triggerAgentWork = function() {
-  $("roomWork").textContent = "স্ট্যাটাস: এজেন্টরা ডেস্কে কোড করছে";
-  $("roomWork").style.background = "#ffd70022";
-  $("roomWork").style.color = "var(--gold)";
-  $("roomBed").textContent = "স্ট্যাটাস: খালি (কাজে গেছে)";
-};
-
-window.triggerAgentRest = function() {
-  $("roomWork").textContent = "স্ট্যাটাস: রেডি";
-  $("roomWork").style.background = "#5cf4e822";
-  $("roomWork").style.color = "var(--cyan)";
-  $("roomBed").textContent = "স্ট্যাটাস: বেডে বিশ্রাম নিচ্ছে";
-};
-
-// ইনিশিয়ালাইজেশন
-initNeural();
-setInterval(()=>$("clock").textContent=new Date().toLocaleTimeString(),1000);
-$("clock").textContent=new Date().toLocaleTimeString();
-</script></body></html>
+</script>
+</body>
+</html>

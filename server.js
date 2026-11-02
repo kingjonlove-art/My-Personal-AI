@@ -1,31 +1,22 @@
+// ==========================================
+// MY PERSONAL AI - STEP 4
+// ADVANCED GEMINI BACKEND
+// ==========================================
+
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenerativeAI } =
+    require("@google/generative-ai");
 
-dotenv.config();
+require("dotenv").config();
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-const API_KEY = process.env.GEMINI_API_KEY;
-
-// Primary and fallback models can be configured in Render.
-const PRIMARY_MODEL =
-    process.env.GEMINI_MODEL || "gemini-3.8-flash";
-
-const FALLBACK_MODEL =
-    process.env.GEMINI_FALLBACK_MODEL || "";
-
-if (!API_KEY) {
-    console.error("ERROR: GEMINI_API_KEY is missing.");
-    process.exit(1);
-}
-
-const ai = new GoogleGenAI({
-    apiKey: API_KEY
-});
+// ==========================================
+// MIDDLEWARE
+// ==========================================
 
 app.use(cors());
 
@@ -33,238 +24,304 @@ app.use(express.json({
     limit: "1mb"
 }));
 
-// Basic health check
-app.get("/", (req, res) => {
-    res.status(200).json({
-        status: "success",
-        message: "My Personal AI Server is running!",
-        model: PRIMARY_MODEL
-    });
-});
+// ==========================================
+// GEMINI CONFIGURATION
+// ==========================================
 
-// Check whether an error is temporary.
-function isRetryableError(error) {
-    const status = Number(
-        error.status ||
-        error.statusCode ||
-        error.code
-    );
+const API_KEY = process.env.GEMINI_API_KEY;
 
-    const message = String(error.message || "");
-
-    return (
-        [408, 429, 500, 502, 503, 504].includes(status) ||
-        /UNAVAILABLE|RESOURCE_EXHAUSTED|high demand|overloaded|timeout/i.test(message)
-    );
+if (!API_KEY) {
+    console.error("GEMINI_API_KEY is missing!");
 }
 
-// Wait before retrying.
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+const genAI = API_KEY
+    ? new GoogleGenerativeAI(API_KEY)
+    : null;
 
-// Generate an AI response with retry support.
-async function generateWithRetry(model, prompt, language) {
+const MODEL_NAME =
+    process.env.GEMINI_MODEL || "gemini-2.5-flash";
 
-    const languageInstruction =
-        language === "bn"
-            ? "Reply in Bengali."
-            : language === "en"
-                ? "Reply in English."
-                : "Reply in the same language used by the user.";
+const model = genAI
+    ? genAI.getGenerativeModel({
+        model: MODEL_NAME,
 
-    const systemInstruction = `
+        systemInstruction: `
 You are My Personal AI.
 
 Your creator is Irfan Hasnat.
 
-Be helpful, accurate, polite and conversational.
+Rules:
+1. Answer the user's actual question.
+2. Never simply repeat the user's question.
+3. Reply in Bengali when the user speaks Bengali.
+4. Reply in English when the user speaks English.
+5. Be intelligent, friendly and helpful.
+6. Give accurate answers.
+7. Explain coding problems step by step.
+8. Never reveal private API keys.
+        `
+    })
+    : null;
 
-${languageInstruction}
+// ==========================================
+// CONVERSATION MEMORY
+// ==========================================
 
-Do not repeat the user's question as your answer.
-Answer the actual question directly.
-If you do not know something, say so honestly.
-`;
-        let lastError;
+// Temporary memory.
+// Render restart করলে এই memory মুছে যাবে।
 
-    for (let attempt = 0; attempt < 3; attempt++) {
+const conversations = new Map();
 
-        try {
+const MAX_HISTORY = 20;
 
-            console.log(
-                `Gemini request: ${model} | Attempt ${attempt + 1}/3`
-            );
+// ==========================================
+// HOME ROUTE
+// ==========================================
 
-            const result = await ai.models.generateContent({
-                model: model,
-                contents: prompt,
-                config: {
-                    systemInstruction: systemInstruction
-                }
-            });
+app.get("/", (req, res) => {
 
-            const answer = result.text;
+    res.json({
+        success: true,
+        message: "My Personal AI Server is running successfully!",
+        model: MODEL_NAME
+    });
 
-            if (!answer || !answer.trim()) {
-                throw new Error("Gemini returned an empty response.");
-            }
+});
 
-            return answer.trim();
+// ==========================================
+// HEALTH CHECK
+// ==========================================
 
-        } catch (error) {
+app.get("/health", (req, res) => {
 
-            lastError = error;
+    res.json({
+        success: true,
+        server: "ONLINE",
+        gemini: genAI ? "CONFIGURED" : "NOT CONFIGURED",
+        model: MODEL_NAME,
+        uptime: process.uptime()
+    });
 
-            console.error("Gemini attempt failed:", {
-                model,
-                attempt: attempt + 1,
-                status: error.status || error.statusCode || error.code,
-                message: error.message
-            });
+});
 
-            if (!isRetryableError(error) || attempt === 2) {
-                throw error;
-            }
+// ==========================================
+// GEMINI CHAT API
+// ==========================================
 
-            // Exponential backoff with small random jitter.
-            const delay =
-                (1000 * Math.pow(2, attempt)) +
-                Math.floor(Math.random() * 500);
-
-            console.log(`Retrying in ${delay}ms...`);
-
-            await sleep(delay);
-        }
-    }
-
-    throw lastError;
-}
-
-
-// Main chat endpoint
 app.post("/api/chat", async (req, res) => {
 
     try {
 
-        const userPrompt =
-            req.body.prompt ||
+        if (!model) {
+
+            return res.status(500).json({
+                success: false,
+                error: "Gemini API key is not configured."
+            });
+
+        }
+
+        const message =
             req.body.message ||
+            req.body.prompt ||
             req.body.query;
 
-        const language = req.body.language || "auto";
+        const sessionId =
+            String(req.body.sessionId || "default");
 
-        if (
-            typeof userPrompt !== "string" ||
-            !userPrompt.trim()
-        ) {
+        if (!message || typeof message !== "string") {
+
             return res.status(400).json({
-                error: "A valid message is required."
+                success: false,
+                error: "Please provide a valid message."
             });
+
         }
 
-        if (!["auto", "bn", "en"].includes(language)) {
+        const cleanMessage = message.trim();
+
+        if (!cleanMessage) {
+
             return res.status(400).json({
-                error: "Invalid language setting."
+                success: false,
+                error: "Message cannot be empty."
             });
+
         }
 
-        if (userPrompt.length > 8000) {
+        if (cleanMessage.length > 10000) {
+
             return res.status(413).json({
+                success: false,
                 error: "Message is too long."
             });
+
         }
 
-        let reply;
+        // GET CONVERSATION HISTORY
 
-        try {
+        let history =
+            conversations.get(sessionId) || [];
 
-            reply = await generateWithRetry(
-                PRIMARY_MODEL,
-                userPrompt.trim(),
-                language
+        // START GEMINI CHAT
+
+        const chat = model.startChat({
+            history: history
+        });
+
+        // SEND MESSAGE
+
+        const result =
+            await chat.sendMessage(cleanMessage);
+
+        const response =
+            await result.response;
+
+        const aiReply = response.text();
+
+        if (!aiReply) {
+
+            throw new Error(
+                "Gemini returned an empty response."
             );
 
-        } catch (primaryError) {
-
-            console.error(
-                "Primary Gemini model failed:",
-                primaryError.message
-            );
-
-            // Only try fallback if configured.
-            if (
-                FALLBACK_MODEL &&
-                FALLBACK_MODEL !== PRIMARY_MODEL
-            ) {
-
-                console.log(
-                    "Trying fallback model:",
-                    FALLBACK_MODEL
-                );
-
-                reply = await generateWithRetry(
-                    FALLBACK_MODEL,
-                    userPrompt.trim(),
-                    language
-                );
-
-            } else {
-
-                throw primaryError;
-            }
         }
 
-        return res.status(200).json({
+        // SAVE CONVERSATION
+
+        history.push({
+
+            role: "user",
+
+            parts: [
+                { text: cleanMessage }
+            ]
+
+        });
+
+        history.push({
+
+            role: "model",
+
+            parts: [
+                { text: aiReply }
+            ]
+
+        });
+
+        // KEEP LAST 20 MESSAGES
+
+        if (history.length > MAX_HISTORY) {
+
+            history = history.slice(-MAX_HISTORY);
+
+        }
+
+        conversations.set(sessionId, history);
+
+        // SEND RESPONSE
+
+        res.json({
+
             success: true,
-            reply: reply,
-            model: PRIMARY_MODEL
+
+            reply: aiReply,
+
+            sessionId: sessionId,
+
+            model: MODEL_NAME,
+
+            historyLength: history.length
+
         });
 
     } catch (error) {
 
-        const status = Number(
-            error.status ||
-            error.statusCode ||
-            error.code
+        console.error(
+            "GEMINI ERROR:",
+            error
         );
 
-        console.error("DETAILED API ERROR:", {
-            status: status || "unknown",
-            message: error.message
-        });
+        res.status(500).json({
 
-        if (isRetryableError(error)) {
-
-            return res.status(503).json({
-                success: false,
-                error: "Gemini is temporarily unavailable.",
-                details: "Please try again in a few moments."
-            });
-        }
-
-        return res.status(500).json({
             success: false,
+
             error: "Failed to generate AI response.",
-            details: error.message || "Unknown server error."
+
+            details:
+                process.env.NODE_ENV === "development"
+                ? error.message
+                : undefined
+
         });
+
     }
+
 });
-// Start server
+
+// ==========================================
+// CLEAR CHAT MEMORY
+// ==========================================
+
+app.post("/api/clear-memory", (req, res) => {
+
+    const sessionId =
+        String(req.body.sessionId || "default");
+
+    conversations.delete(sessionId);
+
+    res.json({
+
+        success: true,
+
+        message: "Conversation memory cleared."
+
+    });
+
+});
+
+// ==========================================
+// 404 HANDLER
+// ==========================================
+
+app.use((req, res) => {
+
+    res.status(404).json({
+
+        success: false,
+
+        error: "Route not found."
+
+    });
+
+});
+
+// ==========================================
+// SERVER START
+// ==========================================
+
 app.listen(PORT, () => {
 
-    console.log("--------------------------------");
-    console.log("MY PERSONAL AI SERVER STARTED");
-    console.log("--------------------------------");
-
-    console.log("Port:", PORT);
-    console.log("Primary Model:", PRIMARY_MODEL);
-
     console.log(
-        "Fallback Model:",
-        FALLBACK_MODEL || "Not configured"
+        "================================"
     );
 
-    console.log("API Status: READY");
-    console.log("--------------------------------");
+    console.log(
+        "MY PERSONAL AI SERVER ONLINE"
+    );
+
+    console.log(
+        "PORT:",
+        PORT
+    );
+
+    console.log(
+        "GEMINI MODEL:",
+        MODEL_NAME
+    );
+
+    console.log(
+        "================================"
+    );
+
 });

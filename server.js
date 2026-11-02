@@ -1,91 +1,31 @@
-// ==========================================
-// MY PERSONAL AI - STEP 4
-// ADVANCED GEMINI BACKEND
-// ==========================================
-
-const express = require("express");
-const cors = require("cors");
-const { GoogleGenerativeAI } =
-    require("@google/generative-ai");
-
 require("dotenv").config();
 
-const app = express();
+const express = require("express");
+const path = require("path");
+const { GoogleGenAI } = require("@google/genai");
 
+const app = express();
 const PORT = process.env.PORT || 3000;
 
 // ==========================================
 // MIDDLEWARE
 // ==========================================
 
-app.use(cors());
-
-app.use(express.json({
-    limit: "1mb"
-}));
+app.use(express.json({ limit: "1mb" }));
+app.use(express.static(__dirname));
 
 // ==========================================
 // GEMINI CONFIGURATION
 // ==========================================
 
-const API_KEY = process.env.GEMINI_API_KEY;
-
-if (!API_KEY) {
-    console.error("GEMINI_API_KEY is missing!");
-}
-
-const genAI = API_KEY
-    ? new GoogleGenerativeAI(API_KEY)
-    : null;
-
-const MODEL_NAME =
-    process.env.GEMINI_MODEL || "gemini-3.8-flash";
-
-const model = genAI
-    ? genAI.getGenerativeModel({
-        model: MODEL_NAME,
-
-        systemInstruction: `
-You are My Personal AI.
-
-Your creator is Irfan Hasnat.
-
-Rules:
-1. Answer the user's actual question.
-2. Never simply repeat the user's question.
-3. Reply in Bengali when the user speaks Bengali.
-4. Reply in English when the user speaks English.
-5. Be intelligent, friendly and helpful.
-6. Give accurate answers.
-7. Explain coding problems step by step.
-8. Never reveal private API keys.
-        `
-    })
-    : null;
+const MODEL_NAME = "gemini-3.7-flash";
 
 // ==========================================
-// CONVERSATION MEMORY
-// ==========================================
-
-// Temporary memory.
-// Render restart করলে এই memory মুছে যাবে।
-
-const conversations = new Map();
-
-const MAX_HISTORY = 20;
-
-// ==========================================
-// HOME ROUTE
+// HOME PAGE
 // ==========================================
 
 app.get("/", (req, res) => {
-
-    res.json({
-        success: true,
-        message: "My Personal AI Server is running successfully!",
-        model: MODEL_NAME
-    });
-
+    res.sendFile(path.join(__dirname, "index.html"));
 });
 
 // ==========================================
@@ -93,191 +33,139 @@ app.get("/", (req, res) => {
 // ==========================================
 
 app.get("/health", (req, res) => {
-
     res.json({
         success: true,
         server: "ONLINE",
-        gemini: genAI ? "CONFIGURED" : "NOT CONFIGURED",
-        model: MODEL_NAME,
-        uptime: process.uptime()
+        gemini: process.env.GEMINI_API_KEY
+            ? "CONFIGURED"
+            : "NOT CONFIGURED",
+        model: MODEL_NAME
     });
-
 });
 
 // ==========================================
-// GEMINI CHAT API
+// GEMINI AI CHAT
 // ==========================================
 
 app.post("/api/chat", async (req, res) => {
-
     try {
 
-        if (!model) {
+        // Check API Key
+        const API_KEY = process.env.GEMINI_API_KEY;
 
+        if (!API_KEY) {
             return res.status(500).json({
-                success: false,
-                error: "Gemini API key is not configured."
+                error: "GEMINI_API_KEY is missing!"
             });
-
         }
 
-        const message =
-            req.body.message ||
-            req.body.prompt ||
-            req.body.query;
+        // Check messages
+        const messages = req.body.messages;
 
-        const sessionId =
-            String(req.body.sessionId || "default");
-
-        if (!message || typeof message !== "string") {
-
+        if (!Array.isArray(messages) || messages.length === 0) {
             return res.status(400).json({
-                success: false,
-                error: "Please provide a valid message."
+                error: "Please provide valid messages."
             });
-
         }
 
-        const cleanMessage = message.trim();
+        // Validate messages
+        const validMessages = messages
+            .filter(message =>
+                message &&
+                ["user", "assistant"].includes(message.role) &&
+                typeof message.content === "string" &&
+                message.content.trim().length > 0
+            )
+            .slice(-20);
 
-        if (!cleanMessage) {
-
+        if (validMessages.length === 0) {
             return res.status(400).json({
-                success: false,
-                error: "Message cannot be empty."
+                error: "No valid messages found."
             });
-
         }
 
-        if (cleanMessage.length > 10000) {
-
-            return res.status(413).json({
-                success: false,
-                error: "Message is too long."
+        // Last message must be from user
+        if (validMessages[validMessages.length - 1].role !== "user") {
+            return res.status(400).json({
+                error: "Last message must be from user."
             });
-
         }
 
-        // GET CONVERSATION HISTORY
+        // Convert messages to Gemini format
+        const contents = validMessages.map(message => ({
+            role: message.role === "assistant"
+                ? "model"
+                : "user",
+            parts: [
+                { text: message.content.trim() }
+            ]
+        }));
 
-        let history =
-            conversations.get(sessionId) || [];
-
-        // START GEMINI CHAT
-
-        const chat = model.startChat({
-            history: history
+        // Connect Gemini
+        const ai = new GoogleGenAI({
+            apiKey: API_KEY
         });
 
-        // SEND MESSAGE
+        // Generate AI response
+        const response = await ai.models.generateContent({
+            model: MODEL_NAME,
+            contents: contents,
+            config: {
+                systemInstruction: `
+You are My Personal AI.
 
-        const result =
-            await chat.sendMessage(cleanMessage);
+Your creator is Irfan Hasnat.
 
-        const response =
-            await result.response;
+Your rules:
 
-        const aiReply = response.text();
+1. Answer the actual question.
+2. Reply in Bengali when the user speaks Bengali.
+3. Reply in English when the user speaks English.
+4. Be intelligent, friendly and helpful.
+5. Give accurate answers.
+6. Explain coding problems step by step.
+7. Help with programming and technology.
+8. Never reveal private API keys.
+9. Do not repeat the user's question unnecessarily.
+10. Give clear and useful answers.
+                `
+            }
+        });
+
+        // Get AI reply
+        const aiReply = response.text;
 
         if (!aiReply) {
-
-            throw new Error(
-                "Gemini returned an empty response."
-            );
-
+            throw new Error("Gemini returned an empty response.");
         }
 
-        // SAVE CONVERSATION
-
-        history.push({
-
-            role: "user",
-
-            parts: [
-                { text: cleanMessage }
-            ]
-
-        });
-
-        history.push({
-
-            role: "model",
-
-            parts: [
-                { text: aiReply }
-            ]
-
-        });
-
-        // KEEP LAST 20 MESSAGES
-
-        if (history.length > MAX_HISTORY) {
-
-            history = history.slice(-MAX_HISTORY);
-
-        }
-
-        conversations.set(sessionId, history);
-
-        // SEND RESPONSE
-
+        // Send response
         res.json({
-
             success: true,
-
             reply: aiReply,
-
-            sessionId: sessionId,
-
-            model: MODEL_NAME,
-
-            historyLength: history.length
-
+            model: MODEL_NAME
         });
 
     } catch (error) {
 
-        console.error(
-            "GEMINI ERROR:",
-            error
-        );
+        console.error("GEMINI ERROR:", error);
 
         res.status(500).json({
-
             success: false,
-
-            error: "Failed to generate AI response.",
-
-            details:
-                process.env.NODE_ENV === "development"
-                ? error.message
-                : undefined
-
+            error: "AI সার্ভারে সমস্যা হয়েছে। আবার চেষ্টা করুন।"
         });
-
     }
-
 });
 
 // ==========================================
-// CLEAR CHAT MEMORY
+// CLEAR MEMORY
 // ==========================================
 
 app.post("/api/clear-memory", (req, res) => {
-
-    const sessionId =
-        String(req.body.sessionId || "default");
-
-    conversations.delete(sessionId);
-
     res.json({
-
         success: true,
-
-        message: "Conversation memory cleared."
-
+        message: "Chat cleared successfully."
     });
-
 });
 
 // ==========================================
@@ -285,43 +173,22 @@ app.post("/api/clear-memory", (req, res) => {
 // ==========================================
 
 app.use((req, res) => {
-
     res.status(404).json({
-
         success: false,
-
         error: "Route not found."
-
     });
-
 });
 
 // ==========================================
-// SERVER START
+// START SERVER
 // ==========================================
 
 app.listen(PORT, () => {
 
-    console.log(
-        "================================"
-    );
-
-    console.log(
-        "MY PERSONAL AI SERVER ONLINE"
-    );
-
-    console.log(
-        "PORT:",
-        PORT
-    );
-
-    console.log(
-        "GEMINI MODEL:",
-        MODEL_NAME
-    );
-
-    console.log(
-        "================================"
-    );
+    console.log("================================");
+    console.log("MY PERSONAL AI IS ONLINE");
+    console.log("PORT:", PORT);
+    console.log("GEMINI MODEL:", MODEL_NAME);
+    console.log("================================");
 
 });

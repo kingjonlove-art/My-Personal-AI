@@ -3,30 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>MY PERSONAL AI - Agent Mansion</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<title>My Personal AI - Agent Mansion</title>
 
 <style>
-:root {
-    --bg: #030712;
-    --panel: rgba(5,15,35,.94);
-    --blue: #00f3ff;
-    --purple: #b026ff;
-    --green: #00ff66;
-    --red: #ff3366;
-    --gold: #ffd700;
-    --white: #ffffff;
-    --muted: #94a3b8;
-}
-
 * {
     margin: 0;
     padding: 0;
@@ -34,1659 +13,838 @@
 }
 
 body {
-    background: var(--bg);
-    color: var(--white);
-    font-family: 'Inter', sans-serif;
+    background: #020612;
+    color: white;
+    font-family: Arial, sans-serif;
     min-height: 100vh;
-    overflow-x: hidden;
 }
 
-.dashboard-container {
-    min-height: 100vh;
-    padding: 12px;
-    display: grid;
-    grid-template-rows: 75px 1fr 65px;
-    gap: 12px;
+:root {
+    --cyan: #00eaff;
+    --blue: #087bff;
+    --purple: #a855ff;
+    --panel: rgba(5, 16, 38, 0.95);
+}
+
+button {
+    cursor: pointer;
+    color: white;
 }
 
 header {
+    min-height: 85px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px;
-    background: var(--panel);
-    border: 1px solid var(--blue);
-    border-radius: 14px;
-    box-shadow: 0 0 20px #00f3ff30;
+    gap: 15px;
+    padding: 15px 22px;
+    border: 1px solid #087bff;
+    background: #050d20;
+    border-radius: 15px;
+    margin: 10px;
+    flex-wrap: wrap;
 }
 
-.logo-area {
+.logo {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.logo-area i {
-    color: var(--blue);
-    font-size: 35px;
-    text-shadow: 0 0 15px var(--blue);
+.logo-icon {
+    font-size: 43px;
+    color: var(--cyan);
+    text-shadow: 0 0 20px var(--cyan);
 }
 
-.logo-area h1 {
-    font-family: 'Orbitron', sans-serif;
-    font-size: 18px;
+.logo h1 {
+    color: var(--cyan);
+    font-size: 22px;
 }
 
-.logo-area span {
-    color: var(--muted);
-    font-size: 11px;
+.logo p {
+    color: #b8c9e8;
+    font-size: 12px;
 }
 
-.nav-tabs {
+nav {
     display: flex;
-    gap: 8px;
+    gap: 7px;
+    flex-wrap: wrap;
 }
 
-.nav-btn {
-    padding: 10px 13px;
-    color: white;
-    background: #101b30;
-    border: 1px solid #24415e;
-    border-radius: 8px;
-    cursor: pointer;
+nav button {
+    background: #101c35;
+    border: 1px solid #1766a5;
+    padding: 12px;
+    border-radius: 10px;
 }
 
-.nav-btn.active,
-.nav-btn:hover {
-    border-color: var(--blue);
-    box-shadow: 0 0 12px var(--blue);
+nav button:hover {
+    background: #063f76;
+    box-shadow: 0 0 15px var(--cyan);
 }
 
-.live-badge {
-    color: var(--green);
-    font-size: 13px;
+.live {
+    color: #00ff75;
+    font-weight: bold;
 }
 
-.live-dot {
-    display: inline-block;
-    width: 9px;
-    height: 9px;
-    background: var(--green);
-    border-radius: 50%;
-    box-shadow: 0 0 10px var(--green);
-}
-
-.workspace {
+.layout {
     display: grid;
-    grid-template-columns: 280px minmax(0,1fr) 300px;
+    grid-template-columns: 280px minmax(0, 1fr) 300px;
     gap: 12px;
-    min-height: 600px;
+    padding: 10px;
 }
 
 .panel {
     background: var(--panel);
-    border: 1px solid #00f3ff80;
-    border-radius: 14px;
-    padding: 15px;
+    border: 1px solid #087da9;
+    border-radius: 15px;
+    padding: 16px;
+    box-shadow: 0 0 12px #002b55;
+    margin-bottom: 12px;
+}
+
+.panel h2 {
+    color: var(--cyan);
+    font-size: 17px;
+    margin-bottom: 10px;
+}
+
+.small {
+    color: #8ba4c9;
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.brain {
+    height: 170px;
+    border: 1px solid var(--cyan);
+    border-radius: 15px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    overflow-y: auto;
-}
-
-.panel-title {
-    color: var(--blue);
-    font-family: 'Orbitron', sans-serif;
-    font-size: 13px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.cognition-box {
-    background: #000814;
-    border: 1px solid var(--blue);
-    border-radius: 12px;
-    padding: 18px;
-    text-align: center;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, #073c75, #020817 70%);
 }
 
 .brain-icon {
-    display: block;
-    color: var(--blue);
-    font-size: 55px;
-    margin: 18px;
-    text-shadow: 0 0 20px var(--blue);
-    animation: floatBrain 3s infinite ease-in-out;
+    font-size: 75px;
+    filter: drop-shadow(0 0 15px cyan);
+    animation: pulse 2s infinite;
 }
 
-@keyframes floatBrain {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+@keyframes pulse {
+    50% {
+        transform: scale(1.12);
+        filter: drop-shadow(0 0 25px cyan);
+    }
 }
 
-.status-pill {
-    display: inline-block;
-    padding: 7px 12px;
-    color: var(--green);
-    background: #00ff6620;
-    border: 1px solid var(--green);
+.online {
+    color: #00ff80;
+    background: #003b25;
+    border: 1px solid #00ff80;
     border-radius: 20px;
-    font-size: 11px;
+    padding: 7px 15px;
+    font-size: 12px;
+    margin-top: 10px;
 }
 
-.grid-buttons {
+.cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
+    margin-top: 12px;
 }
 
-.action-card {
-    padding: 12px;
-    background: #101b30;
-    border: 1px solid #263b59;
+.card {
+    background: #101e37;
+    border: 1px solid #244367;
     border-radius: 10px;
-    cursor: pointer;
+    padding: 13px;
+    font-size: 13px;
 }
 
-.action-card:hover {
-    border-color: var(--blue);
-    box-shadow: 0 0 10px #00f3ff40;
-}
-
-.action-card i {
+.card span {
     display: block;
-    color: var(--blue);
-    font-size: 20px;
-    margin-bottom: 8px;
+    font-size: 22px;
+    margin-bottom: 5px;
 }
 
-.action-card span {
+.agent {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #101e37;
+    border: 1px solid #234568;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 10px;
+}
+
+.agent-icon {
+    font-size: 27px;
+}
+
+.agent small {
+    color: #8ba4c9;
     display: block;
-    font-size: 12px;
+    margin-top: 4px;
 }
 
-.action-card small {
-    color: var(--muted);
-    font-size: 10px;
-}
-
-.viewport {
+.mansion {
+    min-height: 620px;
     position: relative;
-    min-height: 500px;
     overflow: hidden;
-    border: 1px solid var(--blue);
+    border: 1px solid #087bff;
     border-radius: 15px;
-    background: #071426;
-    box-shadow: 0 0 25px #00f3ff30;
+    background:
+    radial-gradient(ellipse at 50% 45%, #07508b 0%, transparent 40%),
+    linear-gradient(180deg, #071c40, #020715);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
-.audio-wave {
+.mansion:before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+    linear-gradient(90deg, transparent 49%, #00eaff55 50%, transparent 51%),
+    repeating-linear-gradient(0deg, transparent 0 48px, #00bfff33 49px 50px),
+    repeating-linear-gradient(90deg, transparent 0 48px, #00bfff33 49px 50px);
+    transform: perspective(400px) rotateX(45deg) scale(1.5);
+    transform-origin: bottom;
+}
+
+.mansion-content {
+    z-index: 1;
+    position: relative;
+}
+
+.mansion h1 {
+    color: var(--cyan);
+    font-size: clamp(25px, 4vw, 40px);
+    text-shadow: 0 0 20px cyan;
+}
+
+.mansion h3 {
+    margin: 8px;
+    letter-spacing: 3px;
+}
+
+.hologram {
+    font-size: 100px;
+    margin: 20px;
+    filter: drop-shadow(0 0 20px cyan);
+    animation: pulse 3s infinite;
+}
+
+.people {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 5px;
-    height: 55px;
-    background: #000814;
-    border-radius: 10px;
+    align-items: end;
+    gap: 22px;
+    margin-top: 35px;
+    font-size: 55px;
 }
 
-.wave-bar {
-    width: 4px;
-    height: 10px;
-    background: var(--blue);
-    border-radius: 5px;
+.people span {
+    filter: drop-shadow(0 0 12px #00d9ff);
 }
 
-.audio-wave.active .wave-bar {
-    animation: wave 1s infinite alternate;
+.robot {
+    font-size: 70px;
+    margin-top: 20px;
 }
 
-@keyframes wave {
-    to { height: 35px; }
+.floor {
+    position: absolute;
+    bottom: 0;
+    height: 90px;
+    width: 100%;
+    background: repeating-linear-gradient(
+        90deg, #00d9ff33 0 2px, transparent 2px 35px
+    );
+    border-top: 2px solid cyan;
 }
 
-.mic-sound-controls {
+.wave {
+    height: 100px;
     display: flex;
-    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }
 
-.control-tag {
-    flex: 1;
-    padding: 10px;
-    background: #25101a;
-    color: var(--red);
-    border: 1px solid var(--red);
-    border-radius: 8px;
-    cursor: pointer;
+.wave span {
+    width: 5px;
+    height: 25px;
+    background: cyan;
+    border-radius: 10px;
+    animation: sound 0.8s infinite alternate;
 }
 
-.control-tag.active {
-    background: #06351b;
-    color: var(--green);
-    border-color: var(--green);
+.wave span:nth-child(2n) {
+    animation-delay: .3s;
+}
+
+@keyframes sound {
+    to { height: 65px; }
 }
 
 .chat-box {
-    min-height: 180px;
-    max-height: 260px;
+    height: 240px;
     overflow-y: auto;
-    padding: 12px;
-    background: #000814;
-    border: 1px solid #263b59;
+    background: #020817;
+    border: 1px solid #174c76;
     border-radius: 10px;
+    padding: 12px;
+    font-size: 14px;
 }
 
-.chat-message {
-    font-size: 13px;
-    line-height: 1.6;
-    margin-bottom: 12px;
+.message {
+    margin: 10px 0;
+    line-height: 1.5;
     overflow-wrap: anywhere;
 }
 
-.ai-name {
-    display: block;
-    color: var(--blue);
+.bot-name {
+    color: var(--cyan);
     font-weight: bold;
 }
 
-.chat-input-area {
-    display: flex;
-    gap: 8px;
-    padding: 7px;
-    border: 1px solid var(--blue);
-    border-radius: 9px;
+.user-name {
+    color: #c58aff;
+    font-weight: bold;
 }
 
-.chat-input-area input {
-    width: 100%;
+.chat-input {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.chat-input input {
     min-width: 0;
-    background: transparent;
-    border: none;
+    flex: 1;
+    background: #07152b;
+    border: 1px solid #087da9;
+    padding: 14px;
+    color: white;
+    border-radius: 10px;
     outline: none;
-    color: white;
-    padding: 8px;
 }
 
-.chat-input-area button {
-    background: var(--blue);
+.send {
+    background: #008bff;
     border: none;
-    border-radius: 7px;
-    padding: 8px 13px;
-    cursor: pointer;
+    border-radius: 10px;
+    padding: 0 18px;
+    font-size: 20px;
 }
 
-.quick-controls-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-}
-
-.qc-btn {
-    padding: 10px;
-    color: white;
-    background: #101b30;
-    border: 1px solid #263b59;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-footer {
+.controls {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+    gap: 8px;
+    margin: 10px 0;
+}
+
+.controls button {
+    flex: 1;
     padding: 12px;
-    background: var(--panel);
-    border: 1px solid var(--blue);
+    background: #101e37;
+    border: 1px solid #087da9;
+    border-radius: 10px;
+}
+
+.footer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 15px;
+    margin: 10px;
+    background: #071329;
+    border: 1px solid #087bff;
     border-radius: 12px;
-    font-size: 11px;
+    text-align: center;
 }
 
-.user-profile-badge {
-    color: var(--gold);
-    border: 1px solid var(--gold);
-    padding: 8px 12px;
-    border-radius: 8px;
+.footer div {
+    padding: 10px;
+    border-radius: 10px;
+    background: #101e37;
+    font-size: 13px;
 }
 
-@media(max-width:1000px) {
-    body {
-        overflow-y: auto;
+.gold {
+    color: #ffd700;
+}
+
+@media(max-width: 950px) {
+    .layout {
+        grid-template-columns: 1fr 1fr;
     }
 
-    .dashboard-container {
-        display: flex;
-        flex-direction: column;
+    .center {
+        grid-column: 1 / -1;
+        grid-row: 1;
     }
 
-    header {
-        flex-wrap: wrap;
-        gap: 12px;
+    .right {
+        grid-column: 1 / -1;
     }
+}
 
-    .nav-tabs {
-        flex-wrap: wrap;
-    }
-
-    .workspace {
+@media(max-width: 550px) {
+    .layout {
         grid-template-columns: 1fr;
     }
 
-    .viewport {
-        min-height: 450px;
+    .center, .right {
+        grid-column: auto;
+        grid-row: auto;
     }
 
-    footer {
-        flex-wrap: wrap;
+    .mansion {
+        min-height: 440px;
+    }
+
+    .footer {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    nav {
+        width: 100%;
     }
 }
 </style>
 </head>
+
 <body>
 
-<div class="dashboard-container">
-
-<!-- HEADER -->
 <header>
-    <div class="logo-area">
-        <i class="fa-solid fa-brain"></i>
+    <div class="logo">
+        <div class="logo-icon">🧠</div>
         <div>
             <h1>MY PERSONAL AI</h1>
-            <span>Agent Mansion Command Center</span>
+            <p>AGENT MANSION COMMAND CENTER</p>
         </div>
     </div>
 
-    <div class="nav-tabs">
-        <button class="nav-btn active">⌂ Home</button>
-        <button class="nav-btn">♟ Agent Town</button>
-        <button class="nav-btn">▣ 3D Mansion</button>
-        <button class="nav-btn">▤ Memory</button>
-        <button class="nav-btn">⚙ Settings</button>
-    </div>
+    <nav>
+        <button>⌂ Home</button>
+        <button>♟ Agent Town</button>
+        <button>🏢 3D Mansion</button>
+        <button>▣ Memory</button>
+        <button>⚙ Settings</button>
+    </nav>
 
-    <div class="header-right">
-        <div class="live-badge">
-            <div class="live-dot"></div> LIVE
-        </div>
-        <div class="clock-display" id="live-clock"></div>
-        <span>🇧🇩</span>
-    </div>
+    <div class="live">[x]  LIVE</div>
 </header>
 
-
-<!-- MAIN WORKSPACE -->
-<div class="workspace">
+<div class="layout">
 
 <!-- LEFT PANEL -->
-<div class="panel">
 
-    <div class="panel-title">
-        <span>01 / COGNITION CORE</span>
-        <i class="fa-solid fa-microchip"></i>
-    </div>
+<aside>
 
-    <div class="cognition-box">
-        <div style="font-size:11px;color:#94a3b8;">
-            Neural Network
+    <section class="panel">
+        <h2>01 / COGNITION CORE</h2>
+        <p class="small">Neural Network</p>
+
+        <div class="brain">
+            <div class="brain-icon">🧠</div>
+            <div class="online">[x]  NEURAL FIELD / ONLINE</div>
         </div>
 
-        <i class="fa-solid fa-brain brain-icon"></i>
+        <div class="cards">
+            <div class="card">
+                <span>🗄️</span>
+                Memory
+                <small>Supabase DB</small>
+            </div>
 
-        <div>
-            <span class="status-pill">
-                [x]  NEURAL FIELD // ONLINE
-            </span>
+            <div class="card">
+                <span>✨</span>
+                Skills
+                <small>Gemini Engine</small>
+            </div>
+
+            <div class="card">
+                <span>💚</span>
+                Soul
+                <small>Render Core</small>
+            </div>
+
+            <div class="card">
+                <span>⚙️</span>
+                Settings
+                <small>Sync Ready</small>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <div class="grid-buttons">
+    <section class="panel">
+        <h2>02 / AGENT TOWN</h2>
+        <p class="small">Virtual Hub</p>
 
-        <div class="action-card">
-            <i class="fa-solid fa-database"></i>
-            <span>Memory</span>
-            <small>Supabase DB</small>
+        <div class="agent">
+            <div class="agent-icon">🔬</div>
+            <div>
+                Research Agent
+                <small>Exploring Knowledge...</small>
+            </div>
         </div>
 
-        <div class="action-card">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
-            <span>Skills</span>
-            <small>Gemini Engine</small>
+        <div class="agent">
+            <div class="agent-icon">💻</div>
+            <div>
+                Coder Agent
+                <small>Building Solutions...</small>
+            </div>
         </div>
 
-        <div class="action-card">
-            <i class="fa-solid fa-heart"></i>
-            <span>Soul</span>
-            <small>Render Core</small>
+        <div class="agent">
+            <div class="agent-icon">📊</div>
+            <div>
+                Analyst Agent
+                <small>Analyzing Data...</small>
+            </div>
+        </div>
+    </section>
+
+</aside>
+
+<!-- CENTER MANSION -->
+
+<main class="center">
+
+    <section class="mansion">
+
+        <div class="mansion-content">
+
+            <div class="hologram">🧠</div>
+
+            <h1>MY PERSONAL AI</h1>
+            <h3>AGENT MANSION</h3>
+
+            <div class="people">
+                <span>👨‍🔬</span>
+                <span>🧑‍💻</span>
+                <span>👩‍💼</span>
+            </div>
+
+            <div class="robot">🤖</div>
+
+            <p style="color:#00eaff">
+                WELCOME TO YOUR AI WORLD
+            </p>
+
         </div>
 
-        <div class="action-card">
-            <i class="fa-solid fa-sliders"></i>
-            <span>Settings</span>
-            <small>Sync Ready</small>
-        </div>
+        <div class="floor"></div>
 
-    </div>
+    </section>
 
-    <div class="panel-title">
-        02 / AGENT TOWN
-    </div>
-
-    <div style="font-size:11px;color:#94a3b8;">
-        Virtual Hub
-    </div>
-
-    <div class="action-card">
-        🔬 Research Agent
-        <small>Exploring Knowledge...</small>
-    </div>
-
-    <div class="action-card">
-        💻 Coder Agent
-        <small>Building Solutions...</small>
-    </div>
-
-    <div class="action-card">
-        📊 Analyst Agent
-        <small>Analyzing Data...</small>
-    </div>
-
-</div>
-
-
-<!-- CENTER 3D VIEW -->
-<div class="viewport" id="mansion">
-
-    <div id="three-container"
-    style="position:absolute;inset:0;">
-    </div>
-
-    <div style="
-        position:absolute;
-        top:20px;
-        left:0;
-        width:100%;
-        text-align:center;
-        z-index:2;
-        pointer-events:none;">
-
-        <h2 style="
-            color:#00f3ff;
-            font-family:Orbitron;
-            text-shadow:0 0 20px #00f3ff;">
-            MY PERSONAL AI
-        </h2>
-
-        <p style="color:white;">
-            AGENT MANSION // 3D WORLD
-        </p>
-
-    </div>
-
-    <div style="
-        position:absolute;
-        bottom:15px;
-        left:15px;
-        color:#00f3ff;
-        font-size:11px;
-        z-index:2;">
-        [x]  3D ENVIRONMENT ONLINE
-    </div>
-
-</div>
-
+</main>
 
 <!-- RIGHT PANEL -->
-<div class="panel">
 
-    <div class="panel-title">
-        <span>03 / SIGNAL INTERFACE</span>
-        <i class="fa-solid fa-wave-square"></i>
-    </div>
+<aside class="right">
 
-    <div style="font-size:11px;color:#94a3b8;">
-        Live Stream & Terminal
-    </div>
+    <section class="panel">
 
-    <div class="audio-wave" id="audioWave">
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-        <div class="wave-bar"></div>
-    </div>
+        <h2>03 / SIGNAL INTERFACE</h2>
+        <p class="small">Live Stream & Terminal</p>
 
-    <div class="mic-sound-controls">
-
-        <div class="control-tag" id="micBtn">
-            <i class="fa-solid fa-microphone-slash"
-            id="micIcon"></i>
-            <span id="micText">MIC OFF</span>
+        <div class="wave" id="wave">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+            <span></span><span></span>
         </div>
 
-        <div class="control-tag active" id="soundBtn">
-            <i class="fa-solid fa-volume-high"
-            id="soundIcon"></i>
-            <span id="soundText">Sound ON</span>
+        <div class="controls">
+            <button id="micBtn">🎙 MIC OFF</button>
+            <button id="soundBtn">🔊 Sound ON</button>
         </div>
 
-    </div>
+        <div class="chat-box" id="chatBox">
 
-    <div class="chat-box" id="chatBox">
+            <div class="message">
+                <span class="bot-name">🤖 My Personal AI:</span>
+                <p>Hello! 👋</p>
+                <p>How can I help you today?</p>
+            </div>
 
-        <div class="chat-message">
-            <span class="ai-name">My Personal AI:</span>
-            Hello King Jon! 👋
-            <br>
-            How can I help you today?
         </div>
 
-    </div>
+        <div class="chat-input">
+            <input
+                type="text"
+                id="userInput"
+                placeholder="Type your message..."
+            >
 
-    <div class="chat-input-area">
+            <button class="send" onclick="sendMessage()">➤</button>
+        </div>
 
-        <input
-            type="text"
-            id="userInput"
-            placeholder="Type your message..."
-        >
+    </section>
 
-        <button id="sendBtn">
-            <i class="fa-solid fa-paper-plane"></i>
-        </button>
+    <section class="panel">
+        <h2>◎ Quick Controls</h2>
 
-    </div>
+        <div class="cards">
+            <div class="card">🏠 Home</div>
+            <div class="card">📊 Dashboard</div>
+            <div class="card">⚡ 3D View</div>
+            <div class="card">🎮 Explore</div>
+        </div>
+    </section>
 
-    <div class="panel-title">
-        Quick Controls
-    </div>
+    <section class="panel">
+        <h2 class="gold">👑 King Jon</h2>
+        <p>Welcome to your AI Mansion!</p>
+    </section>
 
-    <div class="quick-controls-grid">
-        <button class="qc-btn">🏠 Home</button>
-        <button class="qc-btn">📊 Dashboard</button>
-        <button class="qc-btn">🏢 3D View</button>
-        <button class="qc-btn">🧭 Explore</button>
-    </div>
+</aside>
 
 </div>
-
-</div>
-
 
 <!-- FOOTER -->
-<footer>
 
-    <div class="status-indicators">
+<footer class="footer">
 
-        <div class="status-item">
-            🟢 System Status:
-            <strong style="color:#00ff66;">
-                ONLINE
-            </strong>
-        </div>
+    <div>
+        🟢 System Status
+        <p style="color:#00ff80">Online</p>
+    </div>
 
-        <div class="status-item">
-            ⚡ Latency:
-            <strong id="latency">--</strong>
-        </div>
+    <div>
+        ⚡ Latency
+        <p id="latency">Waiting...</p>
+    </div>
 
-        <div class="status-item">
-            🧠 Memory Usage:
-            <strong>48%</strong>
-        </div>
-
+    <div>
+        🔵 Memory Usage
+        <p>48%</p>
     </div>
 
     <div>
         🌐 Powered by Google Gemini
     </div>
 
-    <div class="user-profile-badge">
-        👑 KING JON
-    </div>
-
 </footer>
 
-</div>
-
-
-<!-- THREE.JS ENGINE -->
 <script>
 
-const container =
-document.getElementById("three-container");
+const chatBox = document.getElementById("chatBox");
+const input = document.getElementById("userInput");
 
-const scene = new THREE.Scene();
-
-scene.background =
-new THREE.Color(0x030712);
-
-scene.fog =
-new THREE.Fog(0x030712,20,65);
-
-
-const camera = new THREE.PerspectiveCamera(
-55,
-container.clientWidth/container.clientHeight,
-0.1,
-1000
-);
-
-camera.position.set(0,9,19);
-
-
-const renderer = new THREE.WebGLRenderer({
-antialias:true,
-alpha:true
-});
-
-renderer.setSize(
-container.clientWidth,
-container.clientHeight
-);
-
-renderer.setPixelRatio(
-Math.min(window.devicePixelRatio,2)
-);
-
-renderer.shadowMap.enabled = true;
-
-container.appendChild(renderer.domElement);
-
-
-// LIGHTS
-
-scene.add(
-new THREE.AmbientLight(0x6688ff,1.5)
-);
-
-const blueLight = new THREE.PointLight(
-0x00f3ff,100,40
-);
-
-blueLight.position.set(0,8,0);
-
-scene.add(blueLight);
-
-
-const purpleLight = new THREE.PointLight(
-0xb026ff,80,35
-);
-
-purpleLight.position.set(-8,5,-5);
-
-scene.add(purpleLight);
-
-
-const whiteLight = new THREE.PointLight(
-0xffffff,60,35
-);
-
-whiteLight.position.set(8,7,5);
-
-scene.add(whiteLight);
-
-
-// MATERIALS
-
-const floorMaterial =
-new THREE.MeshStandardMaterial({
-color:0x101a30,
-metalness:0.8,
-roughness:0.25
-});
-
-const wallMaterial =
-new THREE.MeshStandardMaterial({
-color:0x14223b,
-metalness:0.7,
-roughness:0.3
-});
-
-const blueMaterial =
-new THREE.MeshStandardMaterial({
-color:0x00aaff,
-emissive:0x0066ff,
-emissiveIntensity:2
-});
-
-const purpleMaterial =
-new THREE.MeshStandardMaterial({
-color:0x8800ff,
-emissive:0x5500ff,
-emissiveIntensity:2
-});
-
-
-// FLOOR
-
-const floor = new THREE.Mesh(
-new THREE.PlaneGeometry(35,35),
-floorMaterial
-);
-
-floor.rotation.x = -Math.PI/2;
-floor.position.y = -0.1;
-floor.receiveShadow = true;
-
-scene.add(floor);
-
-
-// GRID
-
-const grid = new THREE.GridHelper(
-35,35,0x00f3ff,0x18345a
-);
-
-grid.position.y = 0.02;
-
-scene.add(grid);
-
-
-// WALL FUNCTION
-
-function createWall(x,y,z,w,h,d){
-
-const wall = new THREE.Mesh(
-new THREE.BoxGeometry(w,h,d),
-wallMaterial
-);
-
-wall.position.set(x,y,z);
-
-wall.castShadow = true;
-
-scene.add(wall);
-
-return wall;
-
-}
-
-
-// MANSION WALLS
-
-createWall(0,4,-12,30,8,0.5);
-
-createWall(-15,4,0,0.5,8,24);
-
-createWall(15,4,0,0.5,8,24);
-
-
-// NEON LINES
-
-function neonLine(x,y,z,w,color){
-
-const line = new THREE.Mesh(
-new THREE.BoxGeometry(w,0.06,0.06),
-new THREE.MeshBasicMaterial({
-color:color
-})
-);
-
-line.position.set(x,y,z);
-
-scene.add(line);
-
-}
-
-neonLine(0,0.15,-5,25,0x00f3ff);
-
-neonLine(0,0.15,8,25,0xb026ff);
-
-
-// COLUMNS
-
-function createColumn(x,z){
-
-const column = new THREE.Mesh(
-new THREE.CylinderGeometry(
-0.35,0.45,7,16
-),
-wallMaterial
-);
-
-column.position.set(x,3.5,z);
-
-scene.add(column);
-
-const ring = new THREE.Mesh(
-new THREE.TorusGeometry(
-0.42,0.045,8,32
-),
-blueMaterial
-);
-
-ring.rotation.x = Math.PI/2;
-
-ring.position.set(x,1,z);
-
-scene.add(ring);
-
-}
-
-createColumn(-10,-8);
-createColumn(10,-8);
-createColumn(-10,7);
-createColumn(10,7);
-
-
-// CENTER AI CHAMBER
-
-const chamber = new THREE.Group();
-
-scene.add(chamber);
-
-
-// PLATFORM
-
-const platform = new THREE.Mesh(
-new THREE.CylinderGeometry(
-3,3.5,0.5,48
-),
-new THREE.MeshStandardMaterial({
-color:0x14233b,
-metalness:0.9,
-roughness:0.2
-})
-);
-
-platform.position.y = 0.3;
-
-chamber.add(platform);
-
-
-// AI BRAIN
-
-const brain = new THREE.Mesh(
-new THREE.IcosahedronGeometry(1.2,3),
-new THREE.MeshStandardMaterial({
-color:0x0088ff,
-emissive:0x0044ff,
-emissiveIntensity:2,
-wireframe:true
-})
-);
-
-brain.position.set(0,4,0);
-
-chamber.add(brain);
-
-
-// ENERGY RINGS
-
-const rings = [];
-
-for(let i=0;i<5;i++){
-
-const ring = new THREE.Mesh(
-new THREE.TorusGeometry(
-2.1+i*0.25,
-0.035,
-12,
-80
-),
-i%2===0?blueMaterial:purpleMaterial
-);
-
-ring.position.y = 2+i*0.8;
-
-ring.rotation.x = Math.PI/2;
-
-chamber.add(ring);
-
-rings.push(ring);
-
-}
-
-
-// AGENT FUNCTION
-
-function createAgent(x,z,color){
-
-const agent = new THREE.Group();
-
-const material =
-new THREE.MeshStandardMaterial({
-color:color,
-metalness:0.5,
-roughness:0.35
-});
-
-
-// BODY
-const body = new THREE.Mesh(
-new THREE.CylinderGeometry(
-0.28,0.4,1.1,16
-),
-material
-);
-
-body.position.y = 1.05;
-
-agent.add(body);
-
-
-// HEAD
-const head = new THREE.Mesh(
-new THREE.SphereGeometry(0.3,24,24),
-new THREE.MeshStandardMaterial({
-color:0xe0c4a8
-})
-);
-
-head.position.y = 1.85;
-
-agent.add(head);
-
-
-// FACE LIGHT
-const eye = new THREE.Mesh(
-new THREE.BoxGeometry(0.22,0.045,0.04),
-blueMaterial
-);
-
-eye.position.set(0,1.88,0.27);
-
-agent.add(eye);
-
-
-agent.position.set(x,0,z);
-
-scene.add(agent);
-
-return agent;
-
-}
-
-
-// THREE AGENTS
-
-const researchAgent =
-createAgent(-6,1,0xeeeeee);
-
-const coderAgent =
-createAgent(6,-3,0x172a48);
-
-const analystAgent =
-createAgent(8,4,0x5511aa);
-
-
-// ROBOT
-
-const robot = new THREE.Group();
-
-const robotMaterial =
-new THREE.MeshStandardMaterial({
-color:0xccccdd,
-metalness:0.8,
-roughness:0.2
-});
-
-const robotBody = new THREE.Mesh(
-new THREE.BoxGeometry(0.9,0.8,0.7),
-robotMaterial
-);
-
-robotBody.position.y = 0.85;
-
-robot.add(robotBody);
-
-
-const robotHead = new THREE.Mesh(
-new THREE.SphereGeometry(0.48,24,24),
-robotMaterial
-);
-
-robotHead.position.y = 1.6;
-
-robot.add(robotHead);
-
-
-const robotEye = new THREE.Mesh(
-new THREE.BoxGeometry(0.42,0.1,0.08),
-blueMaterial
-);
-
-robotEye.position.set(0,1.62,0.43);
-
-robot.add(robotEye);
-
-
-robot.position.set(-8,0,4);
-
-scene.add(robot);
-
-
-// FLOATING PARTICLES
-
-const particleCount = 350;
-
-const positions =
-new Float32Array(particleCount*3);
-
-for(let i=0;i<particleCount;i++){
-
-positions[i*3] =
-(Math.random()-0.5)*30;
-
-positions[i*3+1] =
-Math.random()*10;
-
-positions[i*3+2] =
-(Math.random()-0.5)*25;
-
-}
-
-const particleGeometry =
-new THREE.BufferGeometry();
-
-particleGeometry.setAttribute(
-"position",
-new THREE.BufferAttribute(positions,3)
-);
-
-const particles = new THREE.Points(
-particleGeometry,
-new THREE.PointsMaterial({
-color:0x00f3ff,
-size:0.055,
-transparent:true,
-opacity:0.8
-})
-);
-
-scene.add(particles);
-
-
-// CAMERA MOVEMENT
-
-let mouseX = 0;
-let mouseY = 0;
-
-container.addEventListener("mousemove",e=>{
-
-const rect = container.getBoundingClientRect();
-
-mouseX =
-((e.clientX-rect.left)/rect.width-0.5)*2;
-
-mouseY =
-((e.clientY-rect.top)/rect.height-0.5)*2;
-
-});
-
-
-// ANIMATION
-
-const clock = new THREE.Clock();
-
-function animate(){
-
-requestAnimationFrame(animate);
-
-const t = clock.getElapsedTime();
-
-brain.rotation.y = t*0.35;
-
-brain.rotation.x =
-Math.sin(t)*0.15;
-
-
-rings.forEach((ring,i)=>{
-
-ring.rotation.z =
-t*(i%2===0?0.3:-0.3);
-
-});
-
-
-researchAgent.position.y =
-Math.sin(t*1.5)*0.08;
-
-coderAgent.position.y =
-Math.sin(t*1.8)*0.08;
-
-analystAgent.position.y =
-Math.sin(t*1.3)*0.08;
-
-robot.position.y =
-Math.sin(t*2)*0.08;
-
-
-particles.rotation.y = t*0.025;
-
-
-// CAMERA
-camera.position.x +=
-(mouseX*1.5-camera.position.x)*0.015;
-
-camera.position.y +=
-(9-mouseY*1.2-camera.position.y)*0.015;
-
-camera.lookAt(0,2,0);
-
-
-renderer.render(scene,camera);
-
-}
-
-
-// RESIZE
-
-function resizeMansion(){
-
-const width = container.clientWidth;
-
-const height = container.clientHeight;
-
-if(!width || !height) return;
-
-camera.aspect = width/height;
-
-camera.updateProjectionMatrix();
-
-renderer.setSize(width,height);
-
-}
-
-window.addEventListener(
-"resize",
-resizeMansion
-);
-
-
-// CLOCK
-
-function updateClock(){
-
-document.getElementById(
-"live-clock"
-).textContent =
-new Date().toLocaleTimeString();
-
-}
-
-setInterval(updateClock,1000);
-
-updateClock();
-
-
-// START ENGINE
-
-resizeMansion();
-
-animate();
-
-</script>
-
-</body>
-<script>
-// =====================================
-// MY PERSONAL AI - STEP 3
-// GEMINI AI + VOICE + CHAT SYSTEM
-// =====================================
-
-// BACKEND CONNECTION
-const API_ENDPOINT =
-"https://my-personal-ai-1-lz9o.onrender.com/api/chat";
-
-// ELEMENTS
-const userInput =
-document.getElementById("userInput");
-
-const sendBtn =
-document.getElementById("sendBtn");
-
-const chatBox =
-document.getElementById("chatBox");
-
-const micBtn =
-document.getElementById("micBtn");
-
-const micIcon =
-document.getElementById("micIcon");
-
-const micText =
-document.getElementById("micText");
-
-const soundBtn =
-document.getElementById("soundBtn");
-
-const soundIcon =
-document.getElementById("soundIcon");
-
-const soundText =
-document.getElementById("soundText");
-
-const audioWave =
-document.getElementById("audioWave");
-
-const latency =
-document.getElementById("latency");
-
-// SETTINGS
+let messages = [];
 let soundEnabled = true;
-let micEnabled = false;
-let isBusy = false;
-let isSpeaking = false;
-let recognition = null;
-let lastSentText = "";
 
-// =====================================
-// CHAT MESSAGE
-// =====================================
-
-function addMessage(sender, message) {
+function addMessage(name, text, className) {
 
     const div = document.createElement("div");
+    div.className = "message";
 
-    div.className = "chat-message";
+    const title = document.createElement("span");
+    title.className = className;
+    title.textContent = name + ":";
 
-    const name = document.createElement("span");
+    const content = document.createElement("p");
+    content.textContent = text;
 
-    name.className = "ai-name";
-
-    name.textContent =
-        sender === "AI"
-        ? "My Personal AI:"
-        : "You:";
-
-    const text = document.createElement("div");
-
-    text.textContent = message;
-
-    div.appendChild(name);
-    div.appendChild(text);
+    div.appendChild(title);
+    div.appendChild(content);
 
     chatBox.appendChild(div);
-
     chatBox.scrollTop = chatBox.scrollHeight;
 }
 
-// =====================================
-// AI VOICE SYSTEM
-// =====================================
+async function sendMessage() {
 
-function speakAI(text) {
+    const text = input.value.trim();
 
-    if (!soundEnabled ||
-        !("speechSynthesis" in window)) {
+    if (!text) return;
 
-        isSpeaking = false;
-        restartMic();
-        return;
-    }
+    addMessage("You", text, "user-name");
 
-    speechSynthesis.cancel();
+    messages.push({
+        role: "user",
+        content: text
+    });
 
-    const utterance =
-        new SpeechSynthesisUtterance(text);
+    input.value = "";
 
-    const hasBangla =
-        /[\u0980-\u09FF]/.test(text);
+    const start = Date.now();
 
-    utterance.lang =
-        hasBangla ? "bn-BD" : "en-US";
-
-    utterance.rate = 0.95;
-    utterance.pitch = 1;
-    utterance.volume = 1;
-
-    utterance.onstart = () => {
-
-        isSpeaking = true;
-
-        audioWave.classList.add("active");
-    };
-
-    utterance.onend = () => {
-
-        isSpeaking = false;
-
-        audioWave.classList.remove("active");
-
-        restartMic();
-    };
-
-    utterance.onerror = () => {
-
-        isSpeaking = false;
-
-        audioWave.classList.remove("active");
-
-        restartMic();
-    };
-
-    speechSynthesis.speak(utterance);
-}
-
-// =====================================
-// GEMINI AI CONNECTION
-// =====================================
-
-async function sendMessage(message) {
-
-    const cleanMessage = message.trim();
-
-    if (!cleanMessage || isBusy) return;
-
-    if (cleanMessage === lastSentText) return;
-
-    lastSentText = cleanMessage;
-
-    isBusy = true;
-
-    const startTime = Date.now();
-
-    // Stop microphone while AI processes
-    if (recognition) {
-        try {
-            recognition.stop();
-        } catch (e) {}
-    }
-
-    addMessage("USER", cleanMessage);
-
-    userInput.value = "";
+    const loading = document.createElement("div");
+    loading.className = "message";
+    loading.textContent = "🤖 My Personal AI is thinking...";
+    chatBox.appendChild(loading);
 
     try {
 
-        const response = await fetch(
-            API_ENDPOINT,
-            {
-                method: "POST",
+        const response = await fetch("/api/chat", {
 
-                headers: {
-                    "Content-Type": "application/json"
-                },
+            method: "POST",
 
-                body: JSON.stringify({
-                    message: cleanMessage
-                })
-            }
-        );
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                messages: messages
+            })
+
+        });
 
         const data = await response.json();
 
+        loading.remove();
+
         if (!response.ok) {
-
             throw new Error(
-                data.error ||
-                data.message ||
-                "Server request failed."
+                data.error || "Server connection failed"
             );
         }
 
-        // Read different possible backend formats
-        const aiReply =
+        const reply =
             data.reply ||
-            data.response ||
             data.text ||
-            data.answer ||
-            data.result ||
-            data.candidates?.[0]?.content?.parts
-                ?.map(part => part.text || "")
-                .join("\n");
+            data.response ||
+            data.message;
 
-        if (!aiReply) {
-
-            throw new Error(
-                "Gemini returned an empty response."
-            );
+        if (!reply) {
+            throw new Error("AI response পাওয়া যায়নি");
         }
 
-        const finalReply = String(aiReply);
+        messages.push({
+            role: "assistant",
+            content: reply
+        });
 
-        addMessage("AI", finalReply);
+        addMessage(
+            "My Personal AI",
+            reply,
+            "bot-name"
+        );
 
-        latency.textContent =
-            (Date.now() - startTime) + " ms";
+        document.getElementById("latency").textContent =
+            (Date.now() - start) + " ms";
 
-        // AI speaks the actual answer
-        speakAI(finalReply);
+        if (soundEnabled) {
+            speak(reply);
+        }
 
     } catch (error) {
 
-        console.error("AI ERROR:", error);
+        loading.remove();
 
         addMessage(
-            "AI",
-            "Sorry! I could not generate a response. Please check your backend connection and Gemini API settings."
+            "Error",
+            error.message,
+            "user-name"
         );
 
-        restartMic();
-
-    } finally {
-
-        isBusy = false;
     }
+
 }
 
-// =====================================
-// SEND BUTTON
-// =====================================
-
-sendBtn.addEventListener("click", () => {
-
-    sendMessage(userInput.value);
-
-});
-
-// ENTER KEY
-userInput.addEventListener("keydown", event => {
+input.addEventListener("keydown", function(event) {
 
     if (event.key === "Enter") {
-
-        event.preventDefault();
-
-        sendMessage(userInput.value);
+        sendMessage();
     }
 
 });
 
-// =====================================
-// MICROPHONE SYSTEM
-// =====================================
+function speak(text) {
+
+    if (!("speechSynthesis" in window)) return;
+
+    speechSynthesis.cancel();
+
+    const speech = new SpeechSynthesisUtterance(text);
+
+    speech.lang = "bn-BD";
+
+    speechSynthesis.speak(speech);
+
+}
+
+document.getElementById("soundBtn").onclick = function() {
+
+    soundEnabled = !soundEnabled;
+
+    this.textContent = soundEnabled
+        ? "🔊 Sound ON"
+        : "🔇 Sound OFF";
+
+    if (!soundEnabled && "speechSynthesis" in window) {
+        speechSynthesis.cancel();
+    }
+
+};
+
+// Microphone support
+
+const micBtn = document.getElementById("micBtn");
 
 const SpeechRecognition =
     window.SpeechRecognition ||
     window.webkitSpeechRecognition;
+
+let recognition = null;
 
 if (SpeechRecognition) {
 
     recognition = new SpeechRecognition();
 
     recognition.lang = "bn-BD";
-
     recognition.continuous = false;
 
-    recognition.interimResults = false;
+    recognition.onresult = function(event) {
 
-    recognition.onresult = event => {
+        input.value =
+            event.results[0][0].transcript;
 
-        const transcript =
-            event.results[
-                event.results.length - 1
-            ][0].transcript.trim();
+        sendMessage();
 
-        if (!transcript) return;
-
-        if (isSpeaking || isBusy) return;
-
-        if (transcript === lastSentText) return;
-
-        sendMessage(transcript);
     };
 
-    recognition.onerror = event => {
-
-        console.log(
-            "Microphone error:",
-            event.error
-        );
+    recognition.onend = function() {
+        micBtn.textContent = "🎙 MIC OFF";
     };
 
-    recognition.onend = () => {
+    micBtn.onclick = function() {
 
-        if (
-            micEnabled &&
-            !isSpeaking &&
-            !isBusy
-        ) {
-            restartMic();
+        try {
+            recognition.start();
+            micBtn.textContent = "🎙 MIC ON";
+        } catch (error) {
+            micBtn.textContent = "🎙 MIC OFF";
         }
+
     };
 
 } else {
 
-    console.warn(
-        "Speech Recognition is not supported."
-    );
+    micBtn.onclick = function() {
+        alert("এই ব্রাউজারে Speech Recognition সাপোর্ট নেই।");
+    };
+
 }
-
-// =====================================
-// START MICROPHONE
-// =====================================
-
-function startMic() {
-
-    if (!recognition) {
-
-        addMessage(
-            "AI",
-            "Your browser does not support voice recognition. Try Chrome."
-        );
-
-        return;
-    }
-
-    if (!micEnabled || isBusy || isSpeaking) return;
-
-    try {
-
-        recognition.start();
-
-        audioWave.classList.add("active");
-
-    } catch (error) {
-
-        console.log("Mic already running.");
-    }
-}
-
-// =====================================
-// RESTART MICROPHONE
-// =====================================
-
-function restartMic() {
-
-    if (
-        micEnabled &&
-        !isBusy &&
-        !isSpeaking
-    ) {
-
-        setTimeout(() => {
-
-            startMic();
-
-        }, 500);
-    }
-}
-
-// =====================================
-// MICROPHONE ON / OFF BUTTON
-// =====================================
-
-micBtn.addEventListener("click", () => {
-
-    micEnabled = !micEnabled;
-
-    if (micEnabled) {
-
-        micBtn.classList.add("active");
-
-        micIcon.className =
-            "fa-solid fa-microphone";
-
-        micText.textContent = "MIC ON";
-
-        startMic();
-
-    } else {
-
-        micBtn.classList.remove("active");
-
-        micIcon.className =
-            "fa-solid fa-microphone-slash";
-
-        micText.textContent = "MIC OFF";
-
-        audioWave.classList.remove("active");
-
-        if (recognition) {
-
-            try {
-                recognition.stop();
-            } catch (e) {}
-        }
-    }
-});
-
-// =====================================
-// SOUND ON / OFF
-// =====================================
-
-soundBtn.addEventListener("click", () => {
-
-    soundEnabled = !soundEnabled;
-
-    if (soundEnabled) {
-
-        soundBtn.classList.add("active");
-
-        soundIcon.className =
-            "fa-solid fa-volume-high";
-
-        soundText.textContent = "Sound ON";
-
-    } else {
-
-        soundBtn.classList.remove("active");
-
-        soundIcon.className =
-            "fa-solid fa-volume-xmark";
-
-        soundText.textContent = "Sound OFF";
-
-        speechSynthesis.cancel();
-
-        isSpeaking = false;
-
-        audioWave.classList.remove("active");
-
-        restartMic();
-    }
-});
-
-// =====================================
-// INITIALIZATION
-// =====================================
-
-console.log(
-    "MY PERSONAL AI - STEP 3 LOADED"
-);
-
-console.log(
-    "Gemini Backend:",
-    API_ENDPOINT
-);
-
-addMessage(
-    "AI",
-    "My Personal AI is ready! You can type or turn on your microphone."
-);
 
 </script>
+
+</body>
+</html>

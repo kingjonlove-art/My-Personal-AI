@@ -1,337 +1,661 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MY PERSONAL AI — Agent Mansion Command Center</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Orbitron:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-:root{--bg:#070a10;--panel:#0d121c;--panel2:#101826;--line:#202c3d;--muted:#8391a7;--text:#eaf2ff;--cyan:#5cf4e8;--violet:#a68bff;--lime:#b7ff81;--red:#ff6689;--gold:#ffd700}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 48% -20%,#17283c 0%,var(--bg) 55%);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh}
-.app{max-width:1600px;margin:auto;padding:16px}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY PERSONAL AI - Agent Mansion Command Center</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #030712;
+            --panel-bg: rgba(13, 20, 38, 0.75);
+            --border-glow: rgba(0, 243, 255, 0.4);
+            --neon-blue: #00f3ff;
+            --neon-purple: #b026ff;
+            --neon-green: #00ff66;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+        }
 
-/* Top Navigation Bar */
-.topnav{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 20px;margin-bottom:16px;flex-wrap:wrap;gap:15px;box-shadow:0 10px 30px #0005}
-.brand{display:flex;align-items:center;gap:12px}
-.mark{width:42px;height:42px;border:1px solid var(--cyan);border-radius:12px;display:grid;place-items:center;color:var(--cyan);font:700 18px Orbitron;box-shadow:0 0 20px #5cf4e822}
-.brand h1{font:700 16px Orbitron;letter-spacing:.1em;margin:0}
-.brand small{display:block;color:var(--muted);font:9px 'DM Mono';letter-spacing:.1em;margin-top:3px}
-.nav-tabs{display:flex;gap:8px;flex-wrap:wrap}
-.nav-tab{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:10px;font:11px 'Space Grotesk';display:flex;align-items:center;gap:6px;transition:.2s;cursor:pointer}
-.nav-tab:hover,.nav-tab.active{border-color:var(--cyan);color:var(--cyan);background:#5cf4e810}
-.top-status{display:flex;align-items:center;gap:12px;font:11px 'DM Mono';color:var(--muted)}
-.live-badge{display:inline-flex;align-items:center;gap:6px;background:#b7ff8115;border:1px solid var(--lime);color:var(--lime);padding:6px 14px;border-radius:99px;font-weight:700}
-.live-dot{width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px var(--lime)}
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
 
-/* Layout Grid */
-.layout{display:grid;grid-template-columns:320px 1fr 360px;gap:16px;margin-bottom:16px}
-.panel{background:linear-gradient(145deg,#10172677,var(--panel));border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 15px 40px #0003;display:flex;flex-direction:column;margin-bottom:16px}
-.ph{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
-.eyebrow{font:10px 'DM Mono';color:var(--muted);letter-spacing:.12em}
-.ptitle{font-size:13px;font-weight:700;margin-top:3px}
-.pill{font:10px 'DM Mono';color:var(--cyan);background:#5cf4e812;padding:4px 10px;border-radius:99px;border:1px solid #5cf4e83a}
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            background-image: radial-gradient(circle at 50% 50%, #0f172a 0%, #030712 100%);
+        }
 
-/* Left Column */
-.brain-area{padding:14px}
-.brainbox{position:relative;height:190px;border:1px solid #1b3041;border-radius:12px;overflow:hidden;background:radial-gradient(ellipse,#112b38,#09121d 65%)}
-canvas{width:100%!important;height:100%!important;display:block}
-.brain-label{position:absolute;left:10px;bottom:10px;font:9px 'DM Mono';color:#5cf4e8}
-.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
-.metric-card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px}
-.metric-icon{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-size:14px}
-.metric-info b{display:block;font-size:11px}
-.metric-info span{font:9px 'DM Mono';color:var(--muted)}
+        .dashboard-container {
+            display: grid;
+            grid-template-rows: 70px 1fr 50px;
+            height: 100vh;
+            padding: 15px;
+            gap: 15px;
+        }
 
-.agent-town{padding:14px;display:flex;flex-direction:column;gap:8px}
-.town-item{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px}
-.town-item b{display:block;font-size:11px}
-.town-item small{font:9px 'DM Mono';color:var(--muted)}
+        /* Top Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 14px;
+            padding: 0 25px;
+            backdrop-filter: blur(12px);
+        }
 
-/* Center Column (3D Mansion View / Showcase) */
-.center-col{display:flex;flex-direction:column;gap:16px}
-.mansion-showcase{position:relative;flex:1;min-height:510px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#060a12;display:flex;flex-direction:column;justify-content:flex-end;padding:20px}
-.mansion-overlay{position:absolute;inset:0;background:radial-gradient(circle at center,transparent 30%,#070a10cc 90%);pointer-events:none}
-.mansion-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
-.room-badge{background:#111b29cc;border:1px solid var(--line);padding:10px 14px;border-radius:12px;backdrop-filter:blur(6px)}
-.room-badge b{font-size:12px;color:var(--cyan);display:block}
-.room-badge span{font:10px 'DM Mono';color:var(--muted)}
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-/* Bottom Status Strip (ছবি অনুযায়ী নিখুঁত ফিক্সড স্ট্রিপ) */
-.bottom-strip{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr;gap:12px;padding:14px 20px;background:var(--panel);border:1px solid var(--line);border-radius:16px;align-items:center;box-shadow:0 10px 30px #0004}
-.stat-box{display:flex;align-items:center;gap:12px;font:11px 'DM Mono'}
-.stat-icon{width:36px;height:36px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;color:var(--cyan);font-size:16px}
-.gemini-badge{display:flex;align-items:center;gap:8px;justify-content:flex-end;font:11px 'Space Grotesk';font-weight:600}
+        .logo-area i {
+            font-size: 28px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
 
-/* Right Column */
-.stream{padding:14px;display:flex;flex-direction:column}
-.audio-viz{height:48px;background:#0a1119;border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px;margin-bottom:12px}
-.bar{width:4px;border-radius:4px;background:linear-gradient(to top,var(--cyan),var(--violet));height:8px;animation:wave .6s ease-in-out infinite alternate}
-@keyframes wave{to{height:30px}}
-.voice-toggles{display:flex;gap:8px;margin-bottom:12px}
-.v-btn{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px;font:10px 'DM Mono';display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
-.v-btn.active{border-color:var(--lime);color:var(--lime);background:#b7ff8110}
-.chatlog{height:250px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#060a10;border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
-.bubble{max-width:92%;padding:8px 10px;border-radius:10px;font-size:11px;line-height:1.5}
-.bubble.user{align-self:flex-end;background:#102a31;border:1px solid #24514f}
-.bubble.ai{align-self:flex-start;background:#151d2d;border:1px solid #28364c}
-.composer{display:flex;gap:8px}
-.composer input{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;color:var(--text);outline:none;font-size:11px}
-.btn-send{background:var(--cyan);color:#031313;border:none;border-radius:8px;padding:0 14px;font-weight:700;cursor:pointer}
+        .logo-area h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
 
-.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:14px}
-.q-btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px;border-radius:10px;font:11px 'Space Grotesk';display:flex;align-items:center;gap:8px;cursor:pointer;transition:.2s}
-.q-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+        .logo-area span {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: block;
+        }
 
-.profile-card{background:linear-gradient(135deg,#1f1805,#0d121c);border:1px solid #ffd70044;border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;margin:14px}
-.profile-avatar{width:38px;height:38px;border-radius:50%;background:var(--gold);display:grid;place-items:center;color:#000;font-weight:700;font-size:16px}
-.profile-info b{display:block;font-size:12px;color:var(--gold)}
-.profile-info small{font:9px 'DM Mono';color:var(--muted)}
+        .nav-tabs {
+            display: flex;
+            gap: 15px;
+        }
 
-@media(max-width:1300px){.layout{grid-template-columns:1fr}}.bottom-strip{grid-template-columns:repeat(2,1fr)}
-</style>
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 8px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn.active, .nav-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(176, 38, 255, 0.2));
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .live-badge {
+            background: rgba(0, 255, 102, 0.15);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--neon-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-green);
+            animation: pulse 1.5s infinite;
+        }
+
+        .clock-display {
+            text-align: right;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+        }
+
+        /* Main Workspace */
+        .workspace {
+            display: grid;
+            grid-template-columns: 320px 1fr 360px;
+            gap: 15px;
+            overflow: hidden;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 14px;
+            backdrop-filter: blur(12px);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            color: var(--neon-blue);
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Left Panel - Cognition Core & Agent Town */
+        .cognition-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .brain-icon {
+            font-size: 45px;
+            color: var(--neon-blue);
+            margin: 10px 0;
+            text-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        .status-pill {
+            background: rgba(0, 255, 102, 0.1);
+            color: var(--neon-green);
+            border: 1px solid rgba(0, 255, 102, 0.3);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            display: inline-block;
+            margin-top: 5px;
+        }
+
+        .grid-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .action-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: left;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .action-card:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        .action-card i {
+            color: var(--neon-purple);
+            font-size: 16px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .action-card span {
+            font-size: 12px;
+            font-weight: 600;
+            display: block;
+        }
+
+        .action-card small {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        /* Center Viewport */
+        .viewport {
+            background: linear-gradient(180deg, rgba(5, 10, 25, 0.6) 0%, rgba(10, 20, 40, 0.8) 100%), url('29380.png') center/cover;
+            border: 1px solid var(--border-glow);
+            border-radius: 14px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Right Panel - Signal Interface */
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 0 10px;
+        }
+
+        .wave-bar {
+            width: 3px;
+            background: var(--neon-blue);
+            border-radius: 2px;
+            animation: wave 1s infinite ease-in-out alternate;
+        }
+
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes wave {
+            0% { height: 8px; }
+            100% { height: 32px; }
+        }
+
+        .mic-sound-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-tag {
+            flex: 1;
+            background: rgba(0, 255, 102, 0.15);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .chat-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 12px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
+            max-height: 220px;
+        }
+
+        .chat-message {
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .chat-message .ai-name {
+            color: var(--neon-blue);
+            font-weight: 600;
+            margin-bottom: 3px;
+            display: block;
+        }
+
+        .chat-input-area {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glow);
+            border-radius: 8px;
+            padding: 6px 10px;
+            align-items: center;
+        }
+
+        .chat-input-area input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            font-size: 12px;
+            width: 100%;
+        }
+
+        .chat-input-area button {
+            background: var(--neon-blue);
+            border: none;
+            color: #030712;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-controls-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .qc-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .qc-btn:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        /* Bottom Status Bar */
+        footer {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 12px;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 25px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-profile-badge {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.15));
+            border: 1px solid #ffd700;
+            padding: 6px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-profile-badge i {
+            color: #ffd700;
+        }
+
+        .user-profile-badge span {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            color: #ffd700;
+            display: block;
+        }
+
+        .user-profile-badge small {
+            font-size: 9px;
+            color: var(--text-muted);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+    </style>
 </head>
 <body>
-<div class="app">
-  <!-- Top Navigation Bar -->
-  <header class="topnav">
-    <div class="brand">
-      <div class="mark">AI</div>
-      <div>
-        <h1>MY PERSONAL AI</h1>
-        <small>— Agent Mansion Command Center —</small>
-      </div>
-    </div>
-    <div class="nav-tabs">
-      <button class="nav-tab active">🏠 Home</button>
-      <button class="nav-tab">🚀 Agent Town</button>
-      <button class="nav-tab">🏛️ 3D Mansion</button>
-      <button class="nav-tab">✉️ Memory</button>
-      <button class="nav-tab">⚙️ Settings</button>
-    </div>
-    <div class="top-status">
-      <div class="live-badge"><i class="live-dot"></i> LIVE</div>
-      <span id="clock">Sun, Nov 1, 2026 3:47:32 PM</span>
-      <span style="font-size:16px;">🇧🇩</span>
-    </div>
-  </header>
 
-  <!-- Main Layout Grid -->
-  <main class="layout">
-    
-    <!-- Left Column: Cognition Core & Agent Town -->
-    <div class="left-col">
-      <section class="panel">
-        <div class="ph">
-          <div>
-            <div class="eyebrow">01 / COGNITION CORE</div>
-            <div class="ptitle">Neural Network</div>
-          </div>
-          <span class="pill">ONLINE</span>
-        </div>
-        <div class="brain-area">
-          <div class="brainbox" id="brainbox">
-            <canvas id="brainCanvas"></canvas>
-            <div class="brain-label">NEURAL FIELD // ONLINE</div>
-          </div>
-          <div class="metric-grid">
-            <div class="metric-card">
-              <div class="metric-icon" style="background:#5cf4e822; color:var(--cyan)">🗄️</div>
-              <div class="metric-info"><b>Memory</b><span>Supabase DB</span></div>
+    <div class="dashboard-container">
+        <!-- Top Header -->
+        <header>
+            <div class="logo-area">
+                <i class="fa-solid fa-brain"></i>
+                <div>
+                    <h1>MY PERSONAL AI</h1>
+                    <span>— Agent Mansion Command Center —</span>
+                </div>
             </div>
-            <div class="metric-card">
-              <div class="metric-icon" style="background:#a68bff22; color:var(--violet)">⚡</div>
-              <div class="metric-info"><b>Skills</b><span>Gemini Engine</span></div>
+            <div class="nav-tabs">
+                <button class="nav-btn active"><i class="fa-solid fa-house"></i> Home</button>
+                <button class="nav-btn"><i class="fa-solid fa-rocket"></i> Agent Town</button>
+                <button class="nav-btn"><i class="fa-solid fa-cube"></i> 3D Mansion</button>
+                <button class="nav-btn"><i class="fa-solid fa-memory"></i> Memory</button>
+                <button class="nav-btn"><i class="fa-solid fa-gear"></i> Settings</button>
             </div>
-            <div class="metric-card">
-              <div class="metric-icon" style="background:#b7ff8122; color:var(--lime)">❤️</div>
-              <div class="metric-info"><b>Soul</b><span>Render Core</span></div>
+            <div class="header-right">
+                <div class="live-badge">
+                    <div class="live-dot"></div> LIVE
+                </div>
+                <div class="clock-display" id="live-clock">
+                    Sun, Nov 1, 2026<br><span id="time-string">3:47:32 PM</span>
+                </div>
+                <span style="font-size: 18px;">🇧🇩</span>
             </div>
-            <div class="metric-card">
-              <div class="metric-icon" style="background:#ffd70022; color:var(--gold)">⚙️</div>
-              <div class="metric-info"><b>Settings</b><span>Sync Ready</span></div>
+        </header>
+
+        <!-- Main Workspace -->
+        <div class="workspace">
+            <!-- Left Panel -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>01 / COGNITION CORE</span>
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <div class="cognition-box">
+                    <div style="font-size: 11px; color: var(--text-muted);">Neural Network</div>
+                    <i class="fa-solid fa-brain brain-icon"></i>
+                    <div>
+                        <span class="status-pill"><i class="fa-solid fa-circle" style="font-size: 7px;"></i> NEURAL FIELD // ONLINE</span>
+                    </div>
+                </div>
+                <div class="grid-buttons">
+                    <div class="action-card">
+                        <i class="fa-solid fa-database"></i>
+                        <span>Memory</span>
+                        <small>Supabase DB</small>
+                    </div>
+                    <div class="action-card">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Skills</span>
+                        <small>Gemini Engine</small>
+                    </div>
+                    <div class="action-card">
+                        <i class="fa-solid fa-heart"></i>
+                        <span>Soul</span>
+                        <small>Render Core</small>
+                    </div>
+                    <div class="action-card">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Settings</span>
+                        <small>Sync Ready</small>
+                    </div>
+                </div>
+
+                <div class="panel-title" style="margin-top: 10px;">
+                    <span>02 / AGENT TOWN</span>
+                    <i class="fa-solid fa-city"></i>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: -5px;">Virtual Hub</div>
+                <div class="action-card" style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-flask" style="margin:0; font-size: 18px;"></i>
+                    <div>
+                        <span style="font-size: 11px;">Research Agent</span>
+                        <small>Exploring Knowledge...</small>
+                    </div>
+                </div>
+                <div class="action-card" style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-code" style="margin:0; font-size: 18px;"></i>
+                    <div>
+                        <span style="font-size: 11px;">Coder Agent</span>
+                        <small>Building Solutions...</small>
+                    </div>
+                </div>
+                <div class="action-card" style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-chart-line" style="margin:0; font-size: 18px;"></i>
+                    <div>
+                        <span style="font-size: 11px;">Analyst Agent</span>
+                        <small>Analyzing Data...</small>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      <section class="panel">
-        <div class="ph">
-          <div>
-            <div class="eyebrow">02 / AGENT TOWN</div>
-            <div class="ptitle">Virtual Hub</div>
-          </div>
-          <span class="pill">ACTIVE</span>
-        </div>
-        <div class="agent-town">
-          <div class="town-item">
-            <div style="color:var(--cyan)">🧪</div>
-            <div><b>Research Agent</b><small>Exploring Knowledge...</small></div>
-          </div>
-          <div class="town-item">
-            <div style="color:var(--violet)">💻</div>
-            <div><b>Coder Agent</b><small>Building Solutions...</small></div>
-          </div>
-          <div class="town-item">
-            <div style="color:var(--gold)">📊</div>
-            <div><b>Analyst Agent</b><small>Analyzing Data...</small></div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- Center Column: 3D Mansion Showcase -->
-    <div class="center-col">
-      <div class="mansion-showcase" id="mansionShowcase">
-        <div class="mansion-overlay"></div>
-        <div class="mansion-content">
-          <div class="room-badge">
-            <b>💻 Work Room</b>
-            <span>Active Development Desks</span>
-          </div>
-          <div class="room-badge">
-            <b>🛏️ Living Quarters</b>
-            <span>Rest & Sleep Zone</span>
-          </div>
-          <div class="room-badge">
-            <b>📺 TV Lounge</b>
-            <span>Relaxation Area</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Column: Signal Interface & Chat -->
-    <div class="right-col">
-      <section class="panel" style="flex:1;">
-        <div class="ph">
-          <div>
-            <div class="eyebrow">03 / SIGNAL INTERFACE</div>
-            <div class="ptitle">Live Stream & Terminal</div>
-          </div>
-          <span class="pill">READY</span>
-        </div>
-        <div class="stream">
-          <div class="audio-viz">
-            <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
-            <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
-          </div>
-          <div class="voice-toggles">
-            <button class="v-btn active" id="micToggle">🎙️ MIC ON</button>
-            <button class="v-btn active" id="soundToggle">🔊 Sound ON</button>
-          </div>
-          <div class="chatlog" id="chatlog">
-            <div class="bubble ai">
-              <b style="color:var(--cyan); font-size:9px; display:block; margin-bottom:2px;">My Personal AI:</b>
-              Hello King Jon! 👋<br>How can I help you today?
+            <!-- Center Viewport -->
+            <div class="viewport">
+                <!-- Center workspace content placeholder matching reference image -->
             </div>
-          </div>
-          <div class="composer">
-            <input type="text" id="userInput" placeholder="Type your message...">
-            <button class="btn-send" id="sendBtn">➤</button>
-          </div>
+
+            <!-- Right Panel -->
+            <div class="panel">
+                <div class="panel-title">
+                    <span>03 / SIGNAL INTERFACE</span>
+                    <i class="fa-solid fa-wave-square"></i>
+                </div>
+                <div style="font-size: 11px; color: var(--text-muted);">Live Stream & Terminal</div>
+                
+                <div class="audio-wave">
+                    <div class="wave-bar" style="height: 15px;"></div>
+                    <div class="wave-bar" style="height: 30px;"></div>
+                    <div class="wave-bar" style="height: 20px;"></div>
+                    <div class="wave-bar" style="height: 35px;"></div>
+                    <div class="wave-bar" style="height: 12px;"></div>
+                    <div class="wave-bar" style="height: 28px;"></div>
+                    <div class="wave-bar" style="height: 18px;"></div>
+                    <div class="wave-bar" style="height: 32px;"></div>
+                </div>
+
+                <div class="mic-sound-controls">
+                    <div class="control-tag"><i class="fa-solid fa-microphone"></i> MIC ON</div>
+                    <div class="control-tag"><i class="fa-solid fa-volume-high"></i> Sound ON</div>
+                </div>
+
+                <div class="chat-box" id="chatBox">
+                    <div class="chat-message">
+                        <span class="ai-name">My Personal AI:</span>
+                        Hello King Jon! 👋<br>How can I help you today?
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <input type="text" id="userInput" placeholder="Type your message...">
+                    <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+
+                <div class="panel-title" style="margin-top: 5px;">
+                    <span>Quick Controls</span>
+                </div>
+                <div class="quick-controls-grid">
+                    <button class="qc-btn"><i class="fa-solid fa-house" style="color:var(--neon-blue)"></i> Home</button>
+                    <button class="qc-btn"><i class="fa-solid fa-chart-pie" style="color:var(--neon-blue)"></i> Dashboard</button>
+                    <button class="qc-btn"><i class="fa-solid fa-cube" style="color:var(--neon-blue)"></i> 3D View</button>
+                    <button class="qc-btn"><i class="fa-solid fa-compass" style="color:var(--neon-blue)"></i> Explore</button>
+                </div>
+            </div>
         </div>
-      </section>
 
-      <section class="panel">
-        <div class="ph">
-          <div class="eyebrow">QUICK ACCESS</div>
-        </div>
-        <div class="quick-grid">
-          <button class="q-btn">🏠 Home</button>
-          <button class="q-btn">📊 Dashboard</button>
-          <button class="q-btn">⚡ 3D View</button>
-          <button class="q-btn">🎮 Explore</button>
-        </div>
-        
-        <div class="profile-card">
-          <div class="profile-avatar">👑</div>
-          <div class="profile-info">
-            <b>King Jon</b>
-            <small>Welcome to your AI Mansion!</small>
-          </div>
-        </div>
-      </section>
+        <!-- Bottom Footer Status -->
+        <footer>
+            <div class="status-indicators">
+                <div class="status-item">
+                    <i class="fa-solid fa-circle-check" style="color: var(--neon-green);"></i>
+                    <span style="font-size: 11px;">System Status: <strong style="color: var(--neon-green);">All Systems Online</strong></span>
+                </div>
+                <div class="status-item">
+                    <i class="fa-solid fa-bolt" style="color: #fbbf24;"></i>
+                    <span style="font-size: 11px;">Latency: <strong>12ms</strong></span>
+                </div>
+                <div class="status-item">
+                    <i class="fa-solid fa-microchip" style="color: var(--neon-blue);"></i>
+                    <span style="font-size: 11px;">Memory Usage: <strong>48%</strong></span>
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted);">
+                <i class="fa-brands fa-google" style="color: var(--neon-blue);"></i> Powered by Google Gemini
+            </div>
+
+            <div class="user-profile-badge">
+                <i class="fa-solid fa-crown"></i>
+                <div>
+                    <span>King Jon</span>
+                    <small>Welcome to your AI Mansion!</small>
+                </div>
+            </div>
+        </footer>
     </div>
 
-  </main>
+    <script>
+        // Live Clock Script
+        function updateClock() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString();
+            document.getElementById('time-string').innerText = timeString;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
 
-  <!-- Bottom Fixed Status Strip (ছবি অনুযায়ী হুবহু নিচে সেট করা) -->
-  <footer class="bottom-strip">
-    <div class="stat-box">
-      <div class="stat-icon" style="color:var(--lime)">✔️</div>
-      <div><b>System Status</b><br><span style="color:var(--lime)">All Systems Online</span></div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-icon">⚡</div>
-      <div><b>Latency</b><br><span>12ms</span></div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-icon" style="color:var(--cyan)">💻</div>
-      <div><b>Memory Usage</b><br><span>48%</span></div>
-    </div>
-    <div class="gemini-badge">
-      <span style="font-size:16px;">✨</span>
-      <span>Powered by Google Gemini</span>
-    </div>
-  </footer>
-</div>
+        // Chat Send Function
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            if (input.value.trim() === '') return;
 
-<script>
-// থ্রি-ডি নিউরাল ক্যানভাস অ্যানিমেশন ব্যাকগ্রাউন্ড
-const canvas = document.getElementById('brainCanvas');
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 1, 1000);
-camera.position.z = 15;
-const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
-renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            // User Message
+            const userMsg = document.createElement('div');
+            userMsg.className = 'chat-message';
+            userMsg.style.textAlign = 'right';
+            userMsg.innerHTML = `<span style="color: var(--neon-green);">You:</span> ${input.value}`;
+            chatBox.appendChild(userMsg);
 
-const geometry = new THREE.BufferGeometry();
-const count = 200;
-const positions = new Float32Array(count * 3);
-for(let i = 0; i < count * 3; i++) {
-  positions[i] = (Math.random() - 0.5) * 10;
-}
-geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-const material = new THREE.PointsMaterial({ color: 0x5cf4e8, size: 0.15 });
-const points = new THREE.Points(geometry, material);
-scene.add(points);
+            const query = input.value;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
 
-function animate() {
-  requestAnimationFrame(animate);
-  points.rotation.y += 0.003;
-  renderer.render(scene, camera);
-}
-animate();
+            // Simulated AI Response
+            setTimeout(() => {
+                const aiMsg = document.createElement('div');
+                aiMsg.className = 'chat-message';
+                aiMsg.innerHTML = `<span class="ai-name">My Personal AI:</span> Processing "${query}" in Agent Mansion... All systems operating normally! 🚀`;
+                chatBox.appendChild(aiMsg);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 800);
+        }
 
-// রিয়েল-টাইম ক্লক আপডেট
-setInterval(() => {
-  const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-  document.getElementById('clock').textContent = new Date().toLocaleDateString('en-US', options);
-}, 1000);
-
-// চ্যাট হ্যান্ডলিং
-const chatlog = document.getElementById('chatlog');
-const userInput = document.getElementById('userInput');
-document.getElementById('sendBtn').addEventListener('click', () => {
-  if(!userInput.value.trim()) return;
-  const userMsg = document.createElement('div');
-  userMsg.className = 'bubble user';
-  userMsg.textContent = userInput.value;
-  chatlog.appendChild(userMsg);
-  
-  const text = userInput.value;
-  userInput.value = '';
-  chatlog.scrollTop = chatlog.scrollHeight;
-
-  setTimeout(() => {
-    const aiMsg = document.createElement('div');
-    aiMsg.className = 'bubble ai';
-    aiMsg.innerHTML = `<b style="color:var(--cyan); font-size:9px; display:block; margin-bottom:2px;">My Personal AI:</b> I am processing your request: "${text}"`;
-    chatlog.appendChild(aiMsg);
-    chatlog.scrollTop = chatlog.scrollHeight;
-  }, 1000);
-});
-</script>
+        document.getElementById('userInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
 </body>
 </html>

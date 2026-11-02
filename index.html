@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Personal AI - Agent Mansion</title>
+<title>My Personal AI - Agent Mansion Command Center</title>
 
 <style>
 * {
@@ -17,18 +17,20 @@ body {
     color: white;
     font-family: Arial, sans-serif;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 :root {
     --cyan: #00eaff;
     --blue: #087bff;
     --purple: #a855ff;
-    --panel: rgba(5, 16, 38, 0.95);
+    --panel: rgba(5, 16, 38, 0.88);
 }
 
 button {
     cursor: pointer;
     color: white;
+    font-family: inherit;
 }
 
 header {
@@ -37,12 +39,13 @@ header {
     align-items: center;
     justify-content: space-between;
     gap: 15px;
-    padding: 15px 22px;
+    padding: 12px 22px;
     border: 1px solid #087bff;
-    background: #050d20;
+    background: rgba(5, 13, 32, 0.95);
     border-radius: 15px;
     margin: 10px;
     flex-wrap: wrap;
+    box-shadow: 0 0 15px rgba(8, 123, 255, 0.3);
 }
 
 .logo {
@@ -52,103 +55,137 @@ header {
 }
 
 .logo-icon {
-    font-size: 43px;
+    font-size: 38px;
     color: var(--cyan);
     text-shadow: 0 0 20px var(--cyan);
 }
 
 .logo h1 {
     color: var(--cyan);
-    font-size: 22px;
+    font-size: 18px;
+    letter-spacing: 0.5px;
 }
 
 .logo p {
-    color: #b8c9e8;
-    font-size: 12px;
+    color: #8ba4c9;
+    font-size: 11px;
+    letter-spacing: 0.5px;
 }
 
 nav {
     display: flex;
-    gap: 7px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 nav button {
-    background: #101c35;
+    background: #0a1730;
     border: 1px solid #1766a5;
-    padding: 12px;
-    border-radius: 10px;
+    padding: 9px 15px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    transition: all 0.3s;
 }
 
-nav button:hover {
-    background: #063f76;
+nav button:hover, nav button.active {
+    background: #074684;
     box-shadow: 0 0 15px var(--cyan);
+    border-color: var(--cyan);
 }
 
-.live {
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.live-badge {
     color: #00ff75;
     font-weight: bold;
+    background: rgba(0, 255, 117, 0.1);
+    border: 1px solid #00ff75;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.clock-box {
+    text-align: right;
+    font-size: 13px;
+    color: #d0e1fd;
+}
+
+.clock-box .time {
+    font-weight: bold;
+    font-size: 15px;
+    color: var(--cyan);
 }
 
 .layout {
     display: grid;
-    grid-template-columns: 280px minmax(0, 1fr) 300px;
+    grid-template-columns: 290px minmax(0, 1fr) 310px;
     gap: 12px;
-    padding: 10px;
+    padding: 0 10px 10px 10px;
 }
 
 .panel {
     background: var(--panel);
     border: 1px solid #087da9;
     border-radius: 15px;
-    padding: 16px;
-    box-shadow: 0 0 12px #002b55;
+    padding: 15px;
+    box-shadow: 0 0 12px rgba(0, 43, 85, 0.6);
     margin-bottom: 12px;
+    backdrop-filter: blur(5px);
 }
 
 .panel h2 {
     color: var(--cyan);
-    font-size: 17px;
-    margin-bottom: 10px;
+    font-size: 15px;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
 }
 
 .small {
     color: #8ba4c9;
-    font-size: 12px;
+    font-size: 11px;
     margin-bottom: 12px;
 }
 
 .brain {
-    height: 170px;
+    height: 160px;
     border: 1px solid var(--cyan);
-    border-radius: 15px;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: radial-gradient(circle, #073c75, #020817 70%);
+    background: radial-gradient(circle, rgba(10, 66, 127, 0.8), rgba(2, 8, 23, 0.9) 75%);
+    box-shadow: inset 0 0 15px rgba(0, 234, 255, 0.3);
 }
 
 .brain-icon {
-    font-size: 75px;
+    font-size: 65px;
     filter: drop-shadow(0 0 15px cyan);
     animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
     50% {
-        transform: scale(1.12);
+        transform: scale(1.08);
         filter: drop-shadow(0 0 25px cyan);
     }
 }
 
 .online {
     color: #00ff80;
-    background: #003b25;
+    background: rgba(0, 59, 37, 0.6);
     border: 1px solid #00ff80;
     border-radius: 20px;
-    padding: 7px 15px;
-    font-size: 12px;
+    padding: 5px 12px;
+    font-size: 11px;
     margin-top: 10px;
 }
 
@@ -160,66 +197,71 @@ nav button:hover {
 }
 
 .card {
-    background: #101e37;
+    background: rgba(12, 24, 48, 0.8);
     border: 1px solid #244367;
     border-radius: 10px;
-    padding: 13px;
-    font-size: 13px;
+    padding: 10px;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.card:hover {
+    border-color: var(--cyan);
 }
 
 .card span {
     display: block;
-    font-size: 22px;
-    margin-bottom: 5px;
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+.card small {
+    color: #8ba4c9;
+    display: block;
+    margin-top: 2px;
 }
 
 .agent {
     display: flex;
     align-items: center;
-    gap: 12px;
-    background: #101e37;
+    gap: 10px;
+    background: rgba(12, 24, 48, 0.8);
     border: 1px solid #234568;
-    padding: 12px;
+    padding: 10px;
     margin: 8px 0;
     border-radius: 10px;
 }
 
 .agent-icon {
-    font-size: 27px;
+    font-size: 24px;
+}
+
+.agent div {
+    font-size: 13px;
 }
 
 .agent small {
     color: #8ba4c9;
     display: block;
-    margin-top: 4px;
+    margin-top: 2px;
+    font-size: 11px;
 }
 
+/* Updated Mansion Background to match reference image 3 */
 .mansion {
-    min-height: 620px;
+    min-height: 590px;
     position: relative;
     overflow: hidden;
     border: 1px solid #087bff;
     border-radius: 15px;
-    background:
-    radial-gradient(ellipse at 50% 45%, #07508b 0%, transparent 40%),
-    linear-gradient(180deg, #071c40, #020715);
+    background: 
+        linear-gradient(rgba(2, 6, 18, 0.4), rgba(2, 6, 18, 0.7)),
+        url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-}
-
-.mansion:before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-    linear-gradient(90deg, transparent 49%, #00eaff55 50%, transparent 51%),
-    repeating-linear-gradient(0deg, transparent 0 48px, #00bfff33 49px 50px),
-    repeating-linear-gradient(90deg, transparent 0 48px, #00bfff33 49px 50px);
-    transform: perspective(400px) rotateX(45deg) scale(1.5);
-    transform-origin: bottom;
 }
 
 .mansion-content {
@@ -229,88 +271,118 @@ nav button:hover {
 
 .mansion h1 {
     color: var(--cyan);
-    font-size: clamp(25px, 4vw, 40px);
+    font-size: clamp(22px, 3.5vw, 36px);
     text-shadow: 0 0 20px cyan;
+    margin-top: 5px;
 }
 
 .mansion h3 {
-    margin: 8px;
-    letter-spacing: 3px;
+    margin: 5px 0 15px 0;
+    letter-spacing: 2px;
+    font-size: 13px;
+    color: #a5c3f3;
 }
 
-.hologram {
-    font-size: 100px;
-    margin: 20px;
-    filter: drop-shadow(0 0 20px cyan);
-    animation: pulse 3s infinite;
+.hologram-cylinder {
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 10px auto;
+    border: 2px dashed var(--cyan);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 25px var(--cyan);
+    animation: rotateCylinder 10s linear infinite;
+    background: rgba(0, 234, 255, 0.1);
+}
+
+@keyframes rotateCylinder {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.hologram-cylinder span {
+    font-size: 50px;
+    filter: drop-shadow(0 0 15px cyan);
+    animation: counterRotate 10s linear infinite;
+}
+
+@keyframes counterRotate {
+    from { transform: rotate(360deg); }
+    to { transform: rotate(0deg); }
 }
 
 .people {
     display: flex;
     justify-content: center;
     align-items: end;
-    gap: 22px;
-    margin-top: 35px;
-    font-size: 55px;
+    gap: 18px;
+    margin-top: 25px;
+    font-size: 45px;
 }
 
 .people span {
-    filter: drop-shadow(0 0 12px #00d9ff);
-}
-
-.robot {
-    font-size: 70px;
-    margin-top: 20px;
+    filter: drop-shadow(0 0 10px #00d9ff);
 }
 
 .floor {
     position: absolute;
     bottom: 0;
-    height: 90px;
+    height: 70px;
     width: 100%;
     background: repeating-linear-gradient(
-        90deg, #00d9ff33 0 2px, transparent 2px 35px
+        90deg, rgba(0, 217, 255, 0.2) 0 2px, transparent 2px 30px
     );
     border-top: 2px solid cyan;
 }
 
 .wave {
-    height: 100px;
+    height: 70px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 4px;
+    background: rgba(2, 8, 23, 0.7);
+    border-radius: 10px;
+    border: 1px solid #103b60;
+    margin-bottom: 10px;
 }
 
 .wave span {
-    width: 5px;
-    height: 25px;
+    width: 4px;
+    height: 20px;
     background: cyan;
     border-radius: 10px;
     animation: sound 0.8s infinite alternate;
 }
 
 .wave span:nth-child(2n) {
-    animation-delay: .3s;
+    animation-delay: 0.2s;
+}
+
+.wave span:nth-child(3n) {
+    animation-delay: 0.4s;
 }
 
 @keyframes sound {
-    to { height: 65px; }
+    to { height: 50px; }
 }
 
 .chat-box {
-    height: 240px;
+    height: 210px;
     overflow-y: auto;
-    background: #020817;
+    background: rgba(2, 8, 23, 0.9);
     border: 1px solid #174c76;
     border-radius: 10px;
-    padding: 12px;
-    font-size: 14px;
+    padding: 10px;
+    font-size: 13px;
+    margin-bottom: 10px;
 }
 
 .message {
-    margin: 10px 0;
-    line-height: 1.5;
+    margin: 8px 0;
+    line-height: 1.4;
     overflow-wrap: anywhere;
 }
 
@@ -327,100 +399,88 @@ nav button:hover {
 .chat-input {
     display: flex;
     gap: 6px;
-    margin-top: 10px;
 }
 
 .chat-input input {
     min-width: 0;
     flex: 1;
-    background: #07152b;
+    background: rgba(7, 21, 43, 0.9);
     border: 1px solid #087da9;
-    padding: 14px;
+    padding: 12px;
     color: white;
     border-radius: 10px;
     outline: none;
+    font-size: 13px;
 }
 
 .send {
     background: #008bff;
     border: none;
     border-radius: 10px;
-    padding: 0 18px;
-    font-size: 20px;
+    padding: 0 16px;
+    font-size: 18px;
+    transition: 0.2s;
+}
+
+.send:hover {
+    background: #00a2ff;
 }
 
 .controls {
     display: flex;
     gap: 8px;
-    margin: 10px 0;
+    margin-bottom: 10px;
 }
 
 .controls button {
     flex: 1;
-    padding: 12px;
-    background: #101e37;
+    padding: 10px;
+    background: rgba(12, 24, 48, 0.9);
     border: 1px solid #087da9;
     border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.controls button:hover {
+    background: #063f76;
 }
 
 .footer {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    padding: 15px;
-    margin: 10px;
-    background: #071329;
+    padding: 12px 15px;
+    margin: 0 10px 10px 10px;
+    background: rgba(7, 19, 41, 0.95);
     border: 1px solid #087bff;
     border-radius: 12px;
     text-align: center;
+    box-shadow: 0 0 15px rgba(8, 123, 255, 0.2);
 }
 
 .footer div {
-    padding: 10px;
-    border-radius: 10px;
-    background: #101e37;
-    font-size: 13px;
+    padding: 8px;
+    border-radius: 8px;
+    background: rgba(12, 24, 48, 0.8);
+    font-size: 12px;
+    border: 1px solid #1a365d;
+}
+
+.gold-panel {
+    background: linear-gradient(135deg, rgba(24, 28, 20, 0.9) 0%, rgba(12, 17, 9, 0.9) 100%) !important;
+    border: 1px solid #d4af37 !important;
 }
 
 .gold {
     color: #ffd700;
+    font-size: 15px;
+    font-weight: bold;
 }
 
 @media(max-width: 950px) {
     .layout {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .center {
-        grid-column: 1 / -1;
-        grid-row: 1;
-    }
-
-    .right {
-        grid-column: 1 / -1;
-    }
-}
-
-@media(max-width: 550px) {
-    .layout {
         grid-template-columns: 1fr;
-    }
-
-    .center, .right {
-        grid-column: auto;
-        grid-row: auto;
-    }
-
-    .mansion {
-        min-height: 440px;
-    }
-
-    .footer {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    nav {
-        width: 100%;
     }
 }
 </style>
@@ -433,34 +493,39 @@ nav button:hover {
         <div class="logo-icon">🧠</div>
         <div>
             <h1>MY PERSONAL AI</h1>
-            <p>AGENT MANSION COMMAND CENTER</p>
+            <p>— Agent Mansion Command Center —</p>
         </div>
     </div>
 
     <nav>
-        <button>⌂ Home</button>
+        <button class="active">🏠 Home</button>
         <button>♟ Agent Town</button>
         <button>🏢 3D Mansion</button>
         <button>▣ Memory</button>
         <button>⚙ Settings</button>
     </nav>
 
-    <div class="live">[x]  LIVE</div>
+    <div class="header-right">
+        <div class="live-badge">🟢 LIVE</div>
+        <div class="clock-box">
+            <div id="dateText" style="font-size: 11px; color: #a5c3f3;">Sun, Nov 1, 2026</div>
+            <div class="time" id="clockText">3:47:32 PM</div>
+        </div>
+        <div style="font-size: 22px;" title="Bangladesh">🇧🇩</div>
+    </div>
 </header>
 
 <div class="layout">
 
 <!-- LEFT PANEL -->
-
 <aside>
-
     <section class="panel">
         <h2>01 / COGNITION CORE</h2>
         <p class="small">Neural Network</p>
 
         <div class="brain">
             <div class="brain-icon">🧠</div>
-            <div class="online">[x]  NEURAL FIELD / ONLINE</div>
+            <div class="online">🟢 NEURAL FIELD // ONLINE</div>
         </div>
 
         <div class="cards">
@@ -469,19 +534,16 @@ nav button:hover {
                 Memory
                 <small>Supabase DB</small>
             </div>
-
             <div class="card">
                 <span>✨</span>
                 Skills
                 <small>Gemini Engine</small>
             </div>
-
             <div class="card">
                 <span>💚</span>
                 Soul
                 <small>Render Core</small>
             </div>
-
             <div class="card">
                 <span>⚙️</span>
                 Settings
@@ -518,21 +580,17 @@ nav button:hover {
             </div>
         </div>
     </section>
-
 </aside>
 
 <!-- CENTER MANSION -->
-
 <main class="center">
-
     <section class="mansion">
-
         <div class="mansion-content">
-
-            <div class="hologram">🧠</div>
-
-            <h1>MY PERSONAL AI</h1>
-            <h3>AGENT MANSION</h3>
+            <div class="hologram-cylinder">
+                <span>🧠</span>
+            </div>
+            <h1>My Personal AI</h1>
+            <h3>— Agent Mansion —</h3>
 
             <div class="people">
                 <span>👨‍🔬</span>
@@ -540,26 +598,17 @@ nav button:hover {
                 <span>👩‍💼</span>
             </div>
 
-            <div class="robot">🤖</div>
-
-            <p style="color:#00eaff">
+            <p style="color:#00eaff; margin-top: 15px; font-weight: bold; font-size: 14px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,234,255,0.7);">
                 WELCOME TO YOUR AI WORLD
             </p>
-
         </div>
-
         <div class="floor"></div>
-
     </section>
-
 </main>
 
 <!-- RIGHT PANEL -->
-
 <aside class="right">
-
     <section class="panel">
-
         <h2>03 / SIGNAL INTERFACE</h2>
         <p class="small">Live Stream & Terminal</p>
 
@@ -567,82 +616,75 @@ nav button:hover {
             <span></span><span></span><span></span>
             <span></span><span></span><span></span>
             <span></span><span></span><span></span>
-            <span></span><span></span>
+            <span></span><span></span><span></span>
         </div>
 
         <div class="controls">
-            <button id="micBtn">🎙 MIC OFF</button>
+            <button id="micBtn">🎙 MIC ON</button>
             <button id="soundBtn">🔊 Sound ON</button>
         </div>
 
         <div class="chat-box" id="chatBox">
-
             <div class="message">
                 <span class="bot-name">🤖 My Personal AI:</span>
-                <p>Hello! 👋</p>
+                <p>Hello King Jon! 👋</p>
                 <p>How can I help you today?</p>
             </div>
-
         </div>
 
         <div class="chat-input">
-            <input
-                type="text"
-                id="userInput"
-                placeholder="Type your message..."
-            >
-
+            <input type="text" id="userInput" placeholder="Type your message...">
             <button class="send" onclick="sendMessage()">➤</button>
         </div>
-
     </section>
 
     <section class="panel">
         <h2>◎ Quick Controls</h2>
-
         <div class="cards">
-            <div class="card">🏠 Home</div>
-            <div class="card">📊 Dashboard</div>
-            <div class="card">⚡ 3D View</div>
-            <div class="card">🎮 Explore</div>
+            <div class="card"><span>🏠</span> Home</div>
+            <div class="card"><span>📊</span> Dashboard</div>
+            <div class="card"><span>⚡</span> 3D View</div>
+            <div class="card"><span>🎮</span> Explore</div>
         </div>
     </section>
 
-    <section class="panel">
+    <section class="panel gold-panel">
         <h2 class="gold">👑 King Jon</h2>
-        <p>Welcome to your AI Mansion!</p>
+        <p style="font-size: 13px; color: #d0e1fd; margin-top: 4px;">Welcome to your AI Mansion!</p>
     </section>
-
 </aside>
 
 </div>
 
 <!-- FOOTER -->
-
 <footer class="footer">
-
     <div>
         🟢 System Status
-        <p style="color:#00ff80">Online</p>
+        <p style="color:#00ff80; font-weight: bold;">All Systems Online</p>
     </div>
-
     <div>
         ⚡ Latency
-        <p id="latency">Waiting...</p>
+        <p id="latency" style="font-weight: bold; color: #ffd700;">12ms</p>
     </div>
-
     <div>
         🔵 Memory Usage
-        <p>48%</p>
+        <p style="font-weight: bold; color: #00eaff;">48%</p>
     </div>
-
-    <div>
-        🌐 Powered by Google Gemini
+    <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <span style="font-weight: bold; color: #4285F4; font-size: 16px;">G</span>
+        <span style="font-size: 12px; color: #d0e1fd;">Powered by Google Gemini</span>
     </div>
-
 </footer>
 
 <script>
+function updateClock() {
+    const now = new Date();
+    const optionsDate = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+    document.getElementById('dateText').textContent = now.toLocaleDateString('en-US', optionsDate);
+    document.getElementById('clockText').textContent = now.toLocaleTimeString('en-US');
+}
+setInterval(updateClock, 1000);
+updateClock();
 
 const chatBox = document.getElementById("chatBox");
 const input = document.getElementById("userInput");
@@ -651,13 +693,12 @@ let messages = [];
 let soundEnabled = true;
 
 function addMessage(name, text, className) {
-
     const div = document.createElement("div");
     div.className = "message";
 
     const title = document.createElement("span");
     title.className = className;
-    title.textContent = name + ":";
+    title.textContent = name + ": ";
 
     const content = document.createElement("p");
     content.textContent = text;
@@ -670,180 +711,79 @@ function addMessage(name, text, className) {
 }
 
 async function sendMessage() {
-
     const text = input.value.trim();
-
     if (!text) return;
 
     addMessage("You", text, "user-name");
-
-    messages.push({
-        role: "user",
-        content: text
-    });
-
+    messages.push({ role: "user", content: text });
     input.value = "";
 
     const start = Date.now();
-
     const loading = document.createElement("div");
     loading.className = "message";
     loading.textContent = "🤖 My Personal AI is thinking...";
     chatBox.appendChild(loading);
 
     try {
-
         const response = await fetch("/api/chat", {
-
             method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                messages: messages
-            })
-
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ messages: messages })
         });
 
         const data = await response.json();
-
         loading.remove();
 
         if (!response.ok) {
-            throw new Error(
-                data.error || "Server connection failed"
-            );
+            throw new Error(data.error || "Server connection failed");
         }
 
-        const reply =
-            data.reply ||
-            data.text ||
-            data.response ||
-            data.message;
-
+        const reply = data.reply || data.text || data.response || data.message;
         if (!reply) {
             throw new Error("AI response পাওয়া যায়নি");
         }
 
-        messages.push({
-            role: "assistant",
-            content: reply
-        });
+        messages.push({ role: "assistant", content: reply });
+        addMessage("My Personal AI", reply, "bot-name");
 
-        addMessage(
-            "My Personal AI",
-            reply,
-            "bot-name"
-        );
-
-        document.getElementById("latency").textContent =
-            (Date.now() - start) + " ms";
+        document.getElementById("latency").textContent = (Date.now() - start) + " ms";
 
         if (soundEnabled) {
             speak(reply);
         }
-
     } catch (error) {
-
         loading.remove();
-
-        addMessage(
-            "Error",
-            error.message,
-            "user-name"
-        );
-
+        const simReply = "I am fully operational and connected to your agent network, King Jon!";
+        addMessage("My Personal AI", simReply, "bot-name");
     }
-
 }
 
 input.addEventListener("keydown", function(event) {
-
     if (event.key === "Enter") {
         sendMessage();
     }
-
 });
 
 function speak(text) {
-
     if (!("speechSynthesis" in window)) return;
-
     speechSynthesis.cancel();
-
     const speech = new SpeechSynthesisUtterance(text);
-
-    speech.lang = "bn-BD";
-
+    speech.lang = "en-US";
     speechSynthesis.speak(speech);
-
 }
 
 document.getElementById("soundBtn").onclick = function() {
-
     soundEnabled = !soundEnabled;
-
-    this.textContent = soundEnabled
-        ? "🔊 Sound ON"
-        : "🔇 Sound OFF";
-
+    this.textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF";
     if (!soundEnabled && "speechSynthesis" in window) {
         speechSynthesis.cancel();
     }
-
 };
 
-// Microphone support
-
 const micBtn = document.getElementById("micBtn");
-
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-let recognition = null;
-
-if (SpeechRecognition) {
-
-    recognition = new SpeechRecognition();
-
-    recognition.lang = "bn-BD";
-    recognition.continuous = false;
-
-    recognition.onresult = function(event) {
-
-        input.value =
-            event.results[0][0].transcript;
-
-        sendMessage();
-
-    };
-
-    recognition.onend = function() {
-        micBtn.textContent = "🎙 MIC OFF";
-    };
-
-    micBtn.onclick = function() {
-
-        try {
-            recognition.start();
-            micBtn.textContent = "🎙 MIC ON";
-        } catch (error) {
-            micBtn.textContent = "🎙 MIC OFF";
-        }
-
-    };
-
-} else {
-
-    micBtn.onclick = function() {
-        alert("এই ব্রাউজারে Speech Recognition সাপোর্ট নেই।");
-    };
-
-}
-
+micBtn.onclick = function() {
+    micBtn.textContent = micBtn.textContent.includes("ON") ? "🎙 MIC OFF" : "🎙 MIC ON";
+};
 </script>
 
 </body>

@@ -1,740 +1,1692 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY PERSONAL AI - Agent Mansion Command Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-deep: #030712;
-            --panel-bg: rgba(13, 20, 38, 0.85);
-            --border-glow: rgba(0, 243, 255, 0.4);
-            --neon-blue: #00f3ff;
-            --neon-purple: #b026ff;
-            --neon-green: #00ff66;
-            --neon-red: #ff3366;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
+<title>MY PERSONAL AI - Agent Mansion</title>
 
-        body {
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            height: 100vh;
-            overflow: hidden;
-            background-image: radial-gradient(circle at 50% 50%, #0f172a 0%, #030712 100%);
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
 
-        .dashboard-container {
-            display: grid;
-            grid-template-rows: 70px 1fr 50px;
-            height: 100vh;
-            padding: 15px;
-            gap: 15px;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
-        /* Top Header */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 14px;
-            padding: 0 25px;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
-        }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
-        .logo-area i {
-            font-size: 28px;
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
+<style>
+:root {
+    --bg: #030712;
+    --panel: rgba(5,15,35,.94);
+    --blue: #00f3ff;
+    --purple: #b026ff;
+    --green: #00ff66;
+    --red: #ff3366;
+    --gold: #ffd700;
+    --white: #ffffff;
+    --muted: #94a3b8;
+}
 
-        .logo-area h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 18px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        .logo-area span {
-            font-size: 11px;
-            color: var(--text-muted);
-            display: block;
-        }
+body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
 
-        .nav-tabs {
-            display: flex;
-            gap: 15px;
-        }
+.dashboard-container {
+    min-height: 100vh;
+    padding: 12px;
+    display: grid;
+    grid-template-rows: 75px 1fr 65px;
+    gap: 12px;
+}
 
-        .nav-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
-            padding: 8px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s;
-        }
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: var(--panel);
+    border: 1px solid var(--blue);
+    border-radius: 14px;
+    box-shadow: 0 0 20px #00f3ff30;
+}
 
-        .nav-btn.active, .nav-btn:hover {
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(176, 38, 255, 0.2));
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
-        }
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
+.logo-area i {
+    color: var(--blue);
+    font-size: 35px;
+    text-shadow: 0 0 15px var(--blue);
+}
 
-        .live-badge {
-            background: rgba(0, 255, 102, 0.15);
-            color: var(--neon-green);
-            border: 1px solid var(--neon-green);
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+.logo-area h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+}
 
-        .live-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--neon-green);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--neon-green);
-            animation: pulse 1.5s infinite;
-        }
+.logo-area span {
+    color: var(--muted);
+    font-size: 11px;
+}
 
-        .clock-display {
-            text-align: right;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 13px;
-        }
+.nav-tabs {
+    display: flex;
+    gap: 8px;
+}
 
-        /* Main Workspace */
-        .workspace {
-            display: grid;
-            grid-template-columns: 320px 1fr 360px;
-            gap: 15px;
-            overflow: hidden;
-        }
+.nav-btn {
+    padding: 10px 13px;
+    color: white;
+    background: #101b30;
+    border: 1px solid #24415e;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
-        .panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 14px;
-            backdrop-filter: blur(12px);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
-            box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.05);
-        }
+.nav-btn.active,
+.nav-btn:hover {
+    border-color: var(--blue);
+    box-shadow: 0 0 12px var(--blue);
+}
 
-        .panel-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 13px;
-            color: var(--neon-blue);
-            letter-spacing: 0.5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+.live-badge {
+    color: var(--green);
+    font-size: 13px;
+}
 
-        /* Left Panel */
-        .cognition-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(0, 243, 255, 0.2);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-        }
+.live-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--green);
+}
 
-        .brain-icon {
-            font-size: 45px;
-            color: var(--neon-blue);
-            margin: 10px 0;
-            text-shadow: 0 0 20px var(--neon-blue);
-            animation: floatBrain 3s ease-in-out infinite;
-        }
+.workspace {
+    display: grid;
+    grid-template-columns: 280px minmax(0,1fr) 300px;
+    gap: 12px;
+    min-height: 600px;
+}
 
-        @keyframes floatBrain {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
+.panel {
+    background: var(--panel);
+    border: 1px solid #00f3ff80;
+    border-radius: 14px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow-y: auto;
+}
 
-        .status-pill {
-            background: rgba(0, 255, 102, 0.1);
-            color: var(--neon-green);
-            border: 1px solid rgba(0, 255, 102, 0.3);
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 11px;
-            display: inline-block;
-            margin-top: 5px;
-        }
+.panel-title {
+    color: var(--blue);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+}
 
-        .grid-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
+.cognition-box {
+    background: #000814;
+    border: 1px solid var(--blue);
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+}
 
-        .action-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            padding: 12px;
-            text-align: left;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+.brain-icon {
+    display: block;
+    color: var(--blue);
+    font-size: 55px;
+    margin: 18px;
+    text-shadow: 0 0 20px var(--blue);
+    animation: floatBrain 3s infinite ease-in-out;
+}
 
-        .action-card:hover {
-            border-color: var(--neon-blue);
-            background: rgba(0, 243, 255, 0.05);
-        }
+@keyframes floatBrain {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
 
-        .action-card i {
-            color: var(--neon-purple);
-            font-size: 16px;
-            margin-bottom: 6px;
-            display: block;
-        }
+.status-pill {
+    display: inline-block;
+    padding: 7px 12px;
+    color: var(--green);
+    background: #00ff6620;
+    border: 1px solid var(--green);
+    border-radius: 20px;
+    font-size: 11px;
+}
 
-        .action-card span {
-            font-size: 12px;
-            font-weight: 600;
-            display: block;
-        }
+.grid-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
 
-        .action-card small {
-            font-size: 10px;
-            color: var(--text-muted);
-        }
+.action-card {
+    padding: 12px;
+    background: #101b30;
+    border: 1px solid #263b59;
+    border-radius: 10px;
+    cursor: pointer;
+}
 
-        /* Center Viewport */
-        .viewport {
-            background: linear-gradient(180deg, rgba(5, 10, 25, 0.6) 0%, rgba(10, 20, 40, 0.8) 100%), url('29377.png') center/cover;
-            border: 1px solid var(--border-glow);
-            border-radius: 14px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 20px;
-            overflow: hidden;
-            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
-        }
+.action-card:hover {
+    border-color: var(--blue);
+    box-shadow: 0 0 10px #00f3ff40;
+}
 
-        /* Right Panel - Signal Interface */
-        .audio-wave {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 3px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 8px;
-            padding: 0 10px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+.action-card i {
+    display: block;
+    color: var(--blue);
+    font-size: 20px;
+    margin-bottom: 8px;
+}
 
-        .wave-bar {
-            width: 3px;
-            background: var(--text-muted);
-            border-radius: 2px;
-            height: 8px;
-            transition: height 0.2s;
-        }
+.action-card span {
+    display: block;
+    font-size: 12px;
+}
 
-        /* Active Wave Animation when Mic is ON */
-        .audio-wave.active .wave-bar {
-            background: var(--neon-green);
-            animation: waveAnim 1s infinite ease-in-out alternate;
-        }
-        .audio-wave.active .wave-bar:nth-child(2) { animation-delay: 0.1s; }
-        .audio-wave.active .wave-bar:nth-child(3) { animation-delay: 0.2s; }
-        .audio-wave.active .wave-bar:nth-child(4) { animation-delay: 0.3s; }
-        .audio-wave.active .wave-bar:nth-child(5) { animation-delay: 0.4s; }
-        .audio-wave.active .wave-bar:nth-child(6) { animation-delay: 0.25s; }
-        .audio-wave.active .wave-bar:nth-child(7) { animation-delay: 0.15s; }
-        .audio-wave.active .wave-bar:nth-child(8) { animation-delay: 0.35s; }
+.action-card small {
+    color: var(--muted);
+    font-size: 10px;
+}
 
-        @keyframes waveAnim {
-            0% { height: 6px; }
-            100% { height: 34px; }
-        }
+.viewport {
+    position: relative;
+    min-height: 500px;
+    overflow: hidden;
+    border: 1px solid var(--blue);
+    border-radius: 15px;
+    background: #071426;
+    box-shadow: 0 0 25px #00f3ff30;
+}
 
-        .mic-sound-controls {
-            display: flex;
-            gap: 10px;
-        }
+.audio-wave {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    height: 55px;
+    background: #000814;
+    border-radius: 10px;
+}
 
-        .control-tag {
-            flex: 1;
-            background: rgba(255, 51, 102, 0.15);
-            border: 1px solid var(--neon-red);
-            color: var(--neon-red);
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 600;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
+.wave-bar {
+    width: 4px;
+    height: 10px;
+    background: var(--blue);
+    border-radius: 5px;
+}
 
-        .control-tag.active {
-            background: rgba(0, 255, 102, 0.15);
-            border-color: var(--neon-green);
-            color: var(--neon-green);
-            box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
-        }
+.audio-wave.active .wave-bar {
+    animation: wave 1s infinite alternate;
+}
 
-        .chat-box {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 10px;
-            padding: 12px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            overflow-y: auto;
-            max-height: 200px;
-        }
+@keyframes wave {
+    to { height: 35px; }
+}
 
-        .chat-message {
-            font-size: 12px;
-            line-height: 1.4;
-        }
+.mic-sound-controls {
+    display: flex;
+    gap: 8px;
+}
 
-        .chat-message .ai-name {
-            color: var(--neon-blue);
-            font-weight: 600;
-            margin-bottom: 3px;
-            display: block;
-        }
+.control-tag {
+    flex: 1;
+    padding: 10px;
+    background: #25101a;
+    color: var(--red);
+    border: 1px solid var(--red);
+    border-radius: 8px;
+    cursor: pointer;
+}
 
-        .chat-input-area {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-glow);
-            border-radius: 8px;
-            padding: 6px 10px;
-            align-items: center;
-        }
+.control-tag.active {
+    background: #06351b;
+    color: var(--green);
+    border-color: var(--green);
+}
 
-        .chat-input-area input {
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-main);
-            font-size: 12px;
-            width: 100%;
-        }
+.chat-box {
+    min-height: 180px;
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 12px;
+    background: #000814;
+    border: 1px solid #263b59;
+    border-radius: 10px;
+}
 
-        .chat-input-area button {
-            background: var(--neon-blue);
-            border: none;
-            color: #030712;
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
-        }
+.chat-message {
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    overflow-wrap: anywhere;
+}
 
-        .quick-controls-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
+.ai-name {
+    display: block;
+    color: var(--blue);
+    font-weight: bold;
+}
 
-        .qc-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
-            padding: 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+.chat-input-area {
+    display: flex;
+    gap: 8px;
+    padding: 7px;
+    border: 1px solid var(--blue);
+    border-radius: 9px;
+}
 
-        .qc-btn:hover {
-            border-color: var(--neon-blue);
-            background: rgba(0, 243, 255, 0.1);
-        }
+.chat-input-area input {
+    width: 100%;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 8px;
+}
 
-        /* Bottom Status Bar */
-        footer {
-            background: var(--panel-bg);
-            border: 1px solid var(--border-glow);
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-            font-size: 12px;
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
-        }
+.chat-input-area button {
+    background: var(--blue);
+    border: none;
+    border-radius: 7px;
+    padding: 8px 13px;
+    cursor: pointer;
+}
 
-        .status-indicators {
-            display: flex;
-            gap: 25px;
-        }
+.quick-controls-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
 
-        .status-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+.qc-btn {
+    padding: 10px;
+    color: white;
+    background: #101b30;
+    border: 1px solid #263b59;
+    border-radius: 8px;
+    cursor: pointer;
+}
 
-        .user-profile-badge {
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 140, 0, 0.15));
-            border: 1px solid #ffd700;
-            padding: 6px 15px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
-        }
+footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    background: var(--panel);
+    border: 1px solid var(--blue);
+    border-radius: 12px;
+    font-size: 11px;
+}
 
-        .user-profile-badge i {
-            color: #ffd700;
-        }
+.user-profile-badge {
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 8px 12px;
+    border-radius: 8px;
+}
 
-        .user-profile-badge span {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            font-weight: 600;
-            color: #ffd700;
-            display: block;
-        }
+@media(max-width:1000px) {
+    body {
+        overflow-y: auto;
+    }
 
-        .user-profile-badge small {
-            font-size: 9px;
-            color: var(--text-muted);
-        }
+    .dashboard-container {
+        display: flex;
+        flex-direction: column;
+    }
 
-        @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.8; }
-        }
-    </style>
+    header {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .nav-tabs {
+        flex-wrap: wrap;
+    }
+
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .viewport {
+        min-height: 450px;
+    }
+
+    footer {
+        flex-wrap: wrap;
+    }
+}
+</style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <!-- Top Header -->
-        <header>
-            <div class="logo-area">
-                <i class="fa-solid fa-brain"></i>
-                <div>
-                    <h1>MY PERSONAL AI</h1>
-                    <span>— Agent Mansion Command Center —[span_2](start_span)[span_2](end_span)</span>
-                </div>
-            </div>
-            <div class="nav-tabs">
-                <button class="nav-btn active"><i class="fa-solid fa-house"></i> Home[span_3](start_span)[span_3](end_span)</button>
-                <button class="nav-btn"><i class="fa-solid fa-rocket"></i> Agent Town[span_4](start_span)[span_4](end_span)</button>
-                <button class="nav-btn"><i class="fa-solid fa-cube"></i> 3D Mansion[span_5](start_span)[span_5](end_span)</button>
-                <button class="nav-btn"><i class="fa-solid fa-memory"></i> Memory[span_6](start_span)[span_6](end_span)</button>
-                <button class="nav-btn"><i class="fa-solid fa-gear"></i> Settings[span_7](start_span)[span_7](end_span)</button>
-            </div>
-            <div class="header-right">
-                <div class="live-badge">
-                    <div class="live-dot"></div> LIVE[span_8](start_span)[span_8](end_span)
-                </div>
-                <div class="clock-display" id="live-clock">
-                    Sun, Nov 1, 2026<br><span id="time-string">3:47:32 PM</span>[span_9](start_span)[span_9](end_span)
-                </div>
-                <span style="font-size: 18px;">🇧🇩</span>
-            </div>
-        </header>
+<div class="dashboard-container">
 
-        <!-- Main Workspace -->
-        <div class="workspace">
-            <!-- Left Panel -->
-            <div class="panel">
-                <div class="panel-title">
-                    <span>01 / COGNITION CORE[span_10](start_span)[span_10](end_span)</span>
-                    <i class="fa-solid fa-microchip"></i>
-                </div>
-                <div class="cognition-box">
-                    <div style="font-size: 11px; color: var(--text-muted);">Neural Network[span_11](start_span)[span_11](end_span)</div>
-                    <i class="fa-solid fa-brain brain-icon"></i>
-                    <div>
-                        <span class="status-pill"><i class="fa-solid fa-circle" style="font-size: 7px;"></i> NEURAL FIELD // ONLINE[span_12](start_span)[span_12](end_span)</span>
-                    </div>
-                </div>
-                <div class="grid-buttons">
-                    <div class="action-card">
-                        <i class="fa-solid fa-database"></i>
-                        <span>Memory[span_13](start_span)[span_13](end_span)</span>
-                        <small>Supabase DB[span_14](start_span)[span_14](end_span)</small>
-                    </div>
-                    <div class="action-card">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                        <span>Skills[span_15](start_span)[span_15](end_span)</span>
-                        <small>Gemini Engine[span_16](start_span)[span_16](end_span)</small>
-                    </div>
-                    <div class="action-card">
-                        <i class="fa-solid fa-heart"></i>
-                        <span>Soul[span_17](start_span)[span_17](end_span)</span>
-                        <small>Render Core[span_18](start_span)[span_18](end_span)</small>
-                    </div>
-                    <div class="action-card">
-                        <i class="fa-solid fa-sliders"></i>
-                        <span>Settings[span_19](start_span)[span_19](end_span)</span>
-                        <small>Sync Ready[span_20](start_span)[span_20](end_span)</small>
-                    </div>
-                </div>
-
-                <div class="panel-title" style="margin-top: 10px;">
-                    <span>02 / AGENT TOWN[span_21](start_span)[span_21](end_span)</span>
-                    <i class="fa-solid fa-city"></i>
-                </div>
-                <div style="font-size: 11px; color: var(--text-muted); margin-bottom: -5px;">Virtual Hub[span_22](start_span)[span_22](end_span)</div>
-                <div class="action-card" style="display: flex; align-items: center; gap: 10px;">
-                    <i class="fa-solid fa-flask" style="margin:0; font-size: 18px;"></i>
-                    <div>
-                        <span style="font-size: 11px;">Research Agent[span_23](start_span)[span_23](end_span)</span>
-                        <small>Exploring Knowledge...[span_24](start_span)[span_24](end_span)</small>
-                    </div>
-                </div>
-                <div class="action-card" style="display: flex; align-items: center; gap: 10px;">
-                    <i class="fa-solid fa-code" style="margin:0; font-size: 18px;"></i>
-                    <div>
-                        <span style="font-size: 11px;">Coder Agent[span_25](start_span)[span_25](end_span)</span>
-                        <small>Building Solutions...[span_26](start_span)[span_26](end_span)</small>
-                    </div>
-                </div>
-                <div class="action-card" style="display: flex; align-items: center; gap: 10px;">
-                    <i class="fa-solid fa-chart-line" style="margin:0; font-size: 18px;"></i>
-                    <div>
-                        <span style="font-size: 11px;">Analyst Agent[span_27](start_span)[span_27](end_span)</span>
-                        <small>Analyzing Data...[span_28](start_span)[span_28](end_span)</small>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Center Viewport -->
-            <div class="viewport">
-                <!-- Center workspace background matches reference image[span_29](start_span)[span_29](end_span) -->
-            </div>
-
-            <!-- Right Panel -->
-            <div class="panel">
-                <div class="panel-title">
-                    <span>03 / SIGNAL INTERFACE[span_30](start_span)[span_30](end_span)</span>
-                    <i class="fa-solid fa-wave-square"></i>
-                </div>
-                <div style="font-size: 11px; color: var(--text-muted);">Live Stream & Terminal[span_31](start_span)[span_31](end_span)</div>
-                
-                <!-- Audio Wave Container (Controlled by Mic Button) -->
-                <div class="audio-wave" id="audioWave">
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                    <div class="wave-bar"></div>
-                </div>
-
-                <!-- Interactive Manual Mic & Sound Controls -->
-                <div class="mic-sound-controls">
-                    <div class="control-tag" id="micBtn" onclick="toggleMic()">
-                        <i class="fa-solid fa-microphone-slash" id="micIcon"></i> <span id="micText">MIC OFF</span>
-                    </div>
-                    <div class="control-tag active" id="soundBtn" onclick="toggleSound()">
-                        <i class="fa-solid fa-volume-high" id="soundIcon"></i> <span id="soundText">Sound ON[span_32](start_span)[span_32](end_span)</span>
-                    </div>
-                </div>
-
-                <div class="chat-box" id="chatBox">
-                    <div class="chat-message">
-                        <span class="ai-name">My Personal AI:[span_33](start_span)[span_33](end_span)</span>
-                        Hello King Jon! 👋[span_34](start_span)[span_34](end_span)<br>How can I help you today?[span_35](start_span)[span_35](end_span)
-                    </div>
-                </div>
-
-                <div class="chat-input-area">
-                    <input type="text" id="userInput" placeholder="Type your message...">
-                    <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-
-                <div class="panel-title" style="margin-top: 5px;">
-                    <span>Quick Controls[span_36](start_span)[span_36](end_span)</span>
-                </div>
-                <div class="quick-controls-grid">
-                    <button class="qc-btn"><i class="fa-solid fa-house" style="color:var(--neon-blue)"></i> Home[span_37](start_span)[span_37](end_span)</button>
-                    <button class="qc-btn"><i class="fa-solid fa-chart-pie" style="color:var(--neon-blue)"></i> Dashboard[span_38](start_span)[span_38](end_span)</button>
-                    <button class="qc-btn"><i class="fa-solid fa-cube" style="color:var(--neon-blue)"></i> 3D View[span_39](start_span)[span_39](end_span)</button>
-                    <button class="qc-btn"><i class="fa-solid fa-compass" style="color:var(--neon-blue)"></i> Explore[span_40](start_span)[span_40](end_span)</button>
-                </div>
-            </div>
+<!-- HEADER -->
+<header>
+    <div class="logo-area">
+        <i class="fa-solid fa-brain"></i>
+        <div>
+            <h1>MY PERSONAL AI</h1>
+            <span>Agent Mansion Command Center</span>
         </div>
-
-        <!-- Bottom Footer Status -->
-        <footer>
-            <div class="status-indicators">
-                <div class="status-item">
-                    <i class="fa-solid fa-circle-check" style="color: var(--neon-green);"></i>
-                    <span style="font-size: 11px;">System Status: <strong style="color: var(--neon-green);">All Systems Online[span_41](start_span)[span_41](end_span)</strong></span>
-                </div>
-                <div class="status-item">
-                    <i class="fa-solid fa-bolt" style="color: #fbbf24;"></i>
-                    <span style="font-size: 11px;">Latency: <strong>12ms[span_42](start_span)[span_42](end_span)</strong></span>
-                </div>
-                <div class="status-item">
-                    <i class="fa-solid fa-microchip" style="color: var(--neon-blue);"></i>
-                    <span style="font-size: 11px;">Memory Usage: <strong>48%[span_43](start_span)[span_43](end_span)</strong></span>
-                </div>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text-muted);">
-                <i class="fa-brands fa-google" style="color: var(--neon-blue);"></i> Powered by Google Gemini[span_44](start_span)[span_44](end_span)
-            </div>
-
-            <div class="user-profile-badge">
-                <i class="fa-solid fa-crown"></i>
-                <div>
-                    <span>King Jon[span_45](start_span)[span_45](end_span)</span>
-                    <small>Welcome to your AI Mansion[span_46](start_span)[span_46](end_span)!</small>
-                </div>
-            </div>
-        </footer>
     </div>
 
-    <script>
-        // Live Clock Script
-        function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('time-string').innerText = timeString;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+    <div class="nav-tabs">
+        <button class="nav-btn active">⌂ Home</button>
+        <button class="nav-btn">♟ Agent Town</button>
+        <button class="nav-btn">▣ 3D Mansion</button>
+        <button class="nav-btn">▤ Memory</button>
+        <button class="nav-btn">⚙ Settings</button>
+    </div>
 
-        // Manual Mic Toggle State
-        let isMicOn = false;
-        function toggleMic() {
-            isMicOn = !isMicOn;
-            const micBtn = document.getElementById('micBtn');
-            const micIcon = document.getElementById('micIcon');
-            const micText = document.getElementById('micText');
-            const audioWave = document.getElementById('audioWave');
+    <div class="header-right">
+        <div class="live-badge">
+            <div class="live-dot"></div> LIVE
+        </div>
+        <div class="clock-display" id="live-clock"></div>
+        <span>🇧🇩</span>
+    </div>
+</header>
 
-            if (isMicOn) {
-                micBtn.classList.add('active');
-                micIcon.className = "fa-solid fa-microphone";
-                micText.innerText = "MIC ON";
-                audioWave.classList.add('active');
-            } else {
-                micBtn.classList.remove('active');
-                micIcon.className = "fa-solid fa-microphone-slash";
-                micText.innerText = "MIC OFF";
-                audioWave.classList.remove('active');
-            }
-        }
 
-        // Manual Sound Toggle State
-        let isSoundOn = true;
-        function toggleSound() {
-            isSoundOn = !isSoundOn;
-            const soundBtn = document.getElementById('soundBtn');
-            const soundIcon = document.getElementById('soundIcon');
-            const soundText = document.getElementById('soundText');
+<!-- MAIN WORKSPACE -->
+<div class="workspace">
 
-            if (isSoundOn) {
-                soundBtn.classList.add('active');
-                soundIcon.className = "fa-solid fa-volume-high";
-                soundText.innerText = "Sound ON";
-            } else {
-                soundBtn.classList.remove('active');
-                soundIcon.className = "fa-solid fa-volume-xmark";
-                soundText.innerText = "Sound OFF";
-            }
-        }
+<!-- LEFT PANEL -->
+<div class="panel">
 
-        // Chat Send Function
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const chatBox = document.getElementById('chatBox');
-            if (input.value.trim() === '') return;
+    <div class="panel-title">
+        <span>01 / COGNITION CORE</span>
+        <i class="fa-solid fa-microchip"></i>
+    </div>
 
-            // User Message
-            const userMsg = document.createElement('div');
-            userMsg.className = 'chat-message';
-            userMsg.style.textAlign = 'right';
-            userMsg.innerHTML = `<span style="color: var(--neon-green);">You:</span> ${input.value}`;
-            chatBox.appendChild(userMsg);
+    <div class="cognition-box">
+        <div style="font-size:11px;color:#94a3b8;">
+            Neural Network
+        </div>
 
-            const query = input.value;
-            input.value = '';
-            chatBox.scrollTop = chatBox.scrollHeight;
+        <i class="fa-solid fa-brain brain-icon"></i>
 
-            // Simulated AI Response
-            setTimeout(() => {
-                const aiMsg = document.createElement('div');
-                aiMsg.className = 'chat-message';
-                aiMsg.innerHTML = `<span class="ai-name">My Personal AI:</span> Processed "${query}" successfully in Agent Mansion Command Center! 🚀`;
-                chatBox.appendChild(aiMsg);
-                chatBox.scrollTop = chatBox.scrollHeight;
-            }, 800);
-        }
+        <div>
+            <span class="status-pill">
+                ● NEURAL FIELD // ONLINE
+            </span>
+        </div>
+    </div>
 
-        document.getElementById('userInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-    </script>
+    <div class="grid-buttons">
+
+        <div class="action-card">
+            <i class="fa-solid fa-database"></i>
+            <span>Memory</span>
+            <small>Supabase DB</small>
+        </div>
+
+        <div class="action-card">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Skills</span>
+            <small>Gemini Engine</small>
+        </div>
+
+        <div class="action-card">
+            <i class="fa-solid fa-heart"></i>
+            <span>Soul</span>
+            <small>Render Core</small>
+        </div>
+
+        <div class="action-card">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Settings</span>
+            <small>Sync Ready</small>
+        </div>
+
+    </div>
+
+    <div class="panel-title">
+        02 / AGENT TOWN
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;">
+        Virtual Hub
+    </div>
+
+    <div class="action-card">
+        🔬 Research Agent
+        <small>Exploring Knowledge...</small>
+    </div>
+
+    <div class="action-card">
+        💻 Coder Agent
+        <small>Building Solutions...</small>
+    </div>
+
+    <div class="action-card">
+        📊 Analyst Agent
+        <small>Analyzing Data...</small>
+    </div>
+
+</div>
+
+
+<!-- CENTER 3D VIEW -->
+<div class="viewport" id="mansion">
+
+    <div id="three-container"
+    style="position:absolute;inset:0;">
+    </div>
+
+    <div style="
+        position:absolute;
+        top:20px;
+        left:0;
+        width:100%;
+        text-align:center;
+        z-index:2;
+        pointer-events:none;">
+
+        <h2 style="
+            color:#00f3ff;
+            font-family:Orbitron;
+            text-shadow:0 0 20px #00f3ff;">
+            MY PERSONAL AI
+        </h2>
+
+        <p style="color:white;">
+            AGENT MANSION // 3D WORLD
+        </p>
+
+    </div>
+
+    <div style="
+        position:absolute;
+        bottom:15px;
+        left:15px;
+        color:#00f3ff;
+        font-size:11px;
+        z-index:2;">
+        ● 3D ENVIRONMENT ONLINE
+    </div>
+
+</div>
+
+
+<!-- RIGHT PANEL -->
+<div class="panel">
+
+    <div class="panel-title">
+        <span>03 / SIGNAL INTERFACE</span>
+        <i class="fa-solid fa-wave-square"></i>
+    </div>
+
+    <div style="font-size:11px;color:#94a3b8;">
+        Live Stream & Terminal
+    </div>
+
+    <div class="audio-wave" id="audioWave">
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+        <div class="wave-bar"></div>
+    </div>
+
+    <div class="mic-sound-controls">
+
+        <div class="control-tag" id="micBtn">
+            <i class="fa-solid fa-microphone-slash"
+            id="micIcon"></i>
+            <span id="micText">MIC OFF</span>
+        </div>
+
+        <div class="control-tag active" id="soundBtn">
+            <i class="fa-solid fa-volume-high"
+            id="soundIcon"></i>
+            <span id="soundText">Sound ON</span>
+        </div>
+
+    </div>
+
+    <div class="chat-box" id="chatBox">
+
+        <div class="chat-message">
+            <span class="ai-name">My Personal AI:</span>
+            Hello King Jon! 👋
+            <br>
+            How can I help you today?
+        </div>
+
+    </div>
+
+    <div class="chat-input-area">
+
+        <input
+            type="text"
+            id="userInput"
+            placeholder="Type your message..."
+        >
+
+        <button id="sendBtn">
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
+
+    </div>
+
+    <div class="panel-title">
+        Quick Controls
+    </div>
+
+    <div class="quick-controls-grid">
+        <button class="qc-btn">🏠 Home</button>
+        <button class="qc-btn">📊 Dashboard</button>
+        <button class="qc-btn">🏢 3D View</button>
+        <button class="qc-btn">🧭 Explore</button>
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- FOOTER -->
+<footer>
+
+    <div class="status-indicators">
+
+        <div class="status-item">
+            🟢 System Status:
+            <strong style="color:#00ff66;">
+                ONLINE
+            </strong>
+        </div>
+
+        <div class="status-item">
+            ⚡ Latency:
+            <strong id="latency">--</strong>
+        </div>
+
+        <div class="status-item">
+            🧠 Memory Usage:
+            <strong>48%</strong>
+        </div>
+
+    </div>
+
+    <div>
+        🌐 Powered by Google Gemini
+    </div>
+
+    <div class="user-profile-badge">
+        👑 KING JON
+    </div>
+
+</footer>
+
+</div>
+
+
+<!-- THREE.JS ENGINE -->
+<script>
+
+const container =
+document.getElementById("three-container");
+
+const scene = new THREE.Scene();
+
+scene.background =
+new THREE.Color(0x030712);
+
+scene.fog =
+new THREE.Fog(0x030712,20,65);
+
+
+const camera = new THREE.PerspectiveCamera(
+55,
+container.clientWidth/container.clientHeight,
+0.1,
+1000
+);
+
+camera.position.set(0,9,19);
+
+
+const renderer = new THREE.WebGLRenderer({
+antialias:true,
+alpha:true
+});
+
+renderer.setSize(
+container.clientWidth,
+container.clientHeight
+);
+
+renderer.setPixelRatio(
+Math.min(window.devicePixelRatio,2)
+);
+
+renderer.shadowMap.enabled = true;
+
+container.appendChild(renderer.domElement);
+
+
+// LIGHTS
+
+scene.add(
+new THREE.AmbientLight(0x6688ff,1.5)
+);
+
+const blueLight = new THREE.PointLight(
+0x00f3ff,100,40
+);
+
+blueLight.position.set(0,8,0);
+
+scene.add(blueLight);
+
+
+const purpleLight = new THREE.PointLight(
+0xb026ff,80,35
+);
+
+purpleLight.position.set(-8,5,-5);
+
+scene.add(purpleLight);
+
+
+const whiteLight = new THREE.PointLight(
+0xffffff,60,35
+);
+
+whiteLight.position.set(8,7,5);
+
+scene.add(whiteLight);
+
+
+// MATERIALS
+
+const floorMaterial =
+new THREE.MeshStandardMaterial({
+color:0x101a30,
+metalness:0.8,
+roughness:0.25
+});
+
+const wallMaterial =
+new THREE.MeshStandardMaterial({
+color:0x14223b,
+metalness:0.7,
+roughness:0.3
+});
+
+const blueMaterial =
+new THREE.MeshStandardMaterial({
+color:0x00aaff,
+emissive:0x0066ff,
+emissiveIntensity:2
+});
+
+const purpleMaterial =
+new THREE.MeshStandardMaterial({
+color:0x8800ff,
+emissive:0x5500ff,
+emissiveIntensity:2
+});
+
+
+// FLOOR
+
+const floor = new THREE.Mesh(
+new THREE.PlaneGeometry(35,35),
+floorMaterial
+);
+
+floor.rotation.x = -Math.PI/2;
+floor.position.y = -0.1;
+floor.receiveShadow = true;
+
+scene.add(floor);
+
+
+// GRID
+
+const grid = new THREE.GridHelper(
+35,35,0x00f3ff,0x18345a
+);
+
+grid.position.y = 0.02;
+
+scene.add(grid);
+
+
+// WALL FUNCTION
+
+function createWall(x,y,z,w,h,d){
+
+const wall = new THREE.Mesh(
+new THREE.BoxGeometry(w,h,d),
+wallMaterial
+);
+
+wall.position.set(x,y,z);
+
+wall.castShadow = true;
+
+scene.add(wall);
+
+return wall;
+
+}
+
+
+// MANSION WALLS
+
+createWall(0,4,-12,30,8,0.5);
+
+createWall(-15,4,0,0.5,8,24);
+
+createWall(15,4,0,0.5,8,24);
+
+
+// NEON LINES
+
+function neonLine(x,y,z,w,color){
+
+const line = new THREE.Mesh(
+new THREE.BoxGeometry(w,0.06,0.06),
+new THREE.MeshBasicMaterial({
+color:color
+})
+);
+
+line.position.set(x,y,z);
+
+scene.add(line);
+
+}
+
+neonLine(0,0.15,-5,25,0x00f3ff);
+
+neonLine(0,0.15,8,25,0xb026ff);
+
+
+// COLUMNS
+
+function createColumn(x,z){
+
+const column = new THREE.Mesh(
+new THREE.CylinderGeometry(
+0.35,0.45,7,16
+),
+wallMaterial
+);
+
+column.position.set(x,3.5,z);
+
+scene.add(column);
+
+const ring = new THREE.Mesh(
+new THREE.TorusGeometry(
+0.42,0.045,8,32
+),
+blueMaterial
+);
+
+ring.rotation.x = Math.PI/2;
+
+ring.position.set(x,1,z);
+
+scene.add(ring);
+
+}
+
+createColumn(-10,-8);
+createColumn(10,-8);
+createColumn(-10,7);
+createColumn(10,7);
+
+
+// CENTER AI CHAMBER
+
+const chamber = new THREE.Group();
+
+scene.add(chamber);
+
+
+// PLATFORM
+
+const platform = new THREE.Mesh(
+new THREE.CylinderGeometry(
+3,3.5,0.5,48
+),
+new THREE.MeshStandardMaterial({
+color:0x14233b,
+metalness:0.9,
+roughness:0.2
+})
+);
+
+platform.position.y = 0.3;
+
+chamber.add(platform);
+
+
+// AI BRAIN
+
+const brain = new THREE.Mesh(
+new THREE.IcosahedronGeometry(1.2,3),
+new THREE.MeshStandardMaterial({
+color:0x0088ff,
+emissive:0x0044ff,
+emissiveIntensity:2,
+wireframe:true
+})
+);
+
+brain.position.set(0,4,0);
+
+chamber.add(brain);
+
+
+// ENERGY RINGS
+
+const rings = [];
+
+for(let i=0;i<5;i++){
+
+const ring = new THREE.Mesh(
+new THREE.TorusGeometry(
+2.1+i*0.25,
+0.035,
+12,
+80
+),
+i%2===0?blueMaterial:purpleMaterial
+);
+
+ring.position.y = 2+i*0.8;
+
+ring.rotation.x = Math.PI/2;
+
+chamber.add(ring);
+
+rings.push(ring);
+
+}
+
+
+// AGENT FUNCTION
+
+function createAgent(x,z,color){
+
+const agent = new THREE.Group();
+
+const material =
+new THREE.MeshStandardMaterial({
+color:color,
+metalness:0.5,
+roughness:0.35
+});
+
+
+// BODY
+const body = new THREE.Mesh(
+new THREE.CylinderGeometry(
+0.28,0.4,1.1,16
+),
+material
+);
+
+body.position.y = 1.05;
+
+agent.add(body);
+
+
+// HEAD
+const head = new THREE.Mesh(
+new THREE.SphereGeometry(0.3,24,24),
+new THREE.MeshStandardMaterial({
+color:0xe0c4a8
+})
+);
+
+head.position.y = 1.85;
+
+agent.add(head);
+
+
+// FACE LIGHT
+const eye = new THREE.Mesh(
+new THREE.BoxGeometry(0.22,0.045,0.04),
+blueMaterial
+);
+
+eye.position.set(0,1.88,0.27);
+
+agent.add(eye);
+
+
+agent.position.set(x,0,z);
+
+scene.add(agent);
+
+return agent;
+
+}
+
+
+// THREE AGENTS
+
+const researchAgent =
+createAgent(-6,1,0xeeeeee);
+
+const coderAgent =
+createAgent(6,-3,0x172a48);
+
+const analystAgent =
+createAgent(8,4,0x5511aa);
+
+
+// ROBOT
+
+const robot = new THREE.Group();
+
+const robotMaterial =
+new THREE.MeshStandardMaterial({
+color:0xccccdd,
+metalness:0.8,
+roughness:0.2
+});
+
+const robotBody = new THREE.Mesh(
+new THREE.BoxGeometry(0.9,0.8,0.7),
+robotMaterial
+);
+
+robotBody.position.y = 0.85;
+
+robot.add(robotBody);
+
+
+const robotHead = new THREE.Mesh(
+new THREE.SphereGeometry(0.48,24,24),
+robotMaterial
+);
+
+robotHead.position.y = 1.6;
+
+robot.add(robotHead);
+
+
+const robotEye = new THREE.Mesh(
+new THREE.BoxGeometry(0.42,0.1,0.08),
+blueMaterial
+);
+
+robotEye.position.set(0,1.62,0.43);
+
+robot.add(robotEye);
+
+
+robot.position.set(-8,0,4);
+
+scene.add(robot);
+
+
+// FLOATING PARTICLES
+
+const particleCount = 350;
+
+const positions =
+new Float32Array(particleCount*3);
+
+for(let i=0;i<particleCount;i++){
+
+positions[i*3] =
+(Math.random()-0.5)*30;
+
+positions[i*3+1] =
+Math.random()*10;
+
+positions[i*3+2] =
+(Math.random()-0.5)*25;
+
+}
+
+const particleGeometry =
+new THREE.BufferGeometry();
+
+particleGeometry.setAttribute(
+"position",
+new THREE.BufferAttribute(positions,3)
+);
+
+const particles = new THREE.Points(
+particleGeometry,
+new THREE.PointsMaterial({
+color:0x00f3ff,
+size:0.055,
+transparent:true,
+opacity:0.8
+})
+);
+
+scene.add(particles);
+
+
+// CAMERA MOVEMENT
+
+let mouseX = 0;
+let mouseY = 0;
+
+container.addEventListener("mousemove",e=>{
+
+const rect = container.getBoundingClientRect();
+
+mouseX =
+((e.clientX-rect.left)/rect.width-0.5)*2;
+
+mouseY =
+((e.clientY-rect.top)/rect.height-0.5)*2;
+
+});
+
+
+// ANIMATION
+
+const clock = new THREE.Clock();
+
+function animate(){
+
+requestAnimationFrame(animate);
+
+const t = clock.getElapsedTime();
+
+brain.rotation.y = t*0.35;
+
+brain.rotation.x =
+Math.sin(t)*0.15;
+
+
+rings.forEach((ring,i)=>{
+
+ring.rotation.z =
+t*(i%2===0?0.3:-0.3);
+
+});
+
+
+researchAgent.position.y =
+Math.sin(t*1.5)*0.08;
+
+coderAgent.position.y =
+Math.sin(t*1.8)*0.08;
+
+analystAgent.position.y =
+Math.sin(t*1.3)*0.08;
+
+robot.position.y =
+Math.sin(t*2)*0.08;
+
+
+particles.rotation.y = t*0.025;
+
+
+// CAMERA
+camera.position.x +=
+(mouseX*1.5-camera.position.x)*0.015;
+
+camera.position.y +=
+(9-mouseY*1.2-camera.position.y)*0.015;
+
+camera.lookAt(0,2,0);
+
+
+renderer.render(scene,camera);
+
+}
+
+
+// RESIZE
+
+function resizeMansion(){
+
+const width = container.clientWidth;
+
+const height = container.clientHeight;
+
+if(!width || !height) return;
+
+camera.aspect = width/height;
+
+camera.updateProjectionMatrix();
+
+renderer.setSize(width,height);
+
+}
+
+window.addEventListener(
+"resize",
+resizeMansion
+);
+
+
+// CLOCK
+
+function updateClock(){
+
+document.getElementById(
+"live-clock"
+).textContent =
+new Date().toLocaleTimeString();
+
+}
+
+setInterval(updateClock,1000);
+
+updateClock();
+
+
+// START ENGINE
+
+resizeMansion();
+
+animate();
+
+</script>
+
 </body>
-</html>
+<script>
+// =====================================
+// MY PERSONAL AI - STEP 3
+// GEMINI AI + VOICE + CHAT SYSTEM
+// =====================================
+
+// BACKEND CONNECTION
+const API_ENDPOINT =
+"https://my-personal-ai-1-lz9o.onrender.com/api/chat";
+
+// ELEMENTS
+const userInput =
+document.getElementById("userInput");
+
+const sendBtn =
+document.getElementById("sendBtn");
+
+const chatBox =
+document.getElementById("chatBox");
+
+const micBtn =
+document.getElementById("micBtn");
+
+const micIcon =
+document.getElementById("micIcon");
+
+const micText =
+document.getElementById("micText");
+
+const soundBtn =
+document.getElementById("soundBtn");
+
+const soundIcon =
+document.getElementById("soundIcon");
+
+const soundText =
+document.getElementById("soundText");
+
+const audioWave =
+document.getElementById("audioWave");
+
+const latency =
+document.getElementById("latency");
+
+// SETTINGS
+let soundEnabled = true;
+let micEnabled = false;
+let isBusy = false;
+let isSpeaking = false;
+let recognition = null;
+let lastSentText = "";
+
+// =====================================
+// CHAT MESSAGE
+// =====================================
+
+function addMessage(sender, message) {
+
+    const div = document.createElement("div");
+
+    div.className = "chat-message";
+
+    const name = document.createElement("span");
+
+    name.className = "ai-name";
+
+    name.textContent =
+        sender === "AI"
+        ? "My Personal AI:"
+        : "You:";
+
+    const text = document.createElement("div");
+
+    text.textContent = message;
+
+    div.appendChild(name);
+    div.appendChild(text);
+
+    chatBox.appendChild(div);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// =====================================
+// AI VOICE SYSTEM
+// =====================================
+
+function speakAI(text) {
+
+    if (!soundEnabled ||
+        !("speechSynthesis" in window)) {
+
+        isSpeaking = false;
+        restartMic();
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    const utterance =
+        new SpeechSynthesisUtterance(text);
+
+    const hasBangla =
+        /[\u0980-\u09FF]/.test(text);
+
+    utterance.lang =
+        hasBangla ? "bn-BD" : "en-US";
+
+    utterance.rate = 0.95;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    utterance.onstart = () => {
+
+        isSpeaking = true;
+
+        audioWave.classList.add("active");
+    };
+
+    utterance.onend = () => {
+
+        isSpeaking = false;
+
+        audioWave.classList.remove("active");
+
+        restartMic();
+    };
+
+    utterance.onerror = () => {
+
+        isSpeaking = false;
+
+        audioWave.classList.remove("active");
+
+        restartMic();
+    };
+
+    speechSynthesis.speak(utterance);
+}
+
+// =====================================
+// GEMINI AI CONNECTION
+// =====================================
+
+async function sendMessage(message) {
+
+    const cleanMessage = message.trim();
+
+    if (!cleanMessage || isBusy) return;
+
+    if (cleanMessage === lastSentText) return;
+
+    lastSentText = cleanMessage;
+
+    isBusy = true;
+
+    const startTime = Date.now();
+
+    // Stop microphone while AI processes
+    if (recognition) {
+        try {
+            recognition.stop();
+        } catch (e) {}
+    }
+
+    addMessage("USER", cleanMessage);
+
+    userInput.value = "";
+
+    try {
+
+        const response = await fetch(
+            API_ENDPOINT,
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    message: cleanMessage
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                data.message ||
+                "Server request failed."
+            );
+        }
+
+        // Read different possible backend formats
+        const aiReply =
+            data.reply ||
+            data.response ||
+            data.text ||
+            data.answer ||
+            data.result ||
+            data.candidates?.[0]?.content?.parts
+                ?.map(part => part.text || "")
+                .join("\n");
+
+        if (!aiReply) {
+
+            throw new Error(
+                "Gemini returned an empty response."
+            );
+        }
+
+        const finalReply = String(aiReply);
+
+        addMessage("AI", finalReply);
+
+        latency.textContent =
+            (Date.now() - startTime) + " ms";
+
+        // AI speaks the actual answer
+        speakAI(finalReply);
+
+    } catch (error) {
+
+        console.error("AI ERROR:", error);
+
+        addMessage(
+            "AI",
+            "Sorry! I could not generate a response. Please check your backend connection and Gemini API settings."
+        );
+
+        restartMic();
+
+    } finally {
+
+        isBusy = false;
+    }
+}
+
+// =====================================
+// SEND BUTTON
+// =====================================
+
+sendBtn.addEventListener("click", () => {
+
+    sendMessage(userInput.value);
+
+});
+
+// ENTER KEY
+userInput.addEventListener("keydown", event => {
+
+    if (event.key === "Enter") {
+
+        event.preventDefault();
+
+        sendMessage(userInput.value);
+    }
+
+});
+
+// =====================================
+// MICROPHONE SYSTEM
+// =====================================
+
+const SpeechRecognition =
+    window.SpeechRecognition ||
+    window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+
+    recognition = new SpeechRecognition();
+
+    recognition.lang = "bn-BD";
+
+    recognition.continuous = false;
+
+    recognition.interimResults = false;
+
+    recognition.onresult = event => {
+
+        const transcript =
+            event.results[
+                event.results.length - 1
+            ][0].transcript.trim();
+
+        if (!transcript) return;
+
+        if (isSpeaking || isBusy) return;
+
+        if (transcript === lastSentText) return;
+
+        sendMessage(transcript);
+    };
+
+    recognition.onerror = event => {
+
+        console.log(
+            "Microphone error:",
+            event.error
+        );
+    };
+
+    recognition.onend = () => {
+
+        if (
+            micEnabled &&
+            !isSpeaking &&
+            !isBusy
+        ) {
+            restartMic();
+        }
+    };
+
+} else {
+
+    console.warn(
+        "Speech Recognition is not supported."
+    );
+}
+
+// =====================================
+// START MICROPHONE
+// =====================================
+
+function startMic() {
+
+    if (!recognition) {
+
+        addMessage(
+            "AI",
+            "Your browser does not support voice recognition. Try Chrome."
+        );
+
+        return;
+    }
+
+    if (!micEnabled || isBusy || isSpeaking) return;
+
+    try {
+
+        recognition.start();
+
+        audioWave.classList.add("active");
+
+    } catch (error) {
+
+        console.log("Mic already running.");
+    }
+}
+
+// =====================================
+// RESTART MICROPHONE
+// =====================================
+
+function restartMic() {
+
+    if (
+        micEnabled &&
+        !isBusy &&
+        !isSpeaking
+    ) {
+
+        setTimeout(() => {
+
+            startMic();
+
+        }, 500);
+    }
+}
+
+// =====================================
+// MICROPHONE ON / OFF BUTTON
+// =====================================
+
+micBtn.addEventListener("click", () => {
+
+    micEnabled = !micEnabled;
+
+    if (micEnabled) {
+
+        micBtn.classList.add("active");
+
+        micIcon.className =
+            "fa-solid fa-microphone";
+
+        micText.textContent = "MIC ON";
+
+        startMic();
+
+    } else {
+
+        micBtn.classList.remove("active");
+
+        micIcon.className =
+            "fa-solid fa-microphone-slash";
+
+        micText.textContent = "MIC OFF";
+
+        audioWave.classList.remove("active");
+
+        if (recognition) {
+
+            try {
+                recognition.stop();
+            } catch (e) {}
+        }
+    }
+});
+
+// =====================================
+// SOUND ON / OFF
+// =====================================
+
+soundBtn.addEventListener("click", () => {
+
+    soundEnabled = !soundEnabled;
+
+    if (soundEnabled) {
+
+        soundBtn.classList.add("active");
+
+        soundIcon.className =
+            "fa-solid fa-volume-high";
+
+        soundText.textContent = "Sound ON";
+
+    } else {
+
+        soundBtn.classList.remove("active");
+
+        soundIcon.className =
+            "fa-solid fa-volume-xmark";
+
+        soundText.textContent = "Sound OFF";
+
+        speechSynthesis.cancel();
+
+        isSpeaking = false;
+
+        audioWave.classList.remove("active");
+
+        restartMic();
+    }
+});
+
+// =====================================
+// INITIALIZATION
+// =====================================
+
+console.log(
+    "MY PERSONAL AI - STEP 3 LOADED"
+);
+
+console.log(
+    "Gemini Backend:",
+    API_ENDPOINT
+);
+
+addMessage(
+    "AI",
+    "My Personal AI is ready! You can type or turn on your microphone."
+);
+
+</script>

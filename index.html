@@ -15,17 +15,18 @@
 :root {
     --cyan: #00eaff;
     --blue: #087bff;
-    --purple: #a855ff;
-    --panel: rgba(5, 16, 38, 0.88);
+    --panel: rgba(5, 16, 38, 0.85);
 }
 
 body {
-    /* আপনার কাঙ্ক্ষিত ম্যানশন ব্যাকগ্রাউন্ড ইমেজ এখানে সেট করা হয়েছে */
-    background: #020612 url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop') center/cover no-repeat fixed;
+    /* হুবহু আপনার কাঙ্ক্ষিত ম্যানশন ব্যাকগ্রাউন্ড ইমেজ এখানে সেট করা হয়েছে */
+    background: #020612 url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed;
+    background-size: cover;
     color: white;
     font-family: Arial, sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
+    padding: 10px;
 }
 
 button {
@@ -34,18 +35,20 @@ button {
     font-family: inherit;
 }
 
+/* Header Styling */
 header {
-    min-height: 75px;
+    min-height: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 15px;
-    padding: 10px 22px;
-    border-bottom: 1px solid rgba(8, 123, 255, 0.4);
+    padding: 10px 20px;
+    border: 1px solid rgba(8, 123, 255, 0.4);
     background: rgba(5, 13, 32, 0.9);
-    backdrop-filter: blur(10px);
-    position: relative;
-    z-index: 10;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 0 15px rgba(8, 123, 255, 0.3);
 }
 
 .logo {
@@ -55,7 +58,7 @@ header {
 }
 
 .logo-icon {
-    font-size: 35px;
+    font-size: 34px;
     color: var(--cyan);
     text-shadow: 0 0 20px var(--cyan);
 }
@@ -71,12 +74,13 @@ header {
     font-size: 10px;
 }
 
+/* Center Nav Bar */
 nav {
     display: flex;
     gap: 6px;
     background: rgba(5, 16, 38, 0.9);
-    padding: 6px 14px;
-    border-radius: 30px;
+    padding: 5px 12px;
+    border-radius: 25px;
     border: 1px solid rgba(0, 234, 255, 0.3);
     box-shadow: 0 0 15px rgba(0, 234, 255, 0.15);
 }
@@ -90,8 +94,8 @@ nav button {
     align-items: center;
     gap: 6px;
     font-size: 12px;
-    transition: all 0.3s;
     color: #a5c3f3;
+    transition: all 0.3s;
 }
 
 nav button:hover, nav button.active {
@@ -104,7 +108,7 @@ nav button:hover, nav button.active {
 .header-right {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
 .live-badge {
@@ -119,21 +123,22 @@ nav button:hover, nav button.active {
 
 .clock-box {
     text-align: right;
-    font-size: 12px;
+    font-size: 11px;
     color: #d0e1fd;
 }
 
 .clock-box .time {
     font-weight: bold;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--cyan);
 }
 
+/* Layout Grid System */
 .layout {
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr) 300px;
-    gap: 12px;
-    padding: 12px;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .panel {
@@ -142,13 +147,13 @@ nav button:hover, nav button.active {
     border-radius: 12px;
     padding: 12px;
     box-shadow: 0 0 12px rgba(0, 43, 85, 0.6);
-    margin-bottom: 12px;
-    backdrop-filter: blur(8px);
+    margin-bottom: 10px;
+    backdrop-filter: blur(6px);
 }
 
 .panel h2 {
     color: var(--cyan);
-    font-size: 14px;
+    font-size: 13px;
     margin-bottom: 2px;
     letter-spacing: 0.5px;
 }
@@ -160,7 +165,7 @@ nav button:hover, nav button.active {
 }
 
 .brain {
-    height: 140px;
+    height: 130px;
     border: 1px solid var(--cyan);
     border-radius: 10px;
     display: flex;
@@ -172,16 +177,13 @@ nav button:hover, nav button.active {
 }
 
 .brain-icon {
-    font-size: 55px;
+    font-size: 50px;
     filter: drop-shadow(0 0 15px cyan);
     animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
-    50% {
-        transform: scale(1.08);
-        filter: drop-shadow(0 0 25px cyan);
-    }
+    50% { transform: scale(1.08); filter: drop-shadow(0 0 25px cyan); }
 }
 
 .online {
@@ -189,7 +191,7 @@ nav button:hover, nav button.active {
     background: rgba(0, 59, 37, 0.6);
     border: 1px solid #00ff80;
     border-radius: 20px;
-    padding: 4px 10px;
+    padding: 3px 10px;
     font-size: 10px;
     margin-top: 8px;
 }
@@ -210,9 +212,7 @@ nav button:hover, nav button.active {
     transition: 0.2s;
 }
 
-.card:hover {
-    border-color: var(--cyan);
-}
+.card:hover { border-color: var(--cyan); }
 
 .card span {
     display: block;
@@ -236,15 +236,10 @@ nav button:hover, nav button.active {
     padding: 8px;
     margin: 6px 0;
     border-radius: 8px;
-}
-
-.agent-icon {
-    font-size: 20px;
-}
-
-.agent div {
     font-size: 12px;
 }
+
+.agent-icon { font-size: 20px; }
 
 .agent small {
     color: #8ba4c9;
@@ -253,14 +248,14 @@ nav button:hover, nav button.active {
     font-size: 10px;
 }
 
-/* Center Mansion Overlay Box */
+/* Center Mansion Display Area */
 .mansion {
-    min-height: 560px;
+    min-height: 530px;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(8, 123, 255, 0.4);
+    border: 1px solid rgba(8, 123, 255, 0.5);
     border-radius: 12px;
-    background: rgba(2, 6, 18, 0.25);
+    background: rgba(2, 6, 18, 0.2);
     backdrop-filter: blur(2px);
     display: flex;
     flex-direction: column;
@@ -276,7 +271,7 @@ nav button:hover, nav button.active {
 
 .mansion h1 {
     color: var(--cyan);
-    font-size: clamp(20px, 3vw, 32px);
+    font-size: clamp(22px, 3vw, 32px);
     text-shadow: 0 0 20px cyan;
     margin-top: 4px;
 }
@@ -289,8 +284,8 @@ nav button:hover, nav button.active {
 }
 
 .hologram-cylinder {
-    width: 100px;
-    height: 100px;
+    width: 95px;
+    height: 95px;
     margin: 0 auto 8px auto;
     border: 2px dashed var(--cyan);
     border-radius: 50%;
@@ -308,7 +303,7 @@ nav button:hover, nav button.active {
 }
 
 .hologram-cylinder span {
-    font-size: 40px;
+    font-size: 38px;
     filter: drop-shadow(0 0 12px cyan);
     animation: counterRotate 10s linear infinite;
 }
@@ -323,32 +318,27 @@ nav button:hover, nav button.active {
     justify-content: center;
     align-items: end;
     gap: 15px;
-    margin-top: 20px;
-    font-size: 38px;
-}
-
-.people span {
-    filter: drop-shadow(0 0 8px #00d9ff);
+    margin-top: 18px;
+    font-size: 35px;
 }
 
 .floor {
     position: absolute;
     bottom: 0;
-    height: 60px;
+    height: 55px;
     width: 100%;
-    background: repeating-linear-gradient(
-        90deg, rgba(0, 217, 255, 0.15) 0 2px, transparent 2px 25px
-    );
+    background: repeating-linear-gradient(90deg, rgba(0, 217, 255, 0.15) 0 2px, transparent 2px 25px);
     border-top: 2px solid cyan;
 }
 
+/* Right Panel Elements */
 .wave {
-    height: 50px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 3px;
-    background: rgba(2, 8, 23, 0.8);
+    background: rgba(2, 8, 23, 0.85);
     border-radius: 8px;
     border: 1px solid #103b60;
     margin-bottom: 8px;
@@ -356,9 +346,9 @@ nav button:hover, nav button.active {
 
 .wave span {
     width: 3px;
-    height: 15px;
+    height: 14px;
     background: cyan;
-    border-radius: 10px;
+    border-radius: 8px;
     animation: sound 0.8s infinite alternate;
 }
 
@@ -366,64 +356,7 @@ nav button:hover, nav button.active {
 .wave span:nth-child(3n) { animation-delay: 0.4s; }
 
 @keyframes sound {
-    to { height: 35px; }
-}
-
-.chat-box {
-    height: 160px;
-    overflow-y: auto;
-    background: rgba(2, 8, 23, 0.9);
-    border: 1px solid #174c76;
-    border-radius: 8px;
-    padding: 8px;
-    font-size: 12px;
-    margin-bottom: 8px;
-}
-
-.message {
-    margin: 6px 0;
-    line-height: 1.3;
-    overflow-wrap: anywhere;
-}
-
-.bot-name {
-    color: var(--cyan);
-    font-weight: bold;
-}
-
-.user-name {
-    color: #c58aff;
-    font-weight: bold;
-}
-
-.chat-input {
-    display: flex;
-    gap: 6px;
-}
-
-.chat-input input {
-    min-width: 0;
-    flex: 1;
-    background: rgba(7, 21, 43, 0.9);
-    border: 1px solid #087da9;
-    padding: 10px;
-    color: white;
-    border-radius: 8px;
-    outline: none;
-    font-size: 12px;
-}
-
-.send {
-    background: #008bff;
-    border: none;
-    border-radius: 8px;
-    padding: 0 14px;
-    font-size: 16px;
-    transition: 0.2s;
-}
-
-.send:hover {
-    background: #00a2ff;
+    to { height: 32px; }
 }
 
 .controls {
@@ -442,22 +375,70 @@ nav button:hover, nav button.active {
     font-weight: bold;
 }
 
-.controls button:hover {
-    background: #063f76;
+.controls button:hover { background: #063f76; }
+
+.chat-box {
+    height: 140px;
+    overflow-y: auto;
+    background: rgba(2, 8, 23, 0.9);
+    border: 1px solid #174c76;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 12px;
+    margin-bottom: 8px;
 }
 
+.message {
+    margin: 6px 0;
+    line-height: 1.3;
+}
+
+.bot-name { color: var(--cyan); font-weight: bold; }
+.user-name { color: #c58aff; font-weight: bold; }
+
+.chat-input {
+    display: flex;
+    gap: 6px;
+}
+
+.chat-input input {
+    flex: 1;
+    background: rgba(7, 21, 43, 0.9);
+    border: 1px solid #087da9;
+    padding: 9px;
+    color: white;
+    border-radius: 8px;
+    outline: none;
+    font-size: 12px;
+}
+
+.send {
+    background: #008bff;
+    border: none;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 15px;
+}
+
+.gold-panel {
+    background: linear-gradient(135deg, rgba(24, 28, 20, 0.9) 0%, rgba(12, 17, 9, 0.9) 100%) !important;
+    border: 1px solid #d4af37 !important;
+}
+
+.gold { color: #ffd700; font-size: 13px; font-weight: bold; }
+
+/* Footer Styling */
 .footer {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 10px;
     padding: 10px 15px;
-    margin: 0 12px 12px 12px;
     background: rgba(5, 16, 38, 0.95);
     border: 1px solid rgba(8, 123, 255, 0.4);
-    border-radius: 10px;
+    border-radius: 12px;
     text-align: center;
-    box-shadow: 0 0 12px rgba(8, 123, 255, 0.2);
     backdrop-filter: blur(8px);
+    box-shadow: 0 0 12px rgba(8, 123, 255, 0.2);
 }
 
 .footer div {
@@ -468,27 +449,16 @@ nav button:hover, nav button.active {
     border: 1px solid #1a365d;
 }
 
-.gold-panel {
-    background: linear-gradient(135deg, rgba(24, 28, 20, 0.9) 0%, rgba(12, 17, 9, 0.9) 100%) !important;
-    border: 1px solid #d4af37 !important;
-}
-
-.gold {
-    color: #ffd700;
-    font-size: 14px;
-    font-weight: bold;
-}
-
 @media(max-width: 950px) {
-    .layout {
-        grid-template-columns: 1fr;
-    }
+    .layout { grid-template-columns: 1fr; }
+    nav { display: none; }
 }
 </style>
 </head>
 
 <body>
 
+<!-- TOP HEADER -->
 <header>
     <div class="logo">
         <div class="logo-icon">🧠</div>
@@ -531,23 +501,19 @@ nav button:hover, nav button.active {
 
         <div class="cards">
             <div class="card">
-                <span>🗄️</span>
-                Memory
+                <span>🗄️</span> Memory
                 <small>Supabase DB</small>
             </div>
             <div class="card">
-                <span>✨</span>
-                Skills
+                <span>✨</span> Skills
                 <small>Gemini Engine</small>
             </div>
             <div class="card">
-                <span>💚</span>
-                Soul
+                <span>💚</span> Soul
                 <small>Render Core</small>
             </div>
             <div class="card">
-                <span>⚙️</span>
-                Settings
+                <span>⚙️</span> Settings
                 <small>Sync Ready</small>
             </div>
         </div>
@@ -559,26 +525,17 @@ nav button:hover, nav button.active {
 
         <div class="agent">
             <div class="agent-icon">🔬</div>
-            <div>
-                Research Agent
-                <small>Exploring Knowledge...</small>
-            </div>
+            <div>Research Agent<small>Exploring Knowledge...</small></div>
         </div>
 
         <div class="agent">
             <div class="agent-icon">💻</div>
-            <div>
-                Coder Agent
-                <small>Building Solutions...</small>
-            </div>
+            <div>Coder Agent<small>Building Solutions...</small></div>
         </div>
 
         <div class="agent">
             <div class="agent-icon">📊</div>
-            <div>
-                Analyst Agent
-                <small>Analyzing Data...</small>
-            </div>
+            <div>Analyst Agent<small>Analyzing Data...</small></div>
         </div>
     </section>
 </aside>
@@ -651,7 +608,7 @@ nav button:hover, nav button.active {
 
     <section class="panel gold-panel">
         <h2 class="gold">👑 King Jon</h2>
-        <p style="font-size: 12px; color: #d0e1fd; margin-top: 2px;">Welcome to your AI Mansion!</p>
+        <p style="font-size: 11px; color: #d0e1fd; margin-top: 2px;">Welcome to your AI Mansion!</p>
     </section>
 </aside>
 

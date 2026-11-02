@@ -1,850 +1,337 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Personal AI - Agent Mansion</title>
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MY PERSONAL AI — Agent Mansion Command Center</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Orbitron:wght@500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+:root{--bg:#070a10;--panel:#0d121c;--panel2:#101826;--line:#202c3d;--muted:#8391a7;--text:#eaf2ff;--cyan:#5cf4e8;--violet:#a68bff;--lime:#b7ff81;--red:#ff6689;--gold:#ffd700}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 48% -20%,#17283c 0%,var(--bg) 55%);color:var(--text);font-family:'Space Grotesk',sans-serif;min-height:100vh}
+.app{max-width:1600px;margin:auto;padding:16px}
 
-body {
-    background: #020612;
-    color: white;
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
-}
+/* Top Navigation Bar */
+.topnav{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 20px;margin-bottom:16px;flex-wrap:wrap;gap:15px;box-shadow:0 10px 30px #0005}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:42px;height:42px;border:1px solid var(--cyan);border-radius:12px;display:grid;place-items:center;color:var(--cyan);font:700 18px Orbitron;box-shadow:0 0 20px #5cf4e822}
+.brand h1{font:700 16px Orbitron;letter-spacing:.1em;margin:0}
+.brand small{display:block;color:var(--muted);font:9px 'DM Mono';letter-spacing:.1em;margin-top:3px}
+.nav-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.nav-tab{background:var(--panel2);border:1px solid var(--line);color:var(--muted);padding:8px 14px;border-radius:10px;font:11px 'Space Grotesk';display:flex;align-items:center;gap:6px;transition:.2s;cursor:pointer}
+.nav-tab:hover,.nav-tab.active{border-color:var(--cyan);color:var(--cyan);background:#5cf4e810}
+.top-status{display:flex;align-items:center;gap:12px;font:11px 'DM Mono';color:var(--muted)}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:#b7ff8115;border:1px solid var(--lime);color:var(--lime);padding:6px 14px;border-radius:99px;font-weight:700}
+.live-dot{width:6px;height:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 8px var(--lime)}
 
-:root {
-    --cyan: #00eaff;
-    --blue: #087bff;
-    --purple: #a855ff;
-    --panel: rgba(5, 16, 38, 0.95);
-}
+/* Layout Grid */
+.layout{display:grid;grid-template-columns:320px 1fr 360px;gap:16px;margin-bottom:16px}
+.panel{background:linear-gradient(145deg,#10172677,var(--panel));border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 15px 40px #0003;display:flex;flex-direction:column;margin-bottom:16px}
+.ph{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.eyebrow{font:10px 'DM Mono';color:var(--muted);letter-spacing:.12em}
+.ptitle{font-size:13px;font-weight:700;margin-top:3px}
+.pill{font:10px 'DM Mono';color:var(--cyan);background:#5cf4e812;padding:4px 10px;border-radius:99px;border:1px solid #5cf4e83a}
 
-button {
-    cursor: pointer;
-    color: white;
-}
+/* Left Column */
+.brain-area{padding:14px}
+.brainbox{position:relative;height:190px;border:1px solid #1b3041;border-radius:12px;overflow:hidden;background:radial-gradient(ellipse,#112b38,#09121d 65%)}
+canvas{width:100%!important;height:100%!important;display:block}
+.brain-label{position:absolute;left:10px;bottom:10px;font:9px 'DM Mono';color:#5cf4e8}
+.metric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.metric-card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px}
+.metric-icon{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-size:14px}
+.metric-info b{display:block;font-size:11px}
+.metric-info span{font:9px 'DM Mono';color:var(--muted)}
 
-header {
-    min-height: 85px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    padding: 15px 22px;
-    border: 1px solid #087bff;
-    background: #050d20;
-    border-radius: 15px;
-    margin: 10px;
-    flex-wrap: wrap;
-}
+.agent-town{padding:14px;display:flex;flex-direction:column;gap:8px}
+.town-item{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;align-items:center;gap:10px}
+.town-item b{display:block;font-size:11px}
+.town-item small{font:9px 'DM Mono';color:var(--muted)}
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
+/* Center Column (3D Mansion View / Showcase) */
+.center-col{display:flex;flex-direction:column;gap:16px}
+.mansion-showcase{position:relative;flex:1;min-height:510px;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#060a12;display:flex;flex-direction:column;justify-content:flex-end;padding:20px}
+.mansion-overlay{position:absolute;inset:0;background:radial-gradient(circle at center,transparent 30%,#070a10cc 90%);pointer-events:none}
+.mansion-content{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap}
+.room-badge{background:#111b29cc;border:1px solid var(--line);padding:10px 14px;border-radius:12px;backdrop-filter:blur(6px)}
+.room-badge b{font-size:12px;color:var(--cyan);display:block}
+.room-badge span{font:10px 'DM Mono';color:var(--muted)}
 
-.logo-icon {
-    font-size: 43px;
-    color: var(--cyan);
-    text-shadow: 0 0 20px var(--cyan);
-}
+/* Bottom Status Strip (ছবি অনুযায়ী নিখুঁত ফিক্সড স্ট্রিপ) */
+.bottom-strip{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.2fr;gap:12px;padding:14px 20px;background:var(--panel);border:1px solid var(--line);border-radius:16px;align-items:center;box-shadow:0 10px 30px #0004}
+.stat-box{display:flex;align-items:center;gap:12px;font:11px 'DM Mono'}
+.stat-icon{width:36px;height:36px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);display:grid;place-items:center;color:var(--cyan);font-size:16px}
+.gemini-badge{display:flex;align-items:center;gap:8px;justify-content:flex-end;font:11px 'Space Grotesk';font-weight:600}
 
-.logo h1 {
-    color: var(--cyan);
-    font-size: 22px;
-}
+/* Right Column */
+.stream{padding:14px;display:flex;flex-direction:column}
+.audio-viz{height:48px;background:#0a1119;border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;gap:4px;padding:8px;margin-bottom:12px}
+.bar{width:4px;border-radius:4px;background:linear-gradient(to top,var(--cyan),var(--violet));height:8px;animation:wave .6s ease-in-out infinite alternate}
+@keyframes wave{to{height:30px}}
+.voice-toggles{display:flex;gap:8px;margin-bottom:12px}
+.v-btn{flex:1;background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:8px;padding:8px;font:10px 'DM Mono';display:flex;align-items:center;justify-content:center;gap:6px;cursor:pointer}
+.v-btn.active{border-color:var(--lime);color:var(--lime);background:#b7ff8110}
+.chatlog{height:250px;overflow:auto;display:flex;flex-direction:column;gap:8px;padding:10px;background:#060a10;border:1px solid var(--line);border-radius:10px;margin-bottom:12px}
+.bubble{max-width:92%;padding:8px 10px;border-radius:10px;font-size:11px;line-height:1.5}
+.bubble.user{align-self:flex-end;background:#102a31;border:1px solid #24514f}
+.bubble.ai{align-self:flex-start;background:#151d2d;border:1px solid #28364c}
+.composer{display:flex;gap:8px}
+.composer input{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;color:var(--text);outline:none;font-size:11px}
+.btn-send{background:var(--cyan);color:#031313;border:none;border-radius:8px;padding:0 14px;font-weight:700;cursor:pointer}
 
-.logo p {
-    color: #b8c9e8;
-    font-size: 12px;
-}
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:14px}
+.q-btn{background:var(--panel2);border:1px solid var(--line);color:var(--text);padding:10px;border-radius:10px;font:11px 'Space Grotesk';display:flex;align-items:center;gap:8px;cursor:pointer;transition:.2s}
+.q-btn:hover{border-color:var(--cyan);color:var(--cyan)}
 
-nav {
-    display: flex;
-    gap: 7px;
-    flex-wrap: wrap;
-}
+.profile-card{background:linear-gradient(135deg,#1f1805,#0d121c);border:1px solid #ffd70044;border-radius:12px;padding:12px;display:flex;align-items:center;gap:12px;margin:14px}
+.profile-avatar{width:38px;height:38px;border-radius:50%;background:var(--gold);display:grid;place-items:center;color:#000;font-weight:700;font-size:16px}
+.profile-info b{display:block;font-size:12px;color:var(--gold)}
+.profile-info small{font:9px 'DM Mono';color:var(--muted)}
 
-nav button {
-    background: #101c35;
-    border: 1px solid #1766a5;
-    padding: 12px;
-    border-radius: 10px;
-}
-
-nav button:hover {
-    background: #063f76;
-    box-shadow: 0 0 15px var(--cyan);
-}
-
-.live {
-    color: #00ff75;
-    font-weight: bold;
-}
-
-.layout {
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr) 300px;
-    gap: 12px;
-    padding: 10px;
-}
-
-.panel {
-    background: var(--panel);
-    border: 1px solid #087da9;
-    border-radius: 15px;
-    padding: 16px;
-    box-shadow: 0 0 12px #002b55;
-    margin-bottom: 12px;
-}
-
-.panel h2 {
-    color: var(--cyan);
-    font-size: 17px;
-    margin-bottom: 10px;
-}
-
-.small {
-    color: #8ba4c9;
-    font-size: 12px;
-    margin-bottom: 12px;
-}
-
-.brain {
-    height: 170px;
-    border: 1px solid var(--cyan);
-    border-radius: 15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: radial-gradient(circle, #073c75, #020817 70%);
-}
-
-.brain-icon {
-    font-size: 75px;
-    filter: drop-shadow(0 0 15px cyan);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    50% {
-        transform: scale(1.12);
-        filter: drop-shadow(0 0 25px cyan);
-    }
-}
-
-.online {
-    color: #00ff80;
-    background: #003b25;
-    border: 1px solid #00ff80;
-    border-radius: 20px;
-    padding: 7px 15px;
-    font-size: 12px;
-    margin-top: 10px;
-}
-
-.cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.card {
-    background: #101e37;
-    border: 1px solid #244367;
-    border-radius: 10px;
-    padding: 13px;
-    font-size: 13px;
-}
-
-.card span {
-    display: block;
-    font-size: 22px;
-    margin-bottom: 5px;
-}
-
-.agent {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: #101e37;
-    border: 1px solid #234568;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 10px;
-}
-
-.agent-icon {
-    font-size: 27px;
-}
-
-.agent small {
-    color: #8ba4c9;
-    display: block;
-    margin-top: 4px;
-}
-
-.mansion {
-    min-height: 620px;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #087bff;
-    border-radius: 15px;
-    background:
-    radial-gradient(ellipse at 50% 45%, #07508b 0%, transparent 40%),
-    linear-gradient(180deg, #071c40, #020715);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.mansion:before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-    linear-gradient(90deg, transparent 49%, #00eaff55 50%, transparent 51%),
-    repeating-linear-gradient(0deg, transparent 0 48px, #00bfff33 49px 50px),
-    repeating-linear-gradient(90deg, transparent 0 48px, #00bfff33 49px 50px);
-    transform: perspective(400px) rotateX(45deg) scale(1.5);
-    transform-origin: bottom;
-}
-
-.mansion-content {
-    z-index: 1;
-    position: relative;
-}
-
-.mansion h1 {
-    color: var(--cyan);
-    font-size: clamp(25px, 4vw, 40px);
-    text-shadow: 0 0 20px cyan;
-}
-
-.mansion h3 {
-    margin: 8px;
-    letter-spacing: 3px;
-}
-
-.hologram {
-    font-size: 100px;
-    margin: 20px;
-    filter: drop-shadow(0 0 20px cyan);
-    animation: pulse 3s infinite;
-}
-
-.people {
-    display: flex;
-    justify-content: center;
-    align-items: end;
-    gap: 22px;
-    margin-top: 35px;
-    font-size: 55px;
-}
-
-.people span {
-    filter: drop-shadow(0 0 12px #00d9ff);
-}
-
-.robot {
-    font-size: 70px;
-    margin-top: 20px;
-}
-
-.floor {
-    position: absolute;
-    bottom: 0;
-    height: 90px;
-    width: 100%;
-    background: repeating-linear-gradient(
-        90deg, #00d9ff33 0 2px, transparent 2px 35px
-    );
-    border-top: 2px solid cyan;
-}
-
-.wave {
-    height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-}
-
-.wave span {
-    width: 5px;
-    height: 25px;
-    background: cyan;
-    border-radius: 10px;
-    animation: sound 0.8s infinite alternate;
-}
-
-.wave span:nth-child(2n) {
-    animation-delay: .3s;
-}
-
-@keyframes sound {
-    to { height: 65px; }
-}
-
-.chat-box {
-    height: 240px;
-    overflow-y: auto;
-    background: #020817;
-    border: 1px solid #174c76;
-    border-radius: 10px;
-    padding: 12px;
-    font-size: 14px;
-}
-
-.message {
-    margin: 10px 0;
-    line-height: 1.5;
-    overflow-wrap: anywhere;
-}
-
-.bot-name {
-    color: var(--cyan);
-    font-weight: bold;
-}
-
-.user-name {
-    color: #c58aff;
-    font-weight: bold;
-}
-
-.chat-input {
-    display: flex;
-    gap: 6px;
-    margin-top: 10px;
-}
-
-.chat-input input {
-    min-width: 0;
-    flex: 1;
-    background: #07152b;
-    border: 1px solid #087da9;
-    padding: 14px;
-    color: white;
-    border-radius: 10px;
-    outline: none;
-}
-
-.send {
-    background: #008bff;
-    border: none;
-    border-radius: 10px;
-    padding: 0 18px;
-    font-size: 20px;
-}
-
-.controls {
-    display: flex;
-    gap: 8px;
-    margin: 10px 0;
-}
-
-.controls button {
-    flex: 1;
-    padding: 12px;
-    background: #101e37;
-    border: 1px solid #087da9;
-    border-radius: 10px;
-}
-
-.footer {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    padding: 15px;
-    margin: 10px;
-    background: #071329;
-    border: 1px solid #087bff;
-    border-radius: 12px;
-    text-align: center;
-}
-
-.footer div {
-    padding: 10px;
-    border-radius: 10px;
-    background: #101e37;
-    font-size: 13px;
-}
-
-.gold {
-    color: #ffd700;
-}
-
-@media(max-width: 950px) {
-    .layout {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    .center {
-        grid-column: 1 / -1;
-        grid-row: 1;
-    }
-
-    .right {
-        grid-column: 1 / -1;
-    }
-}
-
-@media(max-width: 550px) {
-    .layout {
-        grid-template-columns: 1fr;
-    }
-
-    .center, .right {
-        grid-column: auto;
-        grid-row: auto;
-    }
-
-    .mansion {
-        min-height: 440px;
-    }
-
-    .footer {
-        grid-template-columns: 1fr 1fr;
-    }
-
-    nav {
-        width: 100%;
-    }
-}
+@media(max-width:1300px){.layout{grid-template-columns:1fr}}.bottom-strip{grid-template-columns:repeat(2,1fr)}
 </style>
 </head>
-
 <body>
+<div class="app">
+  <!-- Top Navigation Bar -->
+  <header class="topnav">
+    <div class="brand">
+      <div class="mark">AI</div>
+      <div>
+        <h1>MY PERSONAL AI</h1>
+        <small>— Agent Mansion Command Center —</small>
+      </div>
+    </div>
+    <div class="nav-tabs">
+      <button class="nav-tab active">🏠 Home</button>
+      <button class="nav-tab">🚀 Agent Town</button>
+      <button class="nav-tab">🏛️ 3D Mansion</button>
+      <button class="nav-tab">✉️ Memory</button>
+      <button class="nav-tab">⚙️ Settings</button>
+    </div>
+    <div class="top-status">
+      <div class="live-badge"><i class="live-dot"></i> LIVE</div>
+      <span id="clock">Sun, Nov 1, 2026 3:47:32 PM</span>
+      <span style="font-size:16px;">🇧🇩</span>
+    </div>
+  </header>
 
-<header>
-    <div class="logo">
-        <div class="logo-icon">🧠</div>
-        <div>
-            <h1>MY PERSONAL AI</h1>
-            <p>AGENT MANSION COMMAND CENTER</p>
+  <!-- Main Layout Grid -->
+  <main class="layout">
+    
+    <!-- Left Column: Cognition Core & Agent Town -->
+    <div class="left-col">
+      <section class="panel">
+        <div class="ph">
+          <div>
+            <div class="eyebrow">01 / COGNITION CORE</div>
+            <div class="ptitle">Neural Network</div>
+          </div>
+          <span class="pill">ONLINE</span>
         </div>
+        <div class="brain-area">
+          <div class="brainbox" id="brainbox">
+            <canvas id="brainCanvas"></canvas>
+            <div class="brain-label">NEURAL FIELD // ONLINE</div>
+          </div>
+          <div class="metric-grid">
+            <div class="metric-card">
+              <div class="metric-icon" style="background:#5cf4e822; color:var(--cyan)">🗄️</div>
+              <div class="metric-info"><b>Memory</b><span>Supabase DB</span></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon" style="background:#a68bff22; color:var(--violet)">⚡</div>
+              <div class="metric-info"><b>Skills</b><span>Gemini Engine</span></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon" style="background:#b7ff8122; color:var(--lime)">❤️</div>
+              <div class="metric-info"><b>Soul</b><span>Render Core</span></div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-icon" style="background:#ffd70022; color:var(--gold)">⚙️</div>
+              <div class="metric-info"><b>Settings</b><span>Sync Ready</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="ph">
+          <div>
+            <div class="eyebrow">02 / AGENT TOWN</div>
+            <div class="ptitle">Virtual Hub</div>
+          </div>
+          <span class="pill">ACTIVE</span>
+        </div>
+        <div class="agent-town">
+          <div class="town-item">
+            <div style="color:var(--cyan)">🧪</div>
+            <div><b>Research Agent</b><small>Exploring Knowledge...</small></div>
+          </div>
+          <div class="town-item">
+            <div style="color:var(--violet)">💻</div>
+            <div><b>Coder Agent</b><small>Building Solutions...</small></div>
+          </div>
+          <div class="town-item">
+            <div style="color:var(--gold)">📊</div>
+            <div><b>Analyst Agent</b><small>Analyzing Data...</small></div>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <nav>
-        <button>⌂ Home</button>
-        <button>♟ Agent Town</button>
-        <button>🏢 3D Mansion</button>
-        <button>▣ Memory</button>
-        <button>⚙ Settings</button>
-    </nav>
-
-    <div class="live">[x]  LIVE</div>
-</header>
-
-<div class="layout">
-
-<!-- LEFT PANEL -->
-
-<aside>
-
-    <section class="panel">
-        <h2>01 / COGNITION CORE</h2>
-        <p class="small">Neural Network</p>
-
-        <div class="brain">
-            <div class="brain-icon">🧠</div>
-            <div class="online">[x]  NEURAL FIELD / ONLINE</div>
-        </div>
-
-        <div class="cards">
-            <div class="card">
-                <span>🗄️</span>
-                Memory
-                <small>Supabase DB</small>
-            </div>
-
-            <div class="card">
-                <span>✨</span>
-                Skills
-                <small>Gemini Engine</small>
-            </div>
-
-            <div class="card">
-                <span>💚</span>
-                Soul
-                <small>Render Core</small>
-            </div>
-
-            <div class="card">
-                <span>⚙️</span>
-                Settings
-                <small>Sync Ready</small>
-            </div>
-        </div>
-    </section>
-
-    <section class="panel">
-        <h2>02 / AGENT TOWN</h2>
-        <p class="small">Virtual Hub</p>
-
-        <div class="agent">
-            <div class="agent-icon">🔬</div>
-            <div>
-                Research Agent
-                <small>Exploring Knowledge...</small>
-            </div>
-        </div>
-
-        <div class="agent">
-            <div class="agent-icon">💻</div>
-            <div>
-                Coder Agent
-                <small>Building Solutions...</small>
-            </div>
-        </div>
-
-        <div class="agent">
-            <div class="agent-icon">📊</div>
-            <div>
-                Analyst Agent
-                <small>Analyzing Data...</small>
-            </div>
-        </div>
-    </section>
-
-</aside>
-
-<!-- CENTER MANSION -->
-
-<main class="center">
-
-    <section class="mansion">
-
+    <!-- Center Column: 3D Mansion Showcase -->
+    <div class="center-col">
+      <div class="mansion-showcase" id="mansionShowcase">
+        <div class="mansion-overlay"></div>
         <div class="mansion-content">
+          <div class="room-badge">
+            <b>💻 Work Room</b>
+            <span>Active Development Desks</span>
+          </div>
+          <div class="room-badge">
+            <b>🛏️ Living Quarters</b>
+            <span>Rest & Sleep Zone</span>
+          </div>
+          <div class="room-badge">
+            <b>📺 TV Lounge</b>
+            <span>Relaxation Area</span>
+          </div>
+        </div>
+      </div>
+    </div>
 
-            <div class="hologram">🧠</div>
-
-            <h1>MY PERSONAL AI</h1>
-            <h3>AGENT MANSION</h3>
-
-            <div class="people">
-                <span>👨‍🔬</span>
-                <span>🧑‍💻</span>
-                <span>👩‍💼</span>
+    <!-- Right Column: Signal Interface & Chat -->
+    <div class="right-col">
+      <section class="panel" style="flex:1;">
+        <div class="ph">
+          <div>
+            <div class="eyebrow">03 / SIGNAL INTERFACE</div>
+            <div class="ptitle">Live Stream & Terminal</div>
+          </div>
+          <span class="pill">READY</span>
+        </div>
+        <div class="stream">
+          <div class="audio-viz">
+            <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
+            <i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i><i class="bar"></i>
+          </div>
+          <div class="voice-toggles">
+            <button class="v-btn active" id="micToggle">🎙️ MIC ON</button>
+            <button class="v-btn active" id="soundToggle">🔊 Sound ON</button>
+          </div>
+          <div class="chatlog" id="chatlog">
+            <div class="bubble ai">
+              <b style="color:var(--cyan); font-size:9px; display:block; margin-bottom:2px;">My Personal AI:</b>
+              Hello King Jon! 👋<br>How can I help you today?
             </div>
-
-            <div class="robot">🤖</div>
-
-            <p style="color:#00eaff">
-                WELCOME TO YOUR AI WORLD
-            </p>
-
+          </div>
+          <div class="composer">
+            <input type="text" id="userInput" placeholder="Type your message...">
+            <button class="btn-send" id="sendBtn">➤</button>
+          </div>
         </div>
+      </section>
 
-        <div class="floor"></div>
-
-    </section>
-
-</main>
-
-<!-- RIGHT PANEL -->
-
-<aside class="right">
-
-    <section class="panel">
-
-        <h2>03 / SIGNAL INTERFACE</h2>
-        <p class="small">Live Stream & Terminal</p>
-
-        <div class="wave" id="wave">
-            <span></span><span></span><span></span>
-            <span></span><span></span><span></span>
-            <span></span><span></span><span></span>
-            <span></span><span></span>
+      <section class="panel">
+        <div class="ph">
+          <div class="eyebrow">QUICK ACCESS</div>
         </div>
-
-        <div class="controls">
-            <button id="micBtn">🎙 MIC OFF</button>
-            <button id="soundBtn">🔊 Sound ON</button>
+        <div class="quick-grid">
+          <button class="q-btn">🏠 Home</button>
+          <button class="q-btn">📊 Dashboard</button>
+          <button class="q-btn">⚡ 3D View</button>
+          <button class="q-btn">🎮 Explore</button>
         </div>
-
-        <div class="chat-box" id="chatBox">
-
-            <div class="message">
-                <span class="bot-name">🤖 My Personal AI:</span>
-                <p>Hello! 👋</p>
-                <p>How can I help you today?</p>
-            </div>
-
+        
+        <div class="profile-card">
+          <div class="profile-avatar">👑</div>
+          <div class="profile-info">
+            <b>King Jon</b>
+            <small>Welcome to your AI Mansion!</small>
+          </div>
         </div>
+      </section>
+    </div>
 
-        <div class="chat-input">
-            <input
-                type="text"
-                id="userInput"
-                placeholder="Type your message..."
-            >
+  </main>
 
-            <button class="send" onclick="sendMessage()">➤</button>
-        </div>
-
-    </section>
-
-    <section class="panel">
-        <h2>◎ Quick Controls</h2>
-
-        <div class="cards">
-            <div class="card">🏠 Home</div>
-            <div class="card">📊 Dashboard</div>
-            <div class="card">⚡ 3D View</div>
-            <div class="card">🎮 Explore</div>
-        </div>
-    </section>
-
-    <section class="panel">
-        <h2 class="gold">👑 King Jon</h2>
-        <p>Welcome to your AI Mansion!</p>
-    </section>
-
-</aside>
-
+  <!-- Bottom Fixed Status Strip (ছবি অনুযায়ী হুবহু নিচে সেট করা) -->
+  <footer class="bottom-strip">
+    <div class="stat-box">
+      <div class="stat-icon" style="color:var(--lime)">✔️</div>
+      <div><b>System Status</b><br><span style="color:var(--lime)">All Systems Online</span></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-icon">⚡</div>
+      <div><b>Latency</b><br><span>12ms</span></div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-icon" style="color:var(--cyan)">💻</div>
+      <div><b>Memory Usage</b><br><span>48%</span></div>
+    </div>
+    <div class="gemini-badge">
+      <span style="font-size:16px;">✨</span>
+      <span>Powered by Google Gemini</span>
+    </div>
+  </footer>
 </div>
 
-<!-- FOOTER -->
-
-<footer class="footer">
-
-    <div>
-        🟢 System Status
-        <p style="color:#00ff80">Online</p>
-    </div>
-
-    <div>
-        ⚡ Latency
-        <p id="latency">Waiting...</p>
-    </div>
-
-    <div>
-        🔵 Memory Usage
-        <p>48%</p>
-    </div>
-
-    <div>
-        🌐 Powered by Google Gemini
-    </div>
-
-</footer>
-
 <script>
+// থ্রি-ডি নিউরাল ক্যানভাস অ্যানিমেশন ব্যাকগ্রাউন্ড
+const canvas = document.getElementById('brainCanvas');
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 1, 1000);
+camera.position.z = 15;
+const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-const chatBox = document.getElementById("chatBox");
-const input = document.getElementById("userInput");
-
-let messages = [];
-let soundEnabled = true;
-
-function addMessage(name, text, className) {
-
-    const div = document.createElement("div");
-    div.className = "message";
-
-    const title = document.createElement("span");
-    title.className = className;
-    title.textContent = name + ":";
-
-    const content = document.createElement("p");
-    content.textContent = text;
-
-    div.appendChild(title);
-    div.appendChild(content);
-
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
+const geometry = new THREE.BufferGeometry();
+const count = 200;
+const positions = new Float32Array(count * 3);
+for(let i = 0; i < count * 3; i++) {
+  positions[i] = (Math.random() - 0.5) * 10;
 }
+geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const material = new THREE.PointsMaterial({ color: 0x5cf4e8, size: 0.15 });
+const points = new THREE.Points(geometry, material);
+scene.add(points);
 
-async function sendMessage() {
-
-    const text = input.value.trim();
-
-    if (!text) return;
-
-    addMessage("You", text, "user-name");
-
-    messages.push({
-        role: "user",
-        content: text
-    });
-
-    input.value = "";
-
-    const start = Date.now();
-
-    const loading = document.createElement("div");
-    loading.className = "message";
-    loading.textContent = "🤖 My Personal AI is thinking...";
-    chatBox.appendChild(loading);
-
-    try {
-
-        const response = await fetch("/api/chat", {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify({
-                messages: messages
-            })
-
-        });
-
-        const data = await response.json();
-
-        loading.remove();
-
-        if (!response.ok) {
-            throw new Error(
-                data.error || "Server connection failed"
-            );
-        }
-
-        const reply =
-            data.reply ||
-            data.text ||
-            data.response ||
-            data.message;
-
-        if (!reply) {
-            throw new Error("AI response পাওয়া যায়নি");
-        }
-
-        messages.push({
-            role: "assistant",
-            content: reply
-        });
-
-        addMessage(
-            "My Personal AI",
-            reply,
-            "bot-name"
-        );
-
-        document.getElementById("latency").textContent =
-            (Date.now() - start) + " ms";
-
-        if (soundEnabled) {
-            speak(reply);
-        }
-
-    } catch (error) {
-
-        loading.remove();
-
-        addMessage(
-            "Error",
-            error.message,
-            "user-name"
-        );
-
-    }
-
+function animate() {
+  requestAnimationFrame(animate);
+  points.rotation.y += 0.003;
+  renderer.render(scene, camera);
 }
+animate();
 
-input.addEventListener("keydown", function(event) {
+// রিয়েল-টাইম ক্লক আপডেট
+setInterval(() => {
+  const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  document.getElementById('clock').textContent = new Date().toLocaleDateString('en-US', options);
+}, 1000);
 
-    if (event.key === "Enter") {
-        sendMessage();
-    }
+// চ্যাট হ্যান্ডলিং
+const chatlog = document.getElementById('chatlog');
+const userInput = document.getElementById('userInput');
+document.getElementById('sendBtn').addEventListener('click', () => {
+  if(!userInput.value.trim()) return;
+  const userMsg = document.createElement('div');
+  userMsg.className = 'bubble user';
+  userMsg.textContent = userInput.value;
+  chatlog.appendChild(userMsg);
+  
+  const text = userInput.value;
+  userInput.value = '';
+  chatlog.scrollTop = chatlog.scrollHeight;
 
+  setTimeout(() => {
+    const aiMsg = document.createElement('div');
+    aiMsg.className = 'bubble ai';
+    aiMsg.innerHTML = `<b style="color:var(--cyan); font-size:9px; display:block; margin-bottom:2px;">My Personal AI:</b> I am processing your request: "${text}"`;
+    chatlog.appendChild(aiMsg);
+    chatlog.scrollTop = chatlog.scrollHeight;
+  }, 1000);
 });
-
-function speak(text) {
-
-    if (!("speechSynthesis" in window)) return;
-
-    speechSynthesis.cancel();
-
-    const speech = new SpeechSynthesisUtterance(text);
-
-    speech.lang = "bn-BD";
-
-    speechSynthesis.speak(speech);
-
-}
-
-document.getElementById("soundBtn").onclick = function() {
-
-    soundEnabled = !soundEnabled;
-
-    this.textContent = soundEnabled
-        ? "🔊 Sound ON"
-        : "🔇 Sound OFF";
-
-    if (!soundEnabled && "speechSynthesis" in window) {
-        speechSynthesis.cancel();
-    }
-
-};
-
-// Microphone support
-
-const micBtn = document.getElementById("micBtn");
-
-const SpeechRecognition =
-    window.SpeechRecognition ||
-    window.webkitSpeechRecognition;
-
-let recognition = null;
-
-if (SpeechRecognition) {
-
-    recognition = new SpeechRecognition();
-
-    recognition.lang = "bn-BD";
-    recognition.continuous = false;
-
-    recognition.onresult = function(event) {
-
-        input.value =
-            event.results[0][0].transcript;
-
-        sendMessage();
-
-    };
-
-    recognition.onend = function() {
-        micBtn.textContent = "🎙 MIC OFF";
-    };
-
-    micBtn.onclick = function() {
-
-        try {
-            recognition.start();
-            micBtn.textContent = "🎙 MIC ON";
-        } catch (error) {
-            micBtn.textContent = "🎙 MIC OFF";
-        }
-
-    };
-
-} else {
-
-    micBtn.onclick = function() {
-        alert("এই ব্রাউজারে Speech Recognition সাপোর্ট নেই।");
-    };
-
-}
-
 </script>
-
 </body>
 </html>

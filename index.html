@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>My Personal AI - Agent Mansion</title>
 
 <style>
@@ -13,41 +12,37 @@
     box-sizing: border-box;
 }
 
-:root {
-    --cyan: #00eaff;
-    --blue: #087bff;
-    --purple: #a855ff;
-    --gold: #ffd700;
-    --panel: rgba(3, 12, 32, .94);
-}
-
 body {
     background: #020612;
     color: white;
     font-family: Arial, sans-serif;
     min-height: 100vh;
-    overflow-x: hidden;
+}
+
+:root {
+    --cyan: #00eaff;
+    --blue: #087bff;
+    --purple: #a855ff;
+    --panel: rgba(5, 16, 38, 0.95);
 }
 
 button {
     cursor: pointer;
     color: white;
-    font-family: inherit;
 }
 
 header {
-    min-height: 82px;
-    margin: 8px;
-    padding: 12px 18px;
+    min-height: 85px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-    background: #050d20;
+    gap: 15px;
+    padding: 15px 22px;
     border: 1px solid #087bff;
+    background: #050d20;
     border-radius: 15px;
-    box-shadow: 0 0 18px #0066ff33;
+    margin: 10px;
+    flex-wrap: wrap;
 }
 
 .logo {
@@ -58,36 +53,34 @@ header {
 
 .logo-icon {
     font-size: 43px;
-    filter: drop-shadow(0 0 12px cyan);
+    color: var(--cyan);
+    text-shadow: 0 0 20px var(--cyan);
 }
 
 .logo h1 {
     color: var(--cyan);
-    font-size: 21px;
+    font-size: 22px;
 }
 
 .logo p {
-    font-size: 11px;
     color: #b8c9e8;
-    margin-top: 5px;
+    font-size: 12px;
 }
 
 nav {
     display: flex;
-    flex-wrap: wrap;
     gap: 7px;
+    flex-wrap: wrap;
 }
 
 nav button {
     background: #101c35;
     border: 1px solid #1766a5;
-    padding: 11px;
-    border-radius: 9px;
-    font-size: 12px;
+    padding: 12px;
+    border-radius: 10px;
 }
 
-nav button:hover,
-nav button:focus {
+nav button:hover {
     background: #063f76;
     box-shadow: 0 0 15px var(--cyan);
 }
@@ -95,65 +88,57 @@ nav button:focus {
 .live {
     color: #00ff75;
     font-weight: bold;
-    font-size: 14px;
 }
-
-/* MAIN DASHBOARD */
 
 .layout {
     display: grid;
     grid-template-columns: 280px minmax(0, 1fr) 300px;
     gap: 12px;
-    padding: 8px;
-    align-items: stretch;
+    padding: 10px;
 }
 
 .panel {
     background: var(--panel);
     border: 1px solid #087da9;
-    border-radius: 14px;
-    padding: 14px;
-    box-shadow: 0 0 14px #002b5544;
+    border-radius: 15px;
+    padding: 16px;
+    box-shadow: 0 0 12px #002b55;
     margin-bottom: 12px;
 }
 
 .panel h2 {
     color: var(--cyan);
-    font-size: 16px;
-    margin-bottom: 9px;
+    font-size: 17px;
+    margin-bottom: 10px;
 }
 
 .small {
     color: #8ba4c9;
-    font-size: 11px;
+    font-size: 12px;
     margin-bottom: 12px;
 }
 
-/* COGNITION CORE */
-
 .brain {
-    height: 190px;
+    height: 170px;
     border: 1px solid var(--cyan);
     border-radius: 15px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background:
-        radial-gradient(circle, #07508b, #020817 75%);
-    box-shadow: inset 0 0 20px #008cff33;
+    background: radial-gradient(circle, #073c75, #020817 70%);
 }
 
 .brain-icon {
-    font-size: 85px;
-    filter: drop-shadow(0 0 18px cyan);
-    animation: pulse 3s infinite;
+    font-size: 75px;
+    filter: drop-shadow(0 0 15px cyan);
+    animation: pulse 2s infinite;
 }
 
 @keyframes pulse {
     50% {
-        transform: scale(1.1);
-        filter: drop-shadow(0 0 28px cyan);
+        transform: scale(1.12);
+        filter: drop-shadow(0 0 25px cyan);
     }
 }
 
@@ -162,8 +147,8 @@ nav button:focus {
     background: #003b25;
     border: 1px solid #00ff80;
     border-radius: 20px;
-    padding: 7px 13px;
-    font-size: 11px;
+    padding: 7px 15px;
+    font-size: 12px;
     margin-top: 10px;
 }
 
@@ -178,8 +163,8 @@ nav button:focus {
     background: #101e37;
     border: 1px solid #244367;
     border-radius: 10px;
-    padding: 12px;
-    font-size: 12px;
+    padding: 13px;
+    font-size: 13px;
 }
 
 .card span {
@@ -187,14 +172,6 @@ nav button:focus {
     font-size: 22px;
     margin-bottom: 5px;
 }
-
-.card small {
-    display: block;
-    color: #8ba4c9;
-    margin-top: 4px;
-}
-
-/* AGENT TOWN */
 
 .agent {
     display: flex;
@@ -205,109 +182,66 @@ nav button:focus {
     padding: 12px;
     margin: 8px 0;
     border-radius: 10px;
-    transition: .3s;
-}
-
-.agent:hover {
-    border-color: var(--cyan);
-    box-shadow: 0 0 12px #00d9ff55;
-    transform: translateX(3px);
 }
 
 .agent-icon {
-    font-size: 28px;
+    font-size: 27px;
 }
 
 .agent small {
     color: #8ba4c9;
     display: block;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
-/* CENTER MANSION */
-
 .mansion {
-    min-height: 650px;
-    height: 100%;
+    min-height: 620px;
     position: relative;
     overflow: hidden;
     border: 1px solid #087bff;
-    border-radius: 16px;
-
+    border-radius: 15px;
     background:
-        radial-gradient(ellipse at 50% 30%, #0758a5aa, transparent 45%),
-        radial-gradient(ellipse at 15% 55%, #093f7a, transparent 40%),
-        radial-gradient(ellipse at 85% 55%, #352078, transparent 40%),
-        linear-gradient(180deg, #061a3b, #020817 85%);
-
+    radial-gradient(ellipse at 50% 45%, #07508b 0%, transparent 40%),
+    linear-gradient(180deg, #071c40, #020715);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    box-shadow: 0 0 25px #0066ff33;
 }
 
-.mansion::before {
+.mansion:before {
     content: "";
     position: absolute;
     inset: 0;
-
     background:
-        linear-gradient(90deg,
-            transparent 49%,
-            #00eaff55 50%,
-            transparent 51%),
-        repeating-linear-gradient(
-            0deg,
-            transparent 0 48px,
-            #00bfff33 49px 50px
-        ),
-        repeating-linear-gradient(
-            90deg,
-            transparent 0 48px,
-            #00bfff33 49px 50px
-        );
-
-    transform: perspective(400px)
-        rotateX(48deg) scale(1.6);
-
+    linear-gradient(90deg, transparent 49%, #00eaff55 50%, transparent 51%),
+    repeating-linear-gradient(0deg, transparent 0 48px, #00bfff33 49px 50px),
+    repeating-linear-gradient(90deg, transparent 0 48px, #00bfff33 49px 50px);
+    transform: perspective(400px) rotateX(45deg) scale(1.5);
     transform-origin: bottom;
 }
 
-.mansion::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background:
-        radial-gradient(ellipse at 50% 10%,
-            #00aaff44, transparent 45%);
-    pointer-events: none;
-}
-
 .mansion-content {
-    z-index: 2;
+    z-index: 1;
     position: relative;
-    padding: 15px;
 }
 
 .mansion h1 {
     color: var(--cyan);
-    font-size: clamp(25px, 4vw, 42px);
+    font-size: clamp(25px, 4vw, 40px);
     text-shadow: 0 0 20px cyan;
 }
 
 .mansion h3 {
-    margin: 10px;
-    letter-spacing: 4px;
+    margin: 8px;
+    letter-spacing: 3px;
 }
 
 .hologram {
-    font-size: 110px;
-    margin: 15px;
-    filter: drop-shadow(0 0 25px cyan);
+    font-size: 100px;
+    margin: 20px;
+    filter: drop-shadow(0 0 20px cyan);
     animation: pulse 3s infinite;
 }
 
@@ -315,40 +249,33 @@ nav button:focus {
     display: flex;
     justify-content: center;
     align-items: end;
-    gap: 25px;
-    margin-top: 45px;
+    gap: 22px;
+    margin-top: 35px;
     font-size: 55px;
 }
 
 .people span {
-    filter: drop-shadow(0 0 15px #00d9ff);
+    filter: drop-shadow(0 0 12px #00d9ff);
 }
 
 .robot {
-    font-size: 75px;
+    font-size: 70px;
     margin-top: 20px;
-    filter: drop-shadow(0 0 15px cyan);
 }
 
 .floor {
     position: absolute;
     bottom: 0;
-    height: 100px;
+    height: 90px;
     width: 100%;
+    background: repeating-linear-gradient(
+        90deg, #00d9ff33 0 2px, transparent 2px 35px
+    );
     border-top: 2px solid cyan;
-
-    background:
-        repeating-linear-gradient(
-            90deg,
-            #00d9ff33 0 2px,
-            transparent 2px 35px
-        );
 }
 
-/* SIGNAL INTERFACE */
-
 .wave {
-    height: 110px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -360,61 +287,31 @@ nav button:focus {
     height: 25px;
     background: cyan;
     border-radius: 10px;
-    box-shadow: 0 0 10px cyan;
-    animation: sound .8s infinite alternate;
+    animation: sound 0.8s infinite alternate;
 }
 
 .wave span:nth-child(2n) {
     animation-delay: .3s;
 }
 
-.wave span:nth-child(3n) {
-    animation-delay: .5s;
-}
-
 @keyframes sound {
-    to {
-        height: 65px;
-    }
+    to { height: 65px; }
 }
-
-.controls {
-    display: flex;
-    gap: 8px;
-    margin: 10px 0;
-}
-
-.controls button {
-    flex: 1;
-    padding: 12px 5px;
-    background: #101e37;
-    border: 1px solid #087da9;
-    border-radius: 10px;
-    font-size: 12px;
-}
-
-.controls button:hover {
-    border-color: cyan;
-    box-shadow: 0 0 10px cyan;
-}
-
-/* CHAT */
 
 .chat-box {
-    height: 250px;
+    height: 240px;
     overflow-y: auto;
     background: #020817;
     border: 1px solid #174c76;
     border-radius: 10px;
     padding: 12px;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 .message {
     margin: 10px 0;
-    line-height: 1.6;
+    line-height: 1.5;
     overflow-wrap: anywhere;
-    white-space: pre-wrap;
 }
 
 .bot-name {
@@ -438,65 +335,40 @@ nav button:focus {
     flex: 1;
     background: #07152b;
     border: 1px solid #087da9;
-    padding: 13px;
+    padding: 14px;
     color: white;
     border-radius: 10px;
     outline: none;
-}
-
-.chat-input input:focus {
-    border-color: cyan;
-    box-shadow: 0 0 10px #00eaff44;
 }
 
 .send {
     background: #008bff;
     border: none;
     border-radius: 10px;
-    padding: 0 17px;
-    font-size: 21px;
+    padding: 0 18px;
+    font-size: 20px;
 }
 
-.send:disabled {
-    opacity: .5;
+.controls {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0;
 }
 
-/* QUICK CONTROLS */
-
-.quick-card {
+.controls button {
+    flex: 1;
+    padding: 12px;
     background: #101e37;
-    border: 1px solid #244367;
-    padding: 13px 5px;
-    text-align: center;
+    border: 1px solid #087da9;
     border-radius: 10px;
-    font-size: 12px;
-    cursor: pointer;
 }
-
-.quick-card:hover {
-    border-color: var(--purple);
-    box-shadow: 0 0 12px #a855ff66;
-}
-
-/* KING JON */
-
-.king {
-    border-color: var(--gold);
-    box-shadow: 0 0 15px #ffd70033;
-}
-
-.king h2 {
-    color: var(--gold);
-}
-
-/* FOOTER */
 
 .footer {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 10px;
-    padding: 13px;
-    margin: 8px;
+    padding: 15px;
+    margin: 10px;
     background: #071329;
     border: 1px solid #087bff;
     border-radius: 12px;
@@ -504,19 +376,17 @@ nav button:focus {
 }
 
 .footer div {
-    padding: 12px 5px;
+    padding: 10px;
     border-radius: 10px;
     background: #101e37;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .gold {
-    color: var(--gold);
+    color: #ffd700;
 }
 
-/* RESPONSIVE */
-
-@media(max-width: 1050px) {
+@media(max-width: 950px) {
     .layout {
         grid-template-columns: 1fr 1fr;
     }
@@ -526,67 +396,31 @@ nav button:focus {
         grid-row: 1;
     }
 
-    .mansion {
-        min-height: 550px;
-    }
-
     .right {
         grid-column: 1 / -1;
     }
 }
 
 @media(max-width: 550px) {
-
-    header {
-        justify-content: center;
-        text-align: center;
-    }
-
-    .logo {
-        justify-content: center;
-        width: 100%;
-    }
-
-    nav {
-        justify-content: center;
-        width: 100%;
-    }
-
-    nav button {
-        padding: 9px;
-        font-size: 11px;
-    }
-
     .layout {
         grid-template-columns: 1fr;
-        gap: 8px;
     }
 
-    .center,
-    .right {
+    .center, .right {
         grid-column: auto;
         grid-row: auto;
     }
 
     .mansion {
-        min-height: 470px;
-    }
-
-    .hologram {
-        font-size: 85px;
-    }
-
-    .people {
-        gap: 12px;
-        font-size: 43px;
-    }
-
-    .robot {
-        font-size: 60px;
+        min-height: 440px;
     }
 
     .footer {
         grid-template-columns: 1fr 1fr;
+    }
+
+    nav {
+        width: 100%;
     }
 }
 </style>
@@ -594,10 +428,7 @@ nav button:focus {
 
 <body>
 
-<!-- HEADER -->
-
 <header>
-
     <div class="logo">
         <div class="logo-icon">🧠</div>
         <div>
@@ -607,233 +438,186 @@ nav button:focus {
     </div>
 
     <nav>
-        <button onclick="goHome()">⌂ Home</button>
-        <button onclick="goAgents()">♟ Agent Town</button>
-        <button onclick="goMansion()">🏢 3D Mansion</button>
-        <button onclick="goMemory()">▣ Memory</button>
-        <button onclick="goSettings()">⚙ Settings</button>
+        <button>⌂ Home</button>
+        <button>♟ Agent Town</button>
+        <button>🏢 3D Mansion</button>
+        <button>▣ Memory</button>
+        <button>⚙ Settings</button>
     </nav>
 
-    <div class="live">● LIVE</div>
-
+    <div class="live">[x]  LIVE</div>
 </header>
-
-
-<!-- MAIN LAYOUT -->
 
 <div class="layout">
 
-    <!-- LEFT SIDE -->
+<!-- LEFT PANEL -->
 
-    <aside>
+<aside>
 
-        <section class="panel" id="cognition">
+    <section class="panel">
+        <h2>01 / COGNITION CORE</h2>
+        <p class="small">Neural Network</p>
 
-            <h2>01 / COGNITION CORE</h2>
-            <p class="small">Neural Network</p>
+        <div class="brain">
+            <div class="brain-icon">🧠</div>
+            <div class="online">[x]  NEURAL FIELD / ONLINE</div>
+        </div>
 
-            <div class="brain">
-                <div class="brain-icon">🧠</div>
-                <div class="online">● NEURAL FIELD / ONLINE</div>
+        <div class="cards">
+            <div class="card">
+                <span>🗄️</span>
+                Memory
+                <small>Supabase DB</small>
             </div>
 
-            <div class="cards">
-
-                <div class="card">
-                    <span>🗄️</span>
-                    Memory
-                    <small>Supabase DB</small>
-                </div>
-
-                <div class="card">
-                    <span>✨</span>
-                    Skills
-                    <small>Gemini Engine</small>
-                </div>
-
-                <div class="card">
-                    <span>💚</span>
-                    Soul
-                    <small>Render Core</small>
-                </div>
-
-                <div class="card">
-                    <span>⚙️</span>
-                    Settings
-                    <small>Sync Ready</small>
-                </div>
-
+            <div class="card">
+                <span>✨</span>
+                Skills
+                <small>Gemini Engine</small>
             </div>
 
-        </section>
-
-
-        <section class="panel" id="agents">
-
-            <h2>02 / AGENT TOWN</h2>
-            <p class="small">Virtual Hub</p>
-
-            <div class="agent">
-                <div class="agent-icon">🔬</div>
-                <div>
-                    Research Agent
-                    <small>Exploring Knowledge...</small>
-                </div>
+            <div class="card">
+                <span>💚</span>
+                Soul
+                <small>Render Core</small>
             </div>
 
-            <div class="agent">
-                <div class="agent-icon">💻</div>
-                <div>
-                    Coder Agent
-                    <small>Building Solutions...</small>
-                </div>
+            <div class="card">
+                <span>⚙️</span>
+                Settings
+                <small>Sync Ready</small>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>02 / AGENT TOWN</h2>
+        <p class="small">Virtual Hub</p>
+
+        <div class="agent">
+            <div class="agent-icon">🔬</div>
+            <div>
+                Research Agent
+                <small>Exploring Knowledge...</small>
+            </div>
+        </div>
+
+        <div class="agent">
+            <div class="agent-icon">💻</div>
+            <div>
+                Coder Agent
+                <small>Building Solutions...</small>
+            </div>
+        </div>
+
+        <div class="agent">
+            <div class="agent-icon">📊</div>
+            <div>
+                Analyst Agent
+                <small>Analyzing Data...</small>
+            </div>
+        </div>
+    </section>
+
+</aside>
+
+<!-- CENTER MANSION -->
+
+<main class="center">
+
+    <section class="mansion">
+
+        <div class="mansion-content">
+
+            <div class="hologram">🧠</div>
+
+            <h1>MY PERSONAL AI</h1>
+            <h3>AGENT MANSION</h3>
+
+            <div class="people">
+                <span>👨‍🔬</span>
+                <span>🧑‍💻</span>
+                <span>👩‍💼</span>
             </div>
 
-            <div class="agent">
-                <div class="agent-icon">📊</div>
-                <div>
-                    Analyst Agent
-                    <small>Analyzing Data...</small>
-                </div>
+            <div class="robot">🤖</div>
+
+            <p style="color:#00eaff">
+                WELCOME TO YOUR AI WORLD
+            </p>
+
+        </div>
+
+        <div class="floor"></div>
+
+    </section>
+
+</main>
+
+<!-- RIGHT PANEL -->
+
+<aside class="right">
+
+    <section class="panel">
+
+        <h2>03 / SIGNAL INTERFACE</h2>
+        <p class="small">Live Stream & Terminal</p>
+
+        <div class="wave" id="wave">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+            <span></span><span></span>
+        </div>
+
+        <div class="controls">
+            <button id="micBtn">🎙 MIC OFF</button>
+            <button id="soundBtn">🔊 Sound ON</button>
+        </div>
+
+        <div class="chat-box" id="chatBox">
+
+            <div class="message">
+                <span class="bot-name">🤖 My Personal AI:</span>
+                <p>Hello! 👋</p>
+                <p>How can I help you today?</p>
             </div>
 
-        </section>
+        </div>
 
-    </aside>
+        <div class="chat-input">
+            <input
+                type="text"
+                id="userInput"
+                placeholder="Type your message..."
+            >
 
+            <button class="send" onclick="sendMessage()">➤</button>
+        </div>
 
-    <!-- CENTER MANSION -->
+    </section>
 
-    <main class="center" id="mansion">
+    <section class="panel">
+        <h2>◎ Quick Controls</h2>
 
-        <section class="mansion">
+        <div class="cards">
+            <div class="card">🏠 Home</div>
+            <div class="card">📊 Dashboard</div>
+            <div class="card">⚡ 3D View</div>
+            <div class="card">🎮 Explore</div>
+        </div>
+    </section>
 
-            <div class="mansion-content">
+    <section class="panel">
+        <h2 class="gold">👑 King Jon</h2>
+        <p>Welcome to your AI Mansion!</p>
+    </section>
 
-                <div class="hologram">🧠</div>
-
-                <h1>MY PERSONAL AI</h1>
-
-                <h3>AGENT MANSION</h3>
-
-                <div class="people">
-                    <span>👨‍🔬</span>
-                    <span>🧑‍💻</span>
-                    <span>👩‍💼</span>
-                </div>
-
-                <div class="robot">🤖</div>
-
-                <p style="color:#00eaff">
-                    WELCOME TO YOUR AI WORLD
-                </p>
-
-            </div>
-
-            <div class="floor"></div>
-
-        </section>
-
-    </main>
-
-
-    <!-- RIGHT SIDE -->
-
-    <aside class="right">
-
-        <section class="panel" id="signal">
-
-            <h2>03 / SIGNAL INTERFACE</h2>
-            <p class="small">Live Stream & Terminal</p>
-
-            <div class="wave">
-                <span></span><span></span><span></span>
-                <span></span><span></span><span></span>
-                <span></span><span></span><span></span>
-                <span></span><span></span>
-            </div>
-
-            <div class="controls">
-
-                <button id="micBtn">🎙 MIC OFF</button>
-
-                <button id="soundBtn">🔊 Sound ON</button>
-
-            </div>
-
-            <div class="chat-box" id="chatBox">
-
-                <div class="message">
-                    <span class="bot-name">🤖 My Personal AI:</span>
-                    <p>Hello! 👋</p>
-                    <p>How can I help you today?</p>
-                </div>
-
-            </div>
-
-            <div class="chat-input">
-
-                <input
-                    type="text"
-                    id="userInput"
-                    placeholder="Type your message..."
-                    autocomplete="off"
-                >
-
-                <button class="send" id="sendBtn" onclick="sendMessage()">
-                    ➤
-                </button>
-
-            </div>
-
-        </section>
-
-
-        <!-- QUICK CONTROLS -->
-
-        <section class="panel">
-
-            <h2>◎ Quick Controls</h2>
-
-            <div class="cards">
-
-                <div class="quick-card" onclick="goHome()">
-                    🏠 Home
-                </div>
-
-                <div class="quick-card" onclick="goDashboard()">
-                    📊 Dashboard
-                </div>
-
-                <div class="quick-card" onclick="goMansion()">
-                    ⚡ 3D View
-                </div>
-
-                <div class="quick-card" onclick="goAgents()">
-                    🎮 Explore
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- KING JON -->
-
-        <section class="panel king">
-
-            <h2>👑 King Jon</h2>
-
-            <p>Welcome to your AI Mansion!</p>
-
-        </section>
-
-    </aside>
+</aside>
 
 </div>
 
-
-<!-- SYSTEM FOOTER -->
+<!-- FOOTER -->
 
 <footer class="footer">
 
@@ -849,7 +633,7 @@ nav button:focus {
 
     <div>
         🔵 Memory Usage
-        <p id="memoryUsage">48%</p>
+        <p>48%</p>
     </div>
 
     <div>
@@ -858,63 +642,13 @@ nav button:focus {
 
 </footer>
 
-
 <script>
-
-// ======================================
-// MY PERSONAL AI FRONTEND
-// ======================================
 
 const chatBox = document.getElementById("chatBox");
 const input = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
 
 let messages = [];
 let soundEnabled = true;
-let busy = false;
-
-
-// ======================================
-// NAVIGATION
-// ======================================
-
-function goHome() {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-}
-
-function goAgents() {
-    document.getElementById("agents").scrollIntoView({
-        behavior: "smooth"
-    });
-}
-
-function goMansion() {
-    document.getElementById("mansion").scrollIntoView({
-        behavior: "smooth"
-    });
-}
-
-function goMemory() {
-    document.getElementById("cognition").scrollIntoView({
-        behavior: "smooth"
-    });
-}
-
-function goSettings() {
-    alert("Settings panel is ready for future configuration.");
-}
-
-function goDashboard() {
-    goHome();
-}
-
-
-// ======================================
-// CHAT MESSAGE
-// ======================================
 
 function addMessage(name, text, className) {
 
@@ -932,23 +666,14 @@ function addMessage(name, text, className) {
     div.appendChild(content);
 
     chatBox.appendChild(div);
-
     chatBox.scrollTop = chatBox.scrollHeight;
 }
-
-
-// ======================================
-// GEMINI API CONNECTION
-// ======================================
 
 async function sendMessage() {
 
     const text = input.value.trim();
 
-    if (!text || busy) return;
-
-    busy = true;
-    sendBtn.disabled = true;
+    if (!text) return;
 
     addMessage("You", text, "user-name");
 
@@ -962,10 +687,8 @@ async function sendMessage() {
     const start = Date.now();
 
     const loading = document.createElement("div");
-
     loading.className = "message";
     loading.textContent = "🤖 My Personal AI is thinking...";
-
     chatBox.appendChild(loading);
 
     try {
@@ -984,29 +707,14 @@ async function sendMessage() {
 
         });
 
-        // Check server response safely
-
-        const contentType =
-            response.headers.get("content-type") || "";
-
-        if (!contentType.includes("application/json")) {
-
-            const errorText = await response.text();
-
-            throw new Error(
-                "Server JSON পাঠায়নি। API URL অথবা Render deployment পরীক্ষা করো।"
-            );
-
-        }
-
         const data = await response.json();
 
+        loading.remove();
+
         if (!response.ok) {
-
             throw new Error(
-                data.error || "Server connection failed."
+                data.error || "Server connection failed"
             );
-
         }
 
         const reply =
@@ -1016,25 +724,13 @@ async function sendMessage() {
             data.message;
 
         if (!reply) {
-
-            throw new Error("AI response পাওয়া যায়নি।");
-
+            throw new Error("AI response পাওয়া যায়নি");
         }
 
         messages.push({
-
             role: "assistant",
             content: reply
-
         });
-
-        // Keep recent conversation history
-
-        if (messages.length > 20) {
-            messages = messages.slice(-20);
-        }
-
-        loading.remove();
 
         addMessage(
             "My Personal AI",
@@ -1042,12 +738,8 @@ async function sendMessage() {
             "bot-name"
         );
 
-        // Latency
-
         document.getElementById("latency").textContent =
             (Date.now() - start) + " ms";
-
-        // Sound
 
         if (soundEnabled) {
             speak(reply);
@@ -1063,20 +755,9 @@ async function sendMessage() {
             "user-name"
         );
 
-    } finally {
-
-        busy = false;
-        sendBtn.disabled = false;
-        input.focus();
-
     }
 
 }
-
-
-// ======================================
-// ENTER KEY
-// ======================================
 
 input.addEventListener("keydown", function(event) {
 
@@ -1085,11 +766,6 @@ input.addEventListener("keydown", function(event) {
     }
 
 });
-
-
-// ======================================
-// TEXT TO SPEECH
-// ======================================
 
 function speak(text) {
 
@@ -1100,17 +776,10 @@ function speak(text) {
     const speech = new SpeechSynthesisUtterance(text);
 
     speech.lang = "bn-BD";
-    speech.rate = 1;
-    speech.pitch = 1;
 
     speechSynthesis.speak(speech);
 
 }
-
-
-// ======================================
-// SOUND CONTROL
-// ======================================
 
 document.getElementById("soundBtn").onclick = function() {
 
@@ -1121,17 +790,12 @@ document.getElementById("soundBtn").onclick = function() {
         : "🔇 Sound OFF";
 
     if (!soundEnabled && "speechSynthesis" in window) {
-
         speechSynthesis.cancel();
-
     }
 
 };
 
-
-// ======================================
-// MICROPHONE
-// ======================================
+// Microphone support
 
 const micBtn = document.getElementById("micBtn");
 
@@ -1146,43 +810,28 @@ if (SpeechRecognition) {
     recognition = new SpeechRecognition();
 
     recognition.lang = "bn-BD";
-
     recognition.continuous = false;
-
-    recognition.interimResults = false;
 
     recognition.onresult = function(event) {
 
-        input.value = event.results[0][0].transcript;
+        input.value =
+            event.results[0][0].transcript;
 
         sendMessage();
 
     };
 
-    recognition.onerror = function() {
-
-        micBtn.textContent = "🎙 MIC OFF";
-
-    };
-
     recognition.onend = function() {
-
         micBtn.textContent = "🎙 MIC OFF";
-
     };
 
     micBtn.onclick = function() {
 
         try {
-
             recognition.start();
-
             micBtn.textContent = "🎙 MIC ON";
-
         } catch (error) {
-
             micBtn.textContent = "🎙 MIC OFF";
-
         }
 
     };
@@ -1190,19 +839,10 @@ if (SpeechRecognition) {
 } else {
 
     micBtn.onclick = function() {
-
-        alert("Speech Recognition এই ব্রাউজারে সাপোর্ট নেই।");
-
+        alert("এই ব্রাউজারে Speech Recognition সাপোর্ট নেই।");
     };
 
 }
-
-
-// ======================================
-// END
-// ======================================
-
-console.log("MY PERSONAL AI FRONTEND ONLINE");
 
 </script>
 

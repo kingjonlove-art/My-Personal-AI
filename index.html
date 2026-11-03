@@ -19,7 +19,8 @@
 }
 
 body {
-    background: #020612;
+    background: #020612 url('https://raw.githubusercontent.com/kingjonlove-art/My-Personal-AI/main/1793688325613.jpg') no-repeat center center fixed;
+    background-size: cover;
     color: white;
     font-family: Arial, sans-serif;
     min-height: 100vh;
@@ -33,7 +34,7 @@ button {
     font-family: inherit;
 }
 
-/* Header Styling */
+/* Header Styling (1) */
 header {
     min-height: 70px;
     display: flex;
@@ -162,6 +163,7 @@ nav button:hover, nav button.active {
     margin-bottom: 10px;
 }
 
+/* (2) Cognition Core */
 .brain {
     height: 130px;
     border: 1px solid var(--cyan);
@@ -225,6 +227,7 @@ nav button:hover, nav button.active {
     font-size: 9px;
 }
 
+/* (3) Agent Town */
 .agent {
     display: flex;
     align-items: center;
@@ -246,22 +249,17 @@ nav button:hover, nav button.active {
     font-size: 10px;
 }
 
-/* ==========================================
-   ১৩৬ নাম্বার লাইন থেকে .mansion ক্লাস শুরু 
-   ========================================== */
+/* (4, 5, 6) Center Mansion Display Area - নতুন রাজকীয় মুকুটের ইমেজ ব্যাকগ্রাউন্ডে সেট করা হলো */
 .mansion {
     min-height: 530px;
-    height: 100%;
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(8, 123, 255, 0.5);
     border-radius: 12px;
-    
-    /* আপনার নতুন রাজকীয় মুকুটের ছবির লিংক এখানে সেট করা হয়েছে */
-    background: linear-gradient(rgba(2, 6, 18, 0.4), rgba(2, 6, 18, 0.6)), 
+    background: linear-gradient(rgba(2, 6, 18, 0.5), rgba(2, 6, 18, 0.7)), 
                 url('https://raw.githubusercontent.com/kingjonlove-art/My-Personal-AI/main/1793688325613.jpg') no-repeat center center;
-    background-size: cover; /* বক্সের ভেতরে একদম পারফেক্টলি ফিট থাকবে */
-    
+    background-size: cover;
+    backdrop-filter: blur(2px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -275,9 +273,9 @@ nav button:hover, nav button.active {
 }
 
 .mansion h1 {
-    color: #ffd700;
+    color: var(--cyan);
     font-size: clamp(22px, 3vw, 32px);
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    text-shadow: 0 0 20px cyan;
     margin-top: 4px;
 }
 
@@ -288,18 +286,19 @@ nav button:hover, nav button.active {
     color: #a5c3f3;
 }
 
+/* (5) Hologram cylinder & brain */
 .hologram-cylinder {
     width: 95px;
     height: 95px;
     margin: 0 auto 8px auto;
-    border: 2px dashed #ffd700;
+    border: 2px dashed var(--cyan);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 20px var(--cyan);
     animation: rotateCylinder 10s linear infinite;
-    background: rgba(255, 215, 0, 0.1);
+    background: rgba(0, 234, 255, 0.1);
 }
 
 @keyframes rotateCylinder {
@@ -309,7 +308,7 @@ nav button:hover, nav button.active {
 
 .hologram-cylinder span {
     font-size: 38px;
-    filter: drop-shadow(0 0 12px gold);
+    filter: drop-shadow(0 0 12px cyan);
     animation: counterRotate 10s linear infinite;
 }
 
@@ -318,6 +317,7 @@ nav button:hover, nav button.active {
     to { transform: rotate(0deg); }
 }
 
+/* (6) AI Agents row */
 .people {
     display: flex;
     justify-content: center;
@@ -332,11 +332,11 @@ nav button:hover, nav button.active {
     bottom: 0;
     height: 55px;
     width: 100%;
-    background: repeating-linear-gradient(90deg, rgba(255, 215, 0, 0.15) 0 2px, transparent 2px 25px);
-    border-top: 2px solid gold;
+    background: repeating-linear-gradient(90deg, rgba(0, 217, 255, 0.15) 0 2px, transparent 2px 25px);
+    border-top: 2px solid cyan;
 }
 
-/* Right Panel Elements */
+/* (7) Right Panel Elements (Signal Interface) */
 .wave {
     height: 45px;
     display: flex;
@@ -425,6 +425,7 @@ nav button:hover, nav button.active {
     font-size: 15px;
 }
 
+/* (11) King Jon Gold Panel */
 .gold-panel {
     background: linear-gradient(135deg, rgba(24, 28, 20, 0.9) 0%, rgba(12, 17, 9, 0.9) 100%) !important;
     border: 1px solid #d4af37 !important;
@@ -432,7 +433,7 @@ nav button:hover, nav button.active {
 
 .gold { color: #ffd700; font-size: 13px; font-weight: bold; }
 
-/* Footer Styling */
+/* (9, 10) Footer Styling */
 .footer {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -463,10 +464,10 @@ nav button:hover, nav button.active {
 
 <body>
 
-<!-- TOP HEADER -->
+<!-- (1) TOP HEADER -->
 <header>
     <div class="logo">
-        <div class="logo-icon">👑</div>
+        <div class="logo-icon">🧠</div>
         <div>
             <h1>MY PERSONAL AI</h1>
             <p>— Agent Mansion Command Center —</p>
@@ -495,6 +496,7 @@ nav button:hover, nav button.active {
 
 <!-- LEFT PANEL -->
 <aside>
+    <!-- (2) COGNITION CORE -->
     <section class="panel">
         <h2>01 / COGNITION CORE</h2>
         <p class="small">Neural Network</p>
@@ -524,6 +526,7 @@ nav button:hover, nav button.active {
         </div>
     </section>
 
+    <!-- (3) AGENT TOWN -->
     <section class="panel">
         <h2>02 / AGENT TOWN</h2>
         <p class="small">Virtual Hub</p>
@@ -545,22 +548,24 @@ nav button:hover, nav button.active {
     </section>
 </aside>
 
-<!-- CENTER MANSION (এখানে আপনার রাজকীয় মুকুটের ছবি ও লেখা সেট করা হয়েছে) -->
+<!-- (4, 5, 6) CENTER MANSION -->
 <main class="center">
     <section class="mansion">
         <div class="mansion-content">
             <div class="hologram-cylinder">
-                <span>👑</span>
+                <span>🧠</span>
             </div>
-            <h1>রাজকীয় সংগ্রহালয়</h1>
+            <h1>My Personal AI</h1>
             <h3>— Agent Mansion —</h3>
 
             <div class="people">
-                <span>👑</span>
+                <span>🔬</span>
+                <span>💻</span>
+                <span>📊</span>
             </div>
 
-            <p style="color:#ffd700; margin-top: 12px; font-weight: bold; font-size: 13px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(255,215,0,0.7);">
-                এই রাজকীয় মুকুটটি ১৯০৩ সালের রাজকীয় সংগ্রহ থেকে সংগ্রহ করা হয়েছে।
+            <p style="color:#00eaff; margin-top: 12px; font-weight: bold; font-size: 13px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,234,255,0.7);">
+                WELCOME TO YOUR AI WORLD
             </p>
         </div>
         <div class="floor"></div>
@@ -569,6 +574,7 @@ nav button:hover, nav button.active {
 
 <!-- RIGHT PANEL -->
 <aside class="right">
+    <!-- (7) SIGNAL INTERFACE -->
     <section class="panel">
         <h2>03 / SIGNAL INTERFACE</h2>
         <p class="small">Live Stream & Terminal</p>
@@ -599,6 +605,7 @@ nav button:hover, nav button.active {
         </div>
     </section>
 
+    <!-- (8) Quick Controls -->
     <section class="panel">
         <h2>◎ Quick Controls</h2>
         <div class="cards">
@@ -609,6 +616,7 @@ nav button:hover, nav button.active {
         </div>
     </section>
 
+    <!-- (11) KING JON GOLD PANEL -->
     <section class="panel gold-panel">
         <h2 class="gold">👑 King Jon</h2>
         <p style="font-size: 11px; color: #d0e1fd; margin-top: 2px;">Welcome to your AI Mansion!</p>
@@ -617,7 +625,7 @@ nav button:hover, nav button.active {
 
 </div>
 
-<!-- FOOTER -->
+<!-- (9, 10) FOOTER -->
 <footer class="footer">
     <div>
         🟢 System Status

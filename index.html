@@ -19,8 +19,7 @@
 }
 
 body {
-    background: #020612 url('https://raw.githubusercontent.com/kingjonlove-art/My-Personal-AI/main/file_0000000007ac8246a18a940ed8edf93a.png') no-repeat center center fixed;
-    background-size: cover;
+    background: #020612; /* পুরো পেজের সাধারণ ডার্ক ব্যাকগ্রাউন্ড */
     color: white;
     font-family: Arial, sans-serif;
     min-height: 100vh;
@@ -249,20 +248,26 @@ nav button:hover, nav button.active {
     font-size: 10px;
 }
 
-/* (4, 5, 6) Center Mansion Display Area */
+/* (4, 5, 6) Center Mansion Display Area - এখানে ব্যাকগ্রাউন্ড ইমেজ সেট করা হয়েছে যা বক্সের সাথে ছোট-বড় হবে */
 .mansion {
     min-height: 530px;
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(8, 123, 255, 0.5);
     border-radius: 12px;
-    background: radial-gradient(circle at center, rgba(8, 20, 50, 0.6) 0%, rgba(2, 6, 18, 0.8) 100%);
-    backdrop-filter: blur(3px);
+    
+    /* ব্যাকগ্রাউন্ড ইমেজ এবং ওভারলে (যাতে ইমেজের ওপর লেখাগুলো ক্লিয়ার দেখা যায়) */
+    background: linear-gradient(rgba(2, 6, 18, 0.5), rgba(2, 6, 18, 0.7)), 
+                url('https://raw.githubusercontent.com/kingjonlove-art/My-Personal-AI/main/file_0000000007ac8246a18a940ed8edf93a.png') no-repeat center center;
+    background-size: cover; /* বক্সের সাইজ অনুযায়ী ইমেজ অটো রিসাইজ ও ফিট হবে */
+    
+    backdrop-filter: blur(2px);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
+    resize: both; /* চাইলে বক্সটি ইউজার নিজে ছোট-বড় করতে পারবেন */
 }
 
 .mansion-content {
@@ -546,7 +551,7 @@ nav button:hover, nav button.active {
     </section>
 </aside>
 
-<!-- (4, 5, 6) CENTER MANSION -->
+<!-- (4, 5, 6) CENTER MANSION (ব্যাকগ্রাউন্ড ইমেজ বক্সের ভেতরে সেট করা) -->
 <main class="center">
     <section class="mansion">
         <div class="mansion-content">

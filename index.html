@@ -19,7 +19,7 @@
 }
 
 body {
-    background: #020612 url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=1600&auto=format&fit=crop') no-repeat center center fixed;
+    background: #020612 url('https://raw.githubusercontent.com/kingjonlove-art/My-Personal-AI/main/file_0000000007ac8246a18a940ed8edf93a.png') no-repeat center center fixed;
     background-size: cover;
     color: white;
     font-family: Arial, sans-serif;
@@ -34,7 +34,7 @@ button {
     font-family: inherit;
 }
 
-/* Header Styling */
+/* Header Styling (1) */
 header {
     min-height: 70px;
     display: flex;
@@ -163,6 +163,7 @@ nav button:hover, nav button.active {
     margin-bottom: 10px;
 }
 
+/* (2) Cognition Core */
 .brain {
     height: 130px;
     border: 1px solid var(--cyan);
@@ -226,6 +227,7 @@ nav button:hover, nav button.active {
     font-size: 9px;
 }
 
+/* (3) Agent Town */
 .agent {
     display: flex;
     align-items: center;
@@ -247,15 +249,15 @@ nav button:hover, nav button.active {
     font-size: 10px;
 }
 
-/* Center Mansion Display Area */
+/* (4, 5, 6) Center Mansion Display Area */
 .mansion {
     min-height: 530px;
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(8, 123, 255, 0.5);
     border-radius: 12px;
-    background: rgba(2, 6, 18, 0.2);
-    backdrop-filter: blur(2px);
+    background: radial-gradient(circle at center, rgba(8, 20, 50, 0.6) 0%, rgba(2, 6, 18, 0.8) 100%);
+    backdrop-filter: blur(3px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -282,6 +284,7 @@ nav button:hover, nav button.active {
     color: #a5c3f3;
 }
 
+/* (5) Hologram cylinder & brain */
 .hologram-cylinder {
     width: 95px;
     height: 95px;
@@ -312,6 +315,7 @@ nav button:hover, nav button.active {
     to { transform: rotate(0deg); }
 }
 
+/* (6) AI Agents row */
 .people {
     display: flex;
     justify-content: center;
@@ -330,7 +334,7 @@ nav button:hover, nav button.active {
     border-top: 2px solid cyan;
 }
 
-/* Right Panel Elements */
+/* (7) Right Panel Elements (Signal Interface) */
 .wave {
     height: 45px;
     display: flex;
@@ -419,6 +423,7 @@ nav button:hover, nav button.active {
     font-size: 15px;
 }
 
+/* (11) King Jon Gold Panel */
 .gold-panel {
     background: linear-gradient(135deg, rgba(24, 28, 20, 0.9) 0%, rgba(12, 17, 9, 0.9) 100%) !important;
     border: 1px solid #d4af37 !important;
@@ -426,7 +431,7 @@ nav button:hover, nav button.active {
 
 .gold { color: #ffd700; font-size: 13px; font-weight: bold; }
 
-/* Footer Styling */
+/* (9, 10) Footer Styling */
 .footer {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -457,7 +462,7 @@ nav button:hover, nav button.active {
 
 <body>
 
-<!-- TOP HEADER -->
+<!-- (1) TOP HEADER -->
 <header>
     <div class="logo">
         <div class="logo-icon">🧠</div>
@@ -489,6 +494,7 @@ nav button:hover, nav button.active {
 
 <!-- LEFT PANEL -->
 <aside>
+    <!-- (2) COGNITION CORE -->
     <section class="panel">
         <h2>01 / COGNITION CORE</h2>
         <p class="small">Neural Network</p>
@@ -518,6 +524,7 @@ nav button:hover, nav button.active {
         </div>
     </section>
 
+    <!-- (3) AGENT TOWN -->
     <section class="panel">
         <h2>02 / AGENT TOWN</h2>
         <p class="small">Virtual Hub</p>
@@ -539,7 +546,7 @@ nav button:hover, nav button.active {
     </section>
 </aside>
 
-<!-- CENTER MANSION -->
+<!-- (4, 5, 6) CENTER MANSION -->
 <main class="center">
     <section class="mansion">
         <div class="mansion-content">
@@ -550,9 +557,9 @@ nav button:hover, nav button.active {
             <h3>— Agent Mansion —</h3>
 
             <div class="people">
-                <span>👨‍🔬</span>
-                <span>🧑‍💻</span>
-                <span>👩‍💼</span>
+                <span>🔬</span>
+                <span>💻</span>
+                <span>📊</span>
             </div>
 
             <p style="color:#00eaff; margin-top: 12px; font-weight: bold; font-size: 13px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,234,255,0.7);">
@@ -565,6 +572,7 @@ nav button:hover, nav button.active {
 
 <!-- RIGHT PANEL -->
 <aside class="right">
+    <!-- (7) SIGNAL INTERFACE -->
     <section class="panel">
         <h2>03 / SIGNAL INTERFACE</h2>
         <p class="small">Live Stream & Terminal</p>
@@ -595,6 +603,7 @@ nav button:hover, nav button.active {
         </div>
     </section>
 
+    <!-- (8) Quick Controls -->
     <section class="panel">
         <h2>◎ Quick Controls</h2>
         <div class="cards">
@@ -605,6 +614,7 @@ nav button:hover, nav button.active {
         </div>
     </section>
 
+    <!-- (11) KING JON GOLD PANEL -->
     <section class="panel gold-panel">
         <h2 class="gold">👑 King Jon</h2>
         <p style="font-size: 11px; color: #d0e1fd; margin-top: 2px;">Welcome to your AI Mansion!</p>
@@ -613,7 +623,7 @@ nav button:hover, nav button.active {
 
 </div>
 
-<!-- FOOTER -->
+<!-- (9, 10) FOOTER -->
 <footer class="footer">
     <div>
         🟢 System Status

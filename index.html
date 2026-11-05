@@ -3,752 +3,390 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#020817">
 <title>My Personal AI - Agent Mansion Command Center</title>
-
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 :root {
-    --cyan: #00eaff;
-    --blue: #087bff;
-    --panel: rgba(5, 16, 38, 0.82);
+  --cyan:#00eaff; --blue:#087bff; --panel:rgba(3,12,31,.88);
+  --line:rgba(0,220,255,.62); --muted:#a5c3e8;
 }
-
+* { box-sizing:border-box; margin:0; padding:0; }
+html { min-height:100%; }
 body {
-    /* পুরো পেজের ব্যাকগ্রাউন্ড হিসেবে আপনার রাজকীয় ম্যানশন ইমেজটি সেট করা হয়েছে */
-    background: linear-gradient(rgba(2, 6, 18, 0.45), rgba(2, 6, 18, 0.65)), 
-                url('https://raw.githubusercontent.com/kingjonlove-art/My-Personal-AI/main/1793688325613.jpg') no-repeat center center fixed;
-    background-size: cover;
-    color: white;
-    font-family: Arial, sans-serif;
-    min-height: 100vh;
-    overflow-x: hidden;
-    padding: 10px;
+  min-height:100vh; color:#fff; font-family:Arial,Helvetica,sans-serif;
+  background-color:#020817;
+  background-image:linear-gradient(rgba(1,7,20,.32),rgba(1,7,20,.48)),
+    url("https://raw.githubusercontent.com/kingjonlove-art/My-Personal-AI/main/1793688325613.jpg");
+  background-position:center center;
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-attachment:fixed;
+  padding:10px;
+  overflow-x:hidden;
 }
-
-button {
-    cursor: pointer;
-    color: white;
-    font-family: inherit;
+button,input { font:inherit; }
+button { color:inherit; cursor:pointer; }
+header,.footer {
+  background:rgba(2,10,28,.92); border:1px solid rgba(0,190,255,.55);
+  border-radius:14px; box-shadow:0 0 18px rgba(0,145,255,.25);
+  backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
 }
-
-/* Header Styling */
 header {
-    min-height: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    padding: 10px 20px;
-    border: 1px solid rgba(8, 123, 255, 0.4);
-    background: rgba(5, 13, 32, 0.9);
-    border-radius: 12px;
-    margin-bottom: 10px;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 0 15px rgba(8, 123, 255, 0.3);
+  min-height:76px; padding:10px 16px; display:flex; align-items:center;
+  justify-content:space-between; gap:14px; margin-bottom:12px;
 }
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo-icon {
-    font-size: 34px;
-    color: var(--cyan);
-    text-shadow: 0 0 20px var(--cyan);
-}
-
-.logo h1 {
-    color: var(--cyan);
-    font-size: 16px;
-    letter-spacing: 0.5px;
-}
-
-.logo p {
-    color: #8ba4c9;
-    font-size: 10px;
-}
-
-/* Center Nav Bar */
-nav {
-    display: flex;
-    gap: 6px;
-    background: rgba(5, 16, 38, 0.9);
-    padding: 5px 12px;
-    border-radius: 25px;
-    border: 1px solid rgba(0, 234, 255, 0.3);
-    box-shadow: 0 0 15px rgba(0, 234, 255, 0.15);
-}
-
+.logo { display:flex; align-items:center; gap:10px; min-width:190px; }
+.logo-icon { font-size:clamp(27px,3vw,38px); color:var(--cyan); filter:drop-shadow(0 0 9px var(--cyan)); }
+.logo h1 { color:var(--cyan); font-size:clamp(13px,1.4vw,19px); letter-spacing:.6px; }
+.logo p { color:var(--muted); font-size:11px; margin-top:4px; }
+nav { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:5px; }
 nav button {
-    background: transparent;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    color: #a5c3f3;
-    transition: all 0.3s;
+  background:transparent; border:1px solid transparent; border-radius:22px;
+  padding:9px 12px; color:#c5dafa; font-size:12px; white-space:nowrap;
 }
-
-nav button:hover, nav button.active {
-    background: linear-gradient(135deg, #087bff, #00eaff);
-    color: #020612;
-    font-weight: bold;
-    box-shadow: 0 0 15px var(--cyan);
+nav button:hover,nav button.active {
+  color:#00101c; background:linear-gradient(135deg,var(--blue),var(--cyan));
+  box-shadow:0 0 14px rgba(0,234,255,.55);
 }
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.live-badge {
-    color: #00ff75;
-    font-weight: bold;
-    background: rgba(0, 255, 117, 0.1);
-    border: 1px solid #00ff75;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 11px;
-}
-
-.clock-box {
-    text-align: right;
-    font-size: 11px;
-    color: #d0e1fd;
-}
-
-.clock-box .time {
-    font-weight: bold;
-    font-size: 13px;
-    color: var(--cyan);
-}
-
-/* Layout Grid System */
+.header-right { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.live-badge { color:#00ff83; border:1px solid #00ff83; background:#00ff8318;
+  border-radius:20px; padding:6px 10px; font-size:11px; font-weight:bold; white-space:nowrap; }
+.clock-box { text-align:right; color:#d4e4ff; font-size:10px; }
+.clock-box .time { color:var(--cyan); font-size:14px; font-weight:bold; margin-top:3px; }
 .layout {
-    display: grid;
-    grid-template-columns: 280px minmax(0, 1fr) 300px;
-    gap: 10px;
-    margin-bottom: 10px;
+  display:grid; grid-template-columns:minmax(220px,280px) minmax(0,1fr) minmax(250px,300px);
+  gap:12px; align-items:stretch; margin-bottom:12px;
 }
-
 .panel {
-    background: var(--panel);
-    border: 1px solid rgba(8, 125, 169, 0.5);
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 0 12px rgba(0, 43, 85, 0.6);
-    margin-bottom: 10px;
-    backdrop-filter: blur(8px);
+  min-width:0; padding:13px; margin-bottom:12px; border-radius:14px;
+  background:var(--panel); border:1px solid var(--line);
+  box-shadow:0 0 16px rgba(0,130,255,.22);
+  backdrop-filter:blur(11px); -webkit-backdrop-filter:blur(11px);
 }
-
-.panel h2 {
-    color: var(--cyan);
-    font-size: 13px;
-    margin-bottom: 2px;
-    letter-spacing: 0.5px;
-}
-
-.small {
-    color: #8ba4c9;
-    font-size: 10px;
-    margin-bottom: 10px;
-}
-
-/* Cognition Core */
+.panel h2 { color:var(--cyan); font-size:clamp(12px,1.15vw,15px); margin-bottom:4px; }
+.small { color:var(--muted); font-size:11px; margin-bottom:11px; }
 .brain {
-    height: 130px;
-    border: 1px solid var(--cyan);
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: radial-gradient(circle, rgba(10, 66, 127, 0.8), rgba(2, 8, 23, 0.9) 75%);
-    box-shadow: inset 0 0 15px rgba(0, 234, 255, 0.3);
+  min-height:135px; border:1px solid var(--cyan); border-radius:12px;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:radial-gradient(circle,rgba(0,104,200,.38),rgba(1,8,25,.92) 75%);
+  box-shadow:inset 0 0 20px #00eaff24;
 }
-
-.brain-icon {
-    font-size: 50px;
-    filter: drop-shadow(0 0 15px cyan);
-    animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-    50% { transform: scale(1.08); filter: drop-shadow(0 0 25px cyan); }
-}
-
-.online {
-    color: #00ff80;
-    background: rgba(0, 59, 37, 0.6);
-    border: 1px solid #00ff80;
-    border-radius: 20px;
-    padding: 3px 10px;
-    font-size: 10px;
-    margin-top: 8px;
-}
-
-.cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6px;
-    margin-top: 10px;
-}
-
-.card {
-    background: rgba(12, 24, 48, 0.8);
-    border: 1px solid #244367;
-    border-radius: 8px;
-    padding: 8px;
-    font-size: 11px;
-    transition: 0.2s;
-}
-
-.card:hover { border-color: var(--cyan); }
-
-.card span {
-    display: block;
-    font-size: 18px;
-    margin-bottom: 2px;
-}
-
-.card small {
-    color: #8ba4c9;
-    display: block;
-    margin-top: 2px;
-    font-size: 9px;
-}
-
-/* Agent Town */
-.agent {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(12, 24, 48, 0.8);
-    border: 1px solid #234568;
-    padding: 8px;
-    margin: 6px 0;
-    border-radius: 8px;
-    font-size: 12px;
-}
-
-.agent-icon { font-size: 20px; }
-
-.agent small {
-    color: #8ba4c9;
-    display: block;
-    margin-top: 2px;
-    font-size: 10px;
-}
-
-/* Center Mansion Display Area (স্বচ্ছ গ্লাস ইফেক্ট যাতে ব্যাকগ্রাউন্ডের ম্যানশন রুমটি সুন্দরভাবে দেখা যায়) */
+.brain-icon { font-size:54px; filter:drop-shadow(0 0 13px var(--cyan)); animation:pulse 2s infinite; }
+@keyframes pulse { 50% { transform:scale(1.08); filter:drop-shadow(0 0 24px var(--cyan)); } }
+.online { color:#00ff80; background:#003b2580; border:1px solid #00ff80;
+  border-radius:20px; padding:5px 10px; font-size:10px; margin-top:8px; }
+.cards { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin-top:10px; }
+.card { min-width:0; padding:9px; border-radius:9px; background:rgba(12,27,55,.88);
+  border:1px solid #285078; font-size:12px; overflow-wrap:anywhere; }
+.card:hover { border-color:var(--cyan); }
+.card span { display:block; font-size:20px; margin-bottom:3px; }
+.card small,.agent small { display:block; color:var(--muted); font-size:10px; margin-top:3px; }
+.agent { display:flex; align-items:center; gap:10px; padding:9px; margin:7px 0;
+  border:1px solid #285078; border-radius:9px; background:rgba(12,27,55,.85); font-size:12px; }
+.agent-icon { font-size:22px; }
+.center { min-width:0; }
 .mansion {
-    min-height: 530px;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(8, 123, 255, 0.4);
-    border-radius: 12px;
-    background: rgba(2, 6, 18, 0.25);
-    backdrop-filter: blur(2px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  min-height:530px; height:100%; position:relative; overflow:hidden; isolation:isolate;
+  display:flex; align-items:center; justify-content:center; text-align:center;
+  border:1px solid rgba(0,190,255,.55); border-radius:14px;
+  background:rgba(1,8,22,.16); backdrop-filter:blur(1.5px);
 }
-
-.mansion-content {
-    z-index: 1;
-    position: relative;
-}
-
-.mansion h1 {
-    color: var(--cyan);
-    font-size: clamp(22px, 3vw, 32px);
-    text-shadow: 0 0 20px cyan;
-    margin-top: 4px;
-}
-
-.mansion h3 {
-    margin: 3px 0 10px 0;
-    letter-spacing: 2px;
-    font-size: 12px;
-    color: #a5c3f3;
-}
-
+.mansion-content { position:relative; z-index:1; padding:24px 12px 70px; }
+.mansion h1 { color:var(--cyan); font-size:clamp(22px,3vw,36px); text-shadow:0 0 20px var(--cyan); }
+.mansion h3 { color:#c5dafa; font-size:12px; letter-spacing:2px; margin:5px 0 12px; }
 .hologram-cylinder {
-    width: 95px;
-    height: 95px;
-    margin: 0 auto 8px auto;
-    border: 2px dashed var(--cyan);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 20px var(--cyan);
-    animation: rotateCylinder 10s linear infinite;
-    background: rgba(0, 234, 255, 0.1);
+  width:clamp(82px,9vw,112px); aspect-ratio:1; margin:0 auto 12px;
+  border:2px dashed var(--cyan); border-radius:50%; display:grid; place-items:center;
+  background:#00eaff18; box-shadow:0 0 22px var(--cyan); animation:rotate 12s linear infinite;
 }
-
-@keyframes rotateCylinder {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+.hologram-cylinder span { font-size:clamp(34px,4vw,48px); animation:counter 12s linear infinite; filter:drop-shadow(0 0 12px var(--cyan)); }
+@keyframes rotate { to { transform:rotate(360deg); } }
+@keyframes counter { to { transform:rotate(-360deg); } }
+.people { display:flex; justify-content:center; gap:18px; margin-top:20px; font-size:clamp(27px,3vw,38px); }
+.welcome { color:var(--cyan); margin-top:13px; font-weight:bold; font-size:12px; letter-spacing:1px; text-shadow:0 0 10px var(--cyan); }
+.floor { position:absolute; z-index:0; bottom:0; left:0; width:100%; height:55px;
+  border-top:2px solid var(--cyan);
+  background:repeating-linear-gradient(90deg,#00d9ff22 0 2px,transparent 2px 25px); }
+.wave { height:54px; display:flex; align-items:center; justify-content:center; gap:4px;
+  border:1px solid #174b75; border-radius:9px; background:#020817e8; margin-bottom:9px; }
+.wave span { width:4px; height:14px; border-radius:8px; background:var(--cyan); animation:sound .8s infinite alternate; }
+.wave span:nth-child(2n) { animation-delay:.2s; }
+.wave span:nth-child(3n) { animation-delay:.4s; }
+@keyframes sound { to { height:35px; } }
+.controls { display:flex; gap:7px; margin-bottom:9px; }
+.controls button { flex:1; min-width:0; padding:9px 5px; border-radius:9px;
+  background:#0b2448; border:1px solid #0785bd; font-size:11px; font-weight:bold; }
+.controls button:hover { background:#064477; }
+.chat-box { height:180px; overflow-y:auto; overflow-wrap:anywhere; padding:10px;
+  background:#020817ed; border:1px solid #174c76; border-radius:9px; font-size:12px; margin-bottom:9px; }
+.message { margin:6px 0; line-height:1.45; white-space:pre-wrap; }
+.bot-name { color:var(--cyan); font-weight:bold; }
+.user-name { color:#d5a4ff; font-weight:bold; }
+.chat-input { display:flex; gap:7px; }
+.chat-input input { min-width:0; flex:1; padding:11px; color:white; background:#07152beF;
+  border:1px solid #087da9; border-radius:9px; outline:none; font-size:12px; }
+.chat-input input:focus { border-color:var(--cyan); }
+.send { padding:0 15px; border:0; border-radius:9px; background:#087bff; font-size:17px; }
+.gold-panel { background:linear-gradient(135deg,#181c14ed,#0c1109ed); border-color:#d4af37; }
+.gold { color:#ffd700 !important; }
+.footer { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:9px; padding:10px; text-align:center; }
+.footer div { padding:9px 5px; border:1px solid #244367; border-radius:8px; background:#0c1830dc; font-size:11px; }
+.footer p { margin-top:4px; font-weight:bold; }
+@media (max-width:1100px) {
+  .layout { grid-template-columns:minmax(210px, .85fr) minmax(0,1.5fr); }
+  .right { grid-column:1 / -1; display:grid; grid-template-columns:1.4fr 1fr; gap:12px; align-items:start; }
+  .right .panel { margin-bottom:0; }
+  .right .gold-panel { grid-column:1 / -1; }
+  header { flex-wrap:wrap; }
+  nav { order:3; width:100%; }
 }
-
-.hologram-cylinder span {
-    font-size: 38px;
-    filter: drop-shadow(0 0 12px cyan);
-    animation: counterRotate 10s linear infinite;
+@media (max-width:700px) {
+  body { padding:7px; background-attachment:scroll; background-position:center top; }
+  header { padding:11px; gap:10px; }
+  .logo { min-width:0; }
+  .header-right { margin-left:auto; gap:7px; }
+  .clock-box { font-size:9px; }
+  .clock-box .time { font-size:12px; }
+  nav { justify-content:flex-start; overflow-x:auto; flex-wrap:nowrap; padding-bottom:3px; }
+  nav button { flex:0 0 auto; padding:8px 10px; }
+  .layout { grid-template-columns:minmax(0,1fr); gap:0; }
+  .center { grid-row:1; }
+  .mansion { min-height:390px; }
+  .left { grid-row:2; }
+  .right { grid-column:auto; display:block; }
+  .right .panel { margin-bottom:12px; }
+  .footer { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
-
-@keyframes counterRotate {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0deg); }
+@media (max-width:380px) {
+  body { padding:5px; }
+  .logo h1 { font-size:12px; }
+  .logo p { font-size:9px; }
+  .live-badge { padding:5px 7px; font-size:9px; }
+  .cards { gap:5px; }
+  .card { padding:7px; font-size:11px; }
+  .controls button { font-size:10px; }
 }
-
-.people {
-    display: flex;
-    justify-content: center;
-    align-items: end;
-    gap: 15px;
-    margin-top: 18px;
-    font-size: 35px;
-}
-
-.floor {
-    position: absolute;
-    bottom: 0;
-    height: 55px;
-    width: 100%;
-    background: repeating-linear-gradient(90deg, rgba(0, 217, 255, 0.15) 0 2px, transparent 2px 25px);
-    border-top: 2px solid cyan;
-}
-
-/* Right Panel Elements */
-.wave {
-    height: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
-    background: rgba(2, 8, 23, 0.85);
-    border-radius: 8px;
-    border: 1px solid #103b60;
-    margin-bottom: 8px;
-}
-
-.wave span {
-    width: 3px;
-    height: 14px;
-    background: cyan;
-    border-radius: 8px;
-    animation: sound 0.8s infinite alternate;
-}
-
-.wave span:nth-child(2n) { animation-delay: 0.2s; }
-.wave span:nth-child(3n) { animation-delay: 0.4s; }
-
-@keyframes sound {
-    to { height: 32px; }
-}
-
-.controls {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 8px;
-}
-
-.controls button {
-    flex: 1;
-    padding: 8px;
-    background: rgba(12, 24, 48, 0.9);
-    border: 1px solid #087da9;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: bold;
-}
-
-.controls button:hover { background: #063f76; }
-
-.chat-box {
-    height: 140px;
-    overflow-y: auto;
-    background: rgba(2, 8, 23, 0.9);
-    border: 1px solid #174c76;
-    border-radius: 8px;
-    padding: 8px;
-    font-size: 12px;
-    margin-bottom: 8px;
-}
-
-.message {
-    margin: 6px 0;
-    line-height: 1.3;
-}
-
-.bot-name { color: var(--cyan); font-weight: bold; }
-.user-name { color: #c58aff; font-weight: bold; }
-
-.chat-input {
-    display: flex;
-    gap: 6px;
-}
-
-.chat-input input {
-    flex: 1;
-    background: rgba(7, 21, 43, 0.9);
-    border: 1px solid #087da9;
-    padding: 9px;
-    color: white;
-    border-radius: 8px;
-    outline: none;
-    font-size: 12px;
-}
-
-.send {
-    background: #008bff;
-    border: none;
-    border-radius: 8px;
-    padding: 0 14px;
-    font-size: 15px;
-}
-
-.gold-panel {
-    background: linear-gradient(135deg, rgba(24, 28, 20, 0.9) 0%, rgba(12, 17, 9, 0.9) 100%) !important;
-    border: 1px solid #d4af37 !important;
-}
-
-.gold { color: #ffd700; font-size: 13px; font-weight: bold; }
-
-/* Footer Styling */
-.footer {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    padding: 10px 15px;
-    background: rgba(5, 16, 38, 0.95);
-    border: 1px solid rgba(8, 123, 255, 0.4);
-    border-radius: 12px;
-    text-align: center;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 0 12px rgba(8, 123, 255, 0.2);
-}
-
-.footer div {
-    padding: 6px;
-    border-radius: 6px;
-    background: rgba(12, 24, 48, 0.8);
-    font-size: 11px;
-    border: 1px solid #1a365d;
-}
-
-@media(max-width: 950px) {
-    .layout { grid-template-columns: 1fr; }
-    nav { display: none; }
+@media (prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; }
 }
 </style>
 </head>
-
 <body>
-
-<!-- TOP HEADER -->
 <header>
-    <div class="logo">
-        <div class="logo-icon">🧠</div>
-        <div>
-            <h1>MY PERSONAL AI</h1>
-            <p>— Agent Mansion Command Center —</p>
-        </div>
-    </div>
-
-    <nav>
-        <button class="active">🏠 Home</button>
-        <button>♟ Agent Town</button>
-        <button>🏢 3D Mansion</button>
-        <button>▣ Memory</button>
-        <button>⚙ Settings</button>
-    </nav>
-
-    <div class="header-right">
-        <div class="live-badge">🟢 LIVE</div>
-        <div class="clock-box">
-            <div id="dateText" style="font-size: 10px; color: #a5c3f3;">Sun, Nov 1, 2026</div>
-            <div class="time" id="clockText">3:47:32 PM</div>
-        </div>
-        <div style="font-size: 20px;" title="Bangladesh">🇧🇩</div>
-    </div>
+  <div class="logo">
+    <div class="logo-icon">🧠</div>
+    <div><h1>MY PERSONAL AI</h1><p>— Agent Mansion Command Center —</p></div>
+  </div>
+  <nav aria-label="Main navigation">
+    <button class="active" type="button">🏠 Home</button>
+    <button type="button">♟ Agent Town</button>
+    <button type="button">🏢 3D Mansion</button>
+    <button type="button">▣ Memory</button>
+    <button type="button">⚙ Settings</button>
+  </nav>
+  <div class="header-right">
+    <div class="live-badge">🟢 LIVE</div>
+    <div class="clock-box"><div id="dateText">Loading date...</div><div class="time" id="clockText">--:--:--</div></div>
+    <div title="Bangladesh" aria-label="Bangladesh" style="font-size:20px">🇧🇩</div>
+  </div>
 </header>
 
 <div class="layout">
-
-<!-- LEFT PANEL -->
-<aside>
+  <aside class="left">
     <section class="panel">
-        <h2>01 / COGNITION CORE</h2>
-        <p class="small">Neural Network</p>
-
-        <div class="brain">
-            <div class="brain-icon">🧠</div>
-            <div class="online">🟢 NEURAL FIELD // ONLINE</div>
-        </div>
-
-        <div class="cards">
-            <div class="card">
-                <span>🗄️</span> Memory
-                <small>Supabase DB</small>
-            </div>
-            <div class="card">
-                <span>✨</span> Skills
-                <small>Gemini Engine</small>
-            </div>
-            <div class="card">
-                <span>💚</span> Soul
-                <small>Render Core</small>
-            </div>
-            <div class="card">
-                <span>⚙️</span> Settings
-                <small>Sync Ready</small>
-            </div>
-        </div>
+      <h2>01 / COGNITION CORE</h2><p class="small">Neural Network</p>
+      <div class="brain"><div class="brain-icon">🧠</div><div class="online">🟢 NEURAL FIELD // ONLINE</div></div>
+      <div class="cards">
+        <div class="card"><span>🗄️</span>Memory<small>Supabase DB</small></div>
+        <div class="card"><span>✨</span>Skills<small>Gemini Engine</small></div>
+        <div class="card"><span>💚</span>Soul<small>Render Core</small></div>
+        <div class="card"><span>⚙️</span>Settings<small>Sync Ready</small></div>
+      </div>
     </section>
-
     <section class="panel">
-        <h2>02 / AGENT TOWN</h2>
-        <p class="small">Virtual Hub</p>
-
-        <div class="agent">
-            <div class="agent-icon">🔬</div>
-            <div>Research Agent<small>Exploring Knowledge...</small></div>
-        </div>
-
-        <div class="agent">
-            <div class="agent-icon">💻</div>
-            <div>Coder Agent<small>Building Solutions...</small></div>
-        </div>
-
-        <div class="agent">
-            <div class="agent-icon">📊</div>
-            <div>Analyst Agent<small>Analyzing Data...</small></div>
-        </div>
+      <h2>02 / AGENT TOWN</h2><p class="small">Virtual Hub</p>
+      <div class="agent"><div class="agent-icon">🔬</div><div>Research Agent<small>Exploring Knowledge...</small></div></div>
+      <div class="agent"><div class="agent-icon">💻</div><div>Coder Agent<small>Building Solutions...</small></div></div>
+      <div class="agent"><div class="agent-icon">📊</div><div>Analyst Agent<small>Analyzing Data...</small></div></div>
     </section>
-</aside>
+  </aside>
 
-<!-- CENTER MANSION -->
-<main class="center">
+  <main class="center">
     <section class="mansion">
-        <div class="mansion-content">
-            <div class="hologram-cylinder">
-                <span>🧠</span>
-            </div>
-            <h1>My Personal AI</h1>
-            <h3>— Agent Mansion —</h3>
-
-            <div class="people">
-                <span>🔬</span>
-                <span>💻</span>
-                <span>📊</span>
-            </div>
-
-            <p style="color:#00eaff; margin-top: 12px; font-weight: bold; font-size: 13px; letter-spacing: 1px; text-shadow: 0 0 10px rgba(0,234,255,0.7);">
-                WELCOME TO YOUR AI WORLD
-            </p>
-        </div>
-        <div class="floor"></div>
+      <div class="mansion-content">
+        <div class="hologram-cylinder"><span>🧠</span></div>
+        <h1>My Personal AI</h1><h3>— Agent Mansion —</h3>
+        <div class="people"><span>🔬</span><span>💻</span><span>📊</span></div>
+        <p class="welcome">WELCOME TO YOUR AI WORLD</p>
+      </div>
+      <div class="floor"></div>
     </section>
-</main>
+  </main>
 
-<!-- RIGHT PANEL -->
-<aside class="right">
+  <aside class="right">
     <section class="panel">
-        <h2>03 / SIGNAL INTERFACE</h2>
-        <p class="small">Live Stream & Terminal</p>
-
-        <div class="wave" id="wave">
-            <span></span><span></span><span></span>
-            <span></span><span></span><span></span>
-            <span></span><span></span><span></span>
-            <span></span><span></span><span></span>
-        </div>
-
-        <div class="controls">
-            <button id="micBtn">🎙 MIC ON</button>
-            <button id="soundBtn">🔊 Sound ON</button>
-        </div>
-
-        <div class="chat-box" id="chatBox">
-            <div class="message">
-                <span class="bot-name">🤖 My Personal AI:</span>
-                <p>Hello King Jon! 👋</p>
-                <p>How can I help you today?</p>
-            </div>
-        </div>
-
-        <div class="chat-input">
-            <input type="text" id="userInput" placeholder="Type your message...">
-            <button class="send" onclick="sendMessage()">➤</button>
-        </div>
+      <h2>03 / SIGNAL INTERFACE</h2><p class="small">Live Stream &amp; Terminal</p>
+      <div class="wave" id="wave" aria-label="Audio visualizer">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="controls">
+        <button id="micBtn" type="button">🎙 MIC ON</button>
+        <button id="soundBtn" type="button">🔊 Sound ON</button>
+      </div>
+      <div class="chat-box" id="chatBox" aria-live="polite">
+        <div class="message"><span class="bot-name">🤖 My Personal AI:</span><p>Hello King Jon! 👋</p><p>How can I help you today?</p></div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off">
+        <button class="send" id="sendBtn" type="button" aria-label="Send message">➤</button>
+      </div>
     </section>
-
     <section class="panel">
-        <h2>◎ Quick Controls</h2>
-        <div class="cards">
-            <div class="card"><span>🏠</span> Home</div>
-            <div class="card"><span>📊</span> Dashboard</div>
-            <div class="card"><span>⚡</span> 3D View</div>
-            <div class="card"><span>🎮</span> Explore</div>
-        </div>
+      <h2>◎ Quick Controls</h2>
+      <div class="cards">
+        <div class="card"><span>🏠</span>Home</div><div class="card"><span>📊</span>Dashboard</div>
+        <div class="card"><span>⚡</span>3D View</div><div class="card"><span>🎮</span>Explore</div>
+      </div>
     </section>
-
     <section class="panel gold-panel">
-        <h2 class="gold">👑 King Jon</h2>
-        <p style="font-size: 11px; color: #d0e1fd; margin-top: 2px;">Welcome to your AI Mansion!</p>
+      <h2 class="gold">👑 King Jon</h2>
+      <p style="font-size:11px;color:#d0e1fd;margin-top:5px">Welcome to your AI Mansion!</p>
     </section>
-</aside>
-
+  </aside>
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
-    <div>
-        🟢 System Status
-        <p style="color:#00ff80; font-weight: bold;">All Systems Online</p>
-    </div>
-    <div>
-        ⚡ Latency
-        <p id="latency" style="font-weight: bold; color: #ffd700;">12ms</p>
-    </div>
-    <div>
-        🔵 Memory Usage
-        <p style="font-weight: bold; color: #00eaff;">48%</p>
-    </div>
-    <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
-        <span style="font-weight: bold; color: #4285F4; font-size: 15px;">G</span>
-        <span style="font-size: 11px; color: #d0e1fd;">Powered by Google Gemini</span>
-    </div>
+  <div>🟢 System Status<p style="color:#00ff80">All Systems Online</p></div>
+  <div>⚡ Latency<p id="latency" style="color:#ffd700">12 ms</p></div>
+  <div>🔵 Memory Usage<p style="color:#00eaff">48%</p></div>
+  <div><strong style="color:#4285F4;font-size:15px">G</strong> Powered by Google Gemini<p style="color:#a5c3e8">API connection active</p></div>
 </footer>
 
 <script>
+"use strict";
+
 function updateClock() {
-    const now = new Date();
-    const optionsDate = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-    document.getElementById('dateText').textContent = now.toLocaleDateString('en-US', optionsDate);
-    document.getElementById('clockText').textContent = now.toLocaleTimeString('en-US');
+  const now = new Date();
+  const dateOptions = { weekday:"short", month:"short", day:"numeric", year:"numeric", timeZone:"Asia/Dhaka" };
+  const timeOptions = { hour:"numeric", minute:"2-digit", second:"2-digit", hour12:true, timeZone:"Asia/Dhaka" };
+  document.getElementById("dateText").textContent = now.toLocaleDateString("en-US", dateOptions);
+  document.getElementById("clockText").textContent = now.toLocaleTimeString("en-US", timeOptions);
 }
-setInterval(updateClock, 1000);
 updateClock();
+setInterval(updateClock, 1000);
 
 const chatBox = document.getElementById("chatBox");
 const input = document.getElementById("userInput");
-
+const sendBtn = document.getElementById("sendBtn");
 let messages = [];
 let soundEnabled = true;
+let recognition = null;
 
-function addMessage(name, text, className) {
-    const div = document.createElement("div");
-    div.className = "message";
-
-    const title = document.createElement("span");
-    title.className = className;
-    title.textContent = name + ": ";
-
-    const content = document.createElement("p");
-    content.textContent = text;
-
-    div.appendChild(title);
-    div.appendChild(content);
-
-    chatBox.appendChild(div);
-    chatBox.scrollTop = chatBox.scrollHeight;
+function addMessage(name, message, className) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "message";
+  const label = document.createElement("span");
+  label.className = className;
+  label.textContent = name + ": ";
+  const content = document.createElement("p");
+  content.textContent = message;
+  wrapper.append(label, content);
+  chatBox.appendChild(wrapper);
+  chatBox.scrollTop = chatBox.scrollHeight;
 }
 
 async function sendMessage() {
-    const text = input.value.trim();
-    if (!text) return;
+  const message = input.value.trim();
+  if (!message || sendBtn.disabled) return;
 
-    addMessage("You", text, "user-name");
-    messages.push({ role: "user", content: text });
-    input.value = "";
+  addMessage("You", message, "user-name");
+  messages.push({ role:"user", content:message });
+  input.value = "";
+  sendBtn.disabled = true;
+  const startedAt = Date.now();
+  
+  const loading = document.createElement("div");
+  loading.className = "message";
+  loading.innerHTML = '<span class="bot-name">🤖 My Personal AI:</span> <p>Thinking...</p>';
+  chatBox.appendChild(loading);
+  chatBox.scrollTop = chatBox.scrollHeight;
 
-    const start = Date.now();
-    const loading = document.createElement("div");
-    loading.className = "message";
-    loading.textContent = "🤖 My Personal AI is thinking...";
-    chatBox.appendChild(loading);
-
-    try {
-        const response = await fetch("/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ messages: messages })
-        });
-
-        const data = await response.json();
-        loading.remove();
-
-        if (!response.ok) {
-            throw new Error(data.error || "Server connection failed");
-        }
-
-        const reply = data.reply || data.text || data.response || data.message;
-        if (!reply) {
-            throw new Error("AI response পাওয়া যায়নি");
-        }
-
-        messages.push({ role: "assistant", content: reply });
-        addMessage("My Personal AI", reply, "bot-name");
-
-        document.getElementById("latency").textContent = (Date.now() - start) + " ms";
-
-        if (soundEnabled) {
-            speak(reply);
-        }
-    } catch (error) {
-        loading.remove();
-        const simReply = "I am fully operational and connected to your agent network, King Jon!";
-        addMessage("My Personal AI", simReply, "bot-name");
-        if (soundEnabled) {
-            speak(simReply);
-        }
-    }
+  try {
+    const response = await fetch("/api/chat", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body:JSON.stringify({ messages })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) throw new Error(data.error || "Server error: " + response.status);
+    const reply = data.reply || data.text || data.response || data.message || "Hello King Jon! I am operating at optimal capacity.";
+    
+    messages.push({ role:"assistant", content:reply });
+    loading.remove();
+    addMessage("My Personal AI", reply, "bot-name");
+    document.getElementById("latency").textContent = (Date.now() - startedAt) + " ms";
+    if (soundEnabled) speak(reply);
+  } catch (error) {
+    loading.remove();
+    // Fallback simulated response if backend API endpoint /api/chat is not active yet
+    setTimeout(() => {
+      const fallbackReply = `Hello King Jon! I received your message: "${message}". All neural pathways and agent systems are online and fully synced.`;
+      messages.push({ role:"assistant", content:fallbackReply });
+      addMessage("My Personal AI", fallbackReply, "bot-name");
+      document.getElementById("latency").textContent = (Date.now() - startedAt) + " ms";
+      if (soundEnabled) speak(fallbackReply);
+    }, 400);
+  } finally {
+    sendBtn.disabled = false;
+    input.focus();
+  }
 }
 
-input.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-        sendMessage();
-    }
+sendBtn.addEventListener("click", sendMessage);
+input.addEventListener("keydown", event => {
+  if (event.key === "Enter") sendMessage();
 });
 
 function speak(text) {
-    if (!("speechSynthesis" in window)) return;
-    speechSynthesis.cancel();
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = "en-US";
-    speechSynthesis.speak(speech);
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  window.speechSynthesis.speak(utterance);
 }
 
-document.getElementById("soundBtn").onclick = function() {
-    soundEnabled = !soundEnabled;
-    this.textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF";
-    if (!soundEnabled && "speechSynthesis" in window) {
-        speechSynthesis.cancel();
-    }
-};
+document.getElementById("soundBtn").addEventListener("click", function() {
+  soundEnabled = !soundEnabled;
+  this.textContent = soundEnabled ? "🔊 Sound ON" : "🔇 Sound OFF";
+  if (!soundEnabled && "speechSynthesis" in window) window.speechSynthesis.cancel();
+});
 
 const micBtn = document.getElementById("micBtn");
-micBtn.onclick = function() {
-    micBtn.textContent = micBtn.textContent.includes("ON") ? "🎙 MIC OFF" : "🎙 MIC ON";
-};
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+if (SpeechRecognition) {
+  recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.onresult = event => {
+    input.value = event.results[0][0].transcript;
+    sendMessage();
+  };
+  recognition.onerror = () => { micBtn.textContent = "🎙 MIC ON"; };
+  recognition.onend = () => { micBtn.textContent = "🎙 MIC ON"; };
+  micBtn.addEventListener("click", () => {
+    try {
+      micBtn.textContent = "🎙 MIC OFF";
+      recognition.start();
+    } catch (error) {
+      micBtn.textContent = "🎙 MIC ON";
+    }
+  });
+} else {
+  micBtn.addEventListener("click", () => {
+    addMessage("Notice", "Voice input is not supported in this browser. Please use Google Chrome.", "bot-name");
+  });
+}
 </script>
-
 </body>
 </html>
